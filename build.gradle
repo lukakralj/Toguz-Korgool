@@ -1,0 +1,18 @@
+// build.gradle for the Team Platypus Agile Project
+
+plugins {
+    id 'java'
+    id 'application'
+}
+
+mainClassName = 'Main'
+
+version '0.1'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
