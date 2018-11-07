@@ -1,1 +1,1 @@
-# Main Reporsitory for Agile Project
+# Main Repository for Agile Project
