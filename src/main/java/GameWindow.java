@@ -35,7 +35,7 @@ public class GameWindow extends JFrame {
         getContentPane().add(topButtonPanel,BorderLayout.NORTH);
         GridLayout topButtons = new GridLayout(0,9);
         topButtonPanel.setLayout(topButtons);
-        for(int i=1;i<10;++i){
+        for(int i=9;i>0;--i){
             topButtonPanel.add(new JButton(Integer.toString(i)));
         }
     }
