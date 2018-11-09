@@ -24,6 +24,7 @@ public class GameWindow extends JFrame {
         menuSetup();
         setUpTopButtons();
         setupBottomBar();
+        setUpBotButtons();
         pack();
         setVisible(true);
     }
@@ -33,10 +34,31 @@ public class GameWindow extends JFrame {
         topButtonPanel.setBorder(new EmptyBorder(20,20,20,20));
         topButtonPanel.setBackground(bgColor);
         getContentPane().add(topButtonPanel,BorderLayout.NORTH);
-        GridLayout topButtons = new GridLayout(0,9);
+        GridLayout topButtons = new GridLayout(0,9,10,10);
         topButtonPanel.setLayout(topButtons);
         for(int i=9;i>0;--i){
-            topButtonPanel.add(new JButton(Integer.toString(i)));
+            JButton button = new JButton(Integer.toString(i));
+            button.setPreferredSize(new Dimension(40,100));
+            topButtonPanel.add(button);
+        }
+    }
+
+    private void setUpBotButtons(){
+        JPanel botButtonPanel = new JPanel();
+        botButtonPanel.setBorder(new EmptyBorder(10,10,10,10));
+        botButtonPanel.setBackground(bgColor);
+        getContentPane().add(botButtonPanel,BorderLayout.CENTER);
+        BorderLayout border = new BorderLayout();
+        botButtonPanel.setLayout(border);
+        JPanel lowerPane = new JPanel();
+        GridLayout botButtons = new GridLayout(0,9,10,10);
+        lowerPane.setLayout(botButtons);
+        lowerPane.setBackground(bgColor);
+        botButtonPanel.add(lowerPane,BorderLayout.SOUTH);
+        for(int i=1;i<10;++i){
+            JButton button = new JButton(Integer.toString(i));
+            button.setPreferredSize(new Dimension(40,100));
+            lowerPane.add(button);
         }
     }
 
