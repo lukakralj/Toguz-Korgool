@@ -22,9 +22,22 @@ public class GameWindow extends JFrame {
         BorderLayout bl = new BorderLayout();
         getContentPane().setLayout(bl);
         menuSetup();
+        setUpTopButtons();
         setupBottomBar();
         pack();
         setVisible(true);
+    }
+
+    private void setUpTopButtons(){
+        JPanel topButtonPanel = new JPanel();
+        topButtonPanel.setBorder(new EmptyBorder(20,20,20,20));
+        topButtonPanel.setBackground(bgColor);
+        getContentPane().add(topButtonPanel,BorderLayout.NORTH);
+        GridLayout topButtons = new GridLayout(0,9);
+        topButtonPanel.setLayout(topButtons);
+        for(int i=1;i<10;++i){
+            topButtonPanel.add(new JButton(Integer.toString(i)));
+        }
     }
 
     private void setupBottomBar(){
