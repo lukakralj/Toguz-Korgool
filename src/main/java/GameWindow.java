@@ -7,7 +7,7 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.util.ArrayList;
-
+import javax.swing.border.Border;
 
 public class GameWindow extends JFrame {
 
@@ -55,6 +55,9 @@ public class GameWindow extends JFrame {
         lowerPane.setLayout(botButtons);
         lowerPane.setBackground(bgColor);
         botButtonPanel.add(lowerPane,BorderLayout.SOUTH);
+        JTextArea txtarea = new JTextArea("Korgools to be dragged here");
+        txtarea.setBorder(new EmptyBorder(40,40,40,40));
+        botButtonPanel.add(txtarea,BorderLayout.CENTER);
         for(int i=1;i<10;++i){
             JButton button = new JButton(Integer.toString(i));
             button.setPreferredSize(new Dimension(40,100));
