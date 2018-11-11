@@ -12,7 +12,7 @@ public class Main {
         Scanner sc = new Scanner(System.in);
         String line = sc.nextLine();
         while (!line.equals("q")) {
-            core.makeMove(Integer.parseInt(line), false);
+            core.makeMove(Integer.parseInt(line), true);
             core.printBoard();
             line = sc.nextLine();
         }
