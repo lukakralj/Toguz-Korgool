@@ -1,7 +1,7 @@
 import java.util.Arrays;
 
-public class CoreLogic {
-
+public class Board {
+    boolean isFinished;
     private int kazanW;
     private int kazanB;
     private int[] holesW;
@@ -9,8 +9,9 @@ public class CoreLogic {
     private int tuzW;
     private int tuzB;
 
+    //TODO: Refactor
 
-    public CoreLogic() {
+    public Board() {
         kazanW = 0;
         kazanB = 0;
         holesW = new int[9];
@@ -19,6 +20,35 @@ public class CoreLogic {
         tuzB = -1;
         Arrays.fill(holesW, 9);
         Arrays.fill(holesB, 9);
+        isFinished = false;
+    }
+
+    public int getKazanW() {
+        return kazanW;
+    }
+
+    public int getKazanB() {
+        return kazanB;
+    }
+
+    public int[] getHolesW() {
+        return holesW;
+    }
+
+    public int[] getHolesB() {
+        return holesB;
+    }
+
+    public int getTuzW() {
+        return tuzW;
+    }
+
+    public int getTuzB() {
+        return tuzB;
+    }
+
+    public boolean isFinished() {
+        return isFinished;
     }
 
     public void printBoard() {
@@ -34,9 +64,26 @@ public class CoreLogic {
         System.out.println("kazanW: " + kazanW);
     }
 
-    public void makeMove(int hole, boolean isWhiteTurn) {
+    // from game manager run this to check if any move is possible -> skip the turn if not possible
+    private boolean checkIfMovePossible(boolean isWhiteTurn) {
+        int[] player;
+        if (isWhiteTurn) {
+            player = holesW;
+        } else {
+            player = holesB;
+        }
+        for (int hole : player) {
+            if (hole != 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // return true if move successful
+    public boolean makeMove(int hole, boolean isWhiteTurn) {
         boolean isWhiteCurrent = isWhiteTurn;
-        int korgools = 0;
+        int korgools;
         if (isWhiteCurrent) {
             korgools = holesW[hole];
             holesW[hole] = 0;
@@ -46,6 +93,9 @@ public class CoreLogic {
             holesB[hole] = 0;
         }
 
+        if (korgools == 0) {
+            return false;
+        }
         if (korgools == 1) {
             if (hole == 8) {
                 hole = 0;
@@ -61,30 +111,30 @@ public class CoreLogic {
             else {
                 holesB[hole] += 1;
             }
-            return;
-        }
 
+        } else {
+            for (int i = korgools; i > 0; --i) {
 
-        for (int i = korgools; i > 0; --i) {
-
-            if (isWhiteCurrent) {
-                holesW[hole] += 1;
-            }
-            else {
-                holesB[hole] += 1;
-            }
-            if (i == 1) {
-                break;
-            }
-            if (hole == 8) {
-                isWhiteCurrent = !isWhiteCurrent;
-                hole = 0;
-            }
-            else {
-                hole++;
+                if (isWhiteCurrent) {
+                    holesW[hole] += 1;
+                }
+                else {
+                    holesB[hole] += 1;
+                }
+                if (i == 1) {
+                    break;
+                }
+                if (hole == 8) {
+                    isWhiteCurrent = !isWhiteCurrent;
+                    hole = 0;
+                }
+                else {
+                    hole++;
+                }
             }
         }
         endMove(hole, isWhiteCurrent, isWhiteTurn);
+        return true;
     }
 
     private void endMove(int lastHoleFilled, boolean isOnWhiteSide, boolean isWhiteTurn) {
@@ -115,24 +165,8 @@ public class CoreLogic {
             kazanB += holesW[tuzB];
             holesW[tuzB] = 0;
         }
-        checkResult();
-
+        isFinished = kazanW >= 82 || kazanB >= 82 || (kazanW == 81 && kazanB == 81);
     }
 
-    private void checkResult() {
-        if (kazanW >= 82) {
-            System.out.println("White player wins");
-            System.exit(0);
-        }
-        else if ( kazanB >=82) {
-            System.out.println("Black player wins");
-            System.exit(0);
-        }
-        else if (kazanW == 81 && kazanB == 81){
-            System.out.println("Game finished - no winners");
-            System.exit(0);
-        }
-
-    }
 
 }

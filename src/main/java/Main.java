@@ -7,7 +7,7 @@ public class Main {
 
     public static void main(String[] args) {
         System.out.println("Main method works as intended");
-        CoreLogic core = new CoreLogic();
+        Board core = new Board();
         core.printBoard();
         Scanner sc = new Scanner(System.in);
         String line = sc.nextLine();
