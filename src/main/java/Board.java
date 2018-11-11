@@ -1,7 +1,6 @@
 import java.util.Arrays;
 
 public class Board {
-    boolean isFinished;
     private int kazanW;
     private int kazanB;
     private int[] holesW;
@@ -20,7 +19,6 @@ public class Board {
         tuzB = -1;
         Arrays.fill(holesW, 9);
         Arrays.fill(holesB, 9);
-        isFinished = false;
     }
 
     public int getKazanW() {
@@ -45,10 +43,6 @@ public class Board {
 
     public int getTuzB() {
         return tuzB;
-    }
-
-    public boolean isFinished() {
-        return isFinished;
     }
 
     public void printBoard() {
@@ -80,8 +74,10 @@ public class Board {
         return false;
     }
 
-    // return true if move successful
-    public boolean makeMove(int hole, boolean isWhiteTurn) {
+    public BoardStatus makeMove(int hole, boolean isWhiteTurn) {
+        if (!checkIfMovePossible(isWhiteTurn)) {
+            return BoardStatus.MOVE_IMPOSSIBLE;
+        }
         boolean isWhiteCurrent = isWhiteTurn;
         int korgools;
         if (isWhiteCurrent) {
@@ -94,7 +90,7 @@ public class Board {
         }
 
         if (korgools == 0) {
-            return false;
+            return BoardStatus.MOVE_UNSUCCESSFUL;
         }
         if (korgools == 1) {
             if (hole == 8) {
@@ -133,11 +129,10 @@ public class Board {
                 }
             }
         }
-        endMove(hole, isWhiteCurrent, isWhiteTurn);
-        return true;
+        return endMove(hole, isWhiteCurrent, isWhiteTurn);
     }
 
-    private void endMove(int lastHoleFilled, boolean isOnWhiteSide, boolean isWhiteTurn) {
+    private BoardStatus endMove(int lastHoleFilled, boolean isOnWhiteSide, boolean isWhiteTurn) {
         if (isWhiteTurn && !isOnWhiteSide && lastHoleFilled != tuzW) {
             if (holesB[lastHoleFilled] == 3 && tuzW == -1 && tuzB != lastHoleFilled) {
                 tuzW = lastHoleFilled;
@@ -165,8 +160,32 @@ public class Board {
             kazanB += holesW[tuzB];
             holesW[tuzB] = 0;
         }
-        isFinished = kazanW >= 82 || kazanB >= 82 || (kazanW == 81 && kazanB == 81);
+
+        return checkResult();
+
+    }
+
+    private BoardStatus checkResult() {
+        if (kazanW >= 82) {
+            return BoardStatus.W_WON;
+        } else if (kazanB >= 82) {
+            return BoardStatus.B_WON;
+        } else if (kazanW == 81 && kazanB == 81) {
+            return BoardStatus.DRAW;
+        } else {
+            return BoardStatus.SUCCESSFUL;
+        }
+
     }
 
 
+}
+
+enum BoardStatus {
+    SUCCESSFUL, //move went well but the game is not finished, next player should make a move
+    MOVE_UNSUCCESSFUL,
+    MOVE_IMPOSSIBLE,
+    B_WON,
+    W_WON,
+    DRAW
 }
