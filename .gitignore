@@ -40,3 +40,13 @@ gradle-app.setting
 
 # # Work around https://youtrack.jetbrains.com/issue/IDEA-116898
 # gradle/wrapper/gradle-wrapper.properties
+
+# IDEA files
+*.idea
+*.iml
+
+[Bb]uild/
+[Tt]emp/
+[Tt]mp/
+*[Tt]mp*
+*[Tt]emp*
