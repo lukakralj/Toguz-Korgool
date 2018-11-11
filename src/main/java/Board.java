@@ -1,22 +1,32 @@
 import java.util.Arrays;
 
+/**
+ * Class representing a board of the game
+ */
 public class Board {
-    private int kazanW;
-    private int kazanB;
+    // White player
     private int[] holesW;
+    private int kazanW; // number of kargools in player's kazan
+    private int tuzW; // index of player's tuz hole
+
+    // Black player
     private int[] holesB;
-    private int tuzW;
+    private int kazanB;
     private int tuzB;
+
 
     //TODO: Refactor
 
     public Board() {
         kazanW = 0;
         kazanB = 0;
+
         holesW = new int[9];
         holesB = new int[9];
+
         tuzW = -1;
         tuzB = -1;
+
         Arrays.fill(holesW, 9);
         Arrays.fill(holesB, 9);
     }
@@ -45,6 +55,9 @@ public class Board {
         return tuzB;
     }
 
+    /**
+     * Helper function, prints state of the board
+     */
     public void printBoard() {
         System.out.print("\nBlack: ");
         for (int i = 8; i >= 0; i--) {
@@ -58,22 +71,13 @@ public class Board {
         System.out.println("kazanW: " + kazanW);
     }
 
-    // from game manager run this to check if any move is possible -> skip the turn if not possible
-    private boolean checkIfMovePossible(boolean isWhiteTurn) {
-        int[] player;
-        if (isWhiteTurn) {
-            player = holesW;
-        } else {
-            player = holesB;
-        }
-        for (int hole : player) {
-            if (hole != 0) {
-                return true;
-            }
-        }
-        return false;
-    }
 
+    /**
+     * Represents making a move on the board
+     * @param hole The hole the move starts with
+     * @param isWhiteTurn True if it is white player's turn, false if it is black player's turn
+     * @return Status of the board
+     */
     public BoardStatus makeMove(int hole, boolean isWhiteTurn) {
         if (!checkIfMovePossible(isWhiteTurn)) {
             return BoardStatus.MOVE_IMPOSSIBLE;
@@ -132,6 +136,34 @@ public class Board {
         return endMove(hole, isWhiteCurrent, isWhiteTurn);
     }
 
+    /**
+     * Helper function determines whether given player can make a move,
+     * ie if there are any non-empty hole on player's board
+     * @param isWhiteTurn True if it is white player's turn, false if it is black player's turn
+     * @return true if move is possible, false otherwise
+     */
+    private boolean checkIfMovePossible(boolean isWhiteTurn) {
+        int[] player;
+        if (isWhiteTurn) {
+            player = holesW;
+        } else {
+            player = holesB;
+        }
+        for (int hole : player) {
+            if (hole != 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Helper function implementing ending conditions of a move
+     * @param lastHoleFilled The index of hole that was filled last
+     * @param isOnWhiteSide True if the last hole was on white player's side, false if it was on black player's side
+     * @param isWhiteTurn True if it is white player's turn, false if it is black player's turn
+     * @return Status of the board
+     */
     private BoardStatus endMove(int lastHoleFilled, boolean isOnWhiteSide, boolean isWhiteTurn) {
         if (isWhiteTurn && !isOnWhiteSide && lastHoleFilled != tuzW) {
             if (holesB[lastHoleFilled] == 3 && tuzW == -1 && tuzB != lastHoleFilled) {
@@ -165,6 +197,10 @@ public class Board {
 
     }
 
+    /**
+     * Helper function checking status of the board after a move
+     * @return Status of the board
+     */
     private BoardStatus checkResult() {
         if (kazanW >= 82) {
             return BoardStatus.W_WON;
@@ -181,6 +217,9 @@ public class Board {
 
 }
 
+/**
+ * Enum class representing statuses a board can have
+ */
 enum BoardStatus {
     SUCCESSFUL, //move went well but the game is not finished, next player should make a move
     MOVE_UNSUCCESSFUL,
