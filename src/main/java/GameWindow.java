@@ -12,6 +12,7 @@ import javax.swing.border.Border;
 public class GameWindow extends JFrame {
 
     private static final Color bgColor = Color.LIGHT_GRAY;
+    private JTextArea txtarea;
 
     public GameWindow(){
         setTitle("Toguz Korgol");
@@ -39,8 +40,19 @@ public class GameWindow extends JFrame {
         for(int i=9;i>0;--i){
             JButton button = new JButton(Integer.toString(i));
             button.setPreferredSize(new Dimension(40,100));
+            button.addActionListener(e->{buttonaction();});
             topButtonPanel.add(button);
         }
+    }
+
+    private void buttonaction(){
+        System.out.println("Button clicked");
+        txtarea.append("\nButton pressed ");
+    }
+
+    private void buttonaction2(){
+        System.out.println("End turn");
+        txtarea.append("\nEnd Turn ");
     }
 
     private void setUpBotButtons(){
@@ -55,12 +67,13 @@ public class GameWindow extends JFrame {
         lowerPane.setLayout(botButtons);
         lowerPane.setBackground(bgColor);
         botButtonPanel.add(lowerPane,BorderLayout.SOUTH);
-        JTextArea txtarea = new JTextArea("Korgools to be dragged here");
+        txtarea = new JTextArea();
         txtarea.setBorder(new EmptyBorder(40,40,40,40));
         botButtonPanel.add(txtarea,BorderLayout.CENTER);
         for(int i=1;i<10;++i){
             JButton button = new JButton(Integer.toString(i));
             button.setPreferredSize(new Dimension(40,100));
+            button.addActionListener(e->{buttonaction();});
             lowerPane.add(button);
         }
     }
@@ -73,6 +86,7 @@ public class GameWindow extends JFrame {
         BorderLayout bl = new BorderLayout();
         bottomPanel.setLayout(bl);
         JButton makeMove = new JButton("Make this move");
+        makeMove.addActionListener(e->{buttonaction2();});
         bottomPanel.add(makeMove,BorderLayout.EAST);
     }
 
