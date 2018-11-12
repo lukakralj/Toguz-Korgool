@@ -291,7 +291,7 @@ public class BoardTest {
         //kazanW: 12
         // tuzB: 5
 
-        toReturn.makeMove(4, true);
+        toReturn.makeMove(4, false);
         //Black:  16 17 7 17  1 0 1  3 0
         //White:   3 17 0 18 15 0 1 12 0
         //kazanB: 22
