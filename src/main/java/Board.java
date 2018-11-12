@@ -1,12 +1,15 @@
 import java.util.Arrays;
 
 /**
- * Class representing a board of the game
+ * Class representing a board of the game.
+ *
+ * @author Luka Kralj, Karolina Szafranek
+ * @version 12 November 2018
  */
 public class Board {
     // White player
     private int[] holesW;
-    private int kazanW; // number of kargools in player's kazan
+    private int kazanW; // number of korgools in player's kazan
     private int tuzW; // index of player's tuz hole
 
     // Black player
@@ -215,6 +218,21 @@ public class Board {
     }
 
 
+    // ===================================
+    //   Used for testing private method
+    // ===================================
+
+    public BoardStatus testCheckResult() {
+        return checkResult();
+    }
+
+    public BoardStatus testEndMove(int lastHoleFilled, boolean isOnWhiteSide, boolean isWhiteTurn) {
+        return endMove(lastHoleFilled, isOnWhiteSide, isWhiteTurn);
+    }
+
+    public boolean testCheckIfMovePossible(boolean isWhiteTurn) {
+        return checkIfMovePossible(isWhiteTurn);
+    }
 }
 
 /**
