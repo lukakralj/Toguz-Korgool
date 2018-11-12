@@ -6,4 +6,5 @@ Currently, the GUI has 9 button on the top and bottom to represents the 9 circle
 ### TODO:
 - Change shape of the buttons
 - Complete the menu
-- Add a second Text Area to the center
+- Complete Custom Input Window
+- (other items listed in TODO comments)
