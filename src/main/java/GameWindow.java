@@ -6,17 +6,26 @@
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import javax.imageio.ImageIO;
+import java.io.File;
 
 public class GameWindow extends JFrame {
 
     private static final Color bgColor = Color.LIGHT_GRAY;
     private JTextArea kazanRight, kazanLeft;
+    BufferedImage buttonIcon;
 
     /**
      * Construct the game window
      */
     public GameWindow() {
         setTitle("Toguz Korgol");
+        try{
+            buttonIcon = ImageIO.read(new File("oval_button.png"));
+        }catch(Exception e){
+            System.out.print("can't read file");
+        }
         setResizable(false);
         setPreferredSize(new Dimension(1280, 720));
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -63,9 +72,13 @@ public class GameWindow extends JFrame {
         GridLayout topButtons = new GridLayout(0, 9, 10, 10);
         topPanel.setLayout(topButtons);
         for (int i = 9; i > 0; --i) {
-            JButton button = new JButton(Integer.toString(i));
+            JButton button = new JButton(new ImageIcon(buttonIcon));
+            button.setBorderPainted(false);
+            button.setFocusPainted(false);
+            button.setContentAreaFilled(false);
+            button.setToolTipText(Integer.toString(i));
             button.setName("T" + i);
-            button.setPreferredSize(new Dimension(40, 100));
+            button.setPreferredSize(new Dimension(30, 160));
             button.addActionListener(e -> {
                 holeOnClickAction(button);
             });
@@ -88,9 +101,13 @@ public class GameWindow extends JFrame {
         lowerPanel.add(lowerButtonPanel, BorderLayout.SOUTH);
         lowerPanel.add(setUpKazans(), BorderLayout.CENTER);
         for (int i = 1; i < 10; ++i) {
-            JButton button = new JButton(Integer.toString(i));
+            JButton button = new JButton(new ImageIcon(buttonIcon));
+            button.setBorderPainted(false);
+            button.setFocusPainted(false);
+            button.setContentAreaFilled(false);
+            button.setToolTipText(Integer.toString(i));
             button.setName("B" + i);
-            button.setPreferredSize(new Dimension(40, 100));
+            button.setPreferredSize(new Dimension(30, 160));
             button.addActionListener(e -> {
                 holeOnClickAction(button);
             });
@@ -127,10 +144,10 @@ public class GameWindow extends JFrame {
         kazanPanel.setBorder(new EmptyBorder(0, 0, 20, 0));
         kazanRight = new JTextArea();
         kazanRight.setLineWrap(true);
-        kazanRight.setPreferredSize(new Dimension(130, kazanPanel.getHeight() - 10));
+        kazanRight.setPreferredSize(new Dimension(620, kazanPanel.getHeight() - 10));
         kazanLeft = new JTextArea();
         kazanLeft.setLineWrap(true);
-        kazanLeft.setPreferredSize(new Dimension(130, kazanPanel.getHeight() - 10));
+        kazanLeft.setPreferredSize(new Dimension(620, kazanPanel.getHeight() - 10));
         kazanPanel.add(kazanRight, BorderLayout.EAST);
         kazanPanel.add(kazanLeft, BorderLayout.WEST);
         return kazanPanel;
