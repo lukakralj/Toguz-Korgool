@@ -12,11 +12,13 @@ public class Main {
         core.printBoard();
         Scanner sc = new Scanner(System.in);
         String line = sc.nextLine();
+        boolean isWhiteTurn = true;
         while (!line.equals("q")) {
             try {
                 if (!line.trim().equals("")) {
-                    core.makeMove(Integer.parseInt(line), true);
+                    core.makeMove(Integer.parseInt(line), isWhiteTurn);
                     core.printBoard();
+                    isWhiteTurn = !isWhiteTurn;
                 }
                 else {
                     System.out.println("Enter: 0-8 or 'q' to exit.");
