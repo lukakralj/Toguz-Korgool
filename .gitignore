@@ -42,5 +42,11 @@ gradle-app.setting
 # gradle/wrapper/gradle-wrapper.properties
 
 # IDEA files
-*.iml
 *.idea
+*.iml
+
+[Bb]uild/
+[Tt]emp/
+[Tt]mp/
+*[Tt]mp*
+*[Tt]emp*
