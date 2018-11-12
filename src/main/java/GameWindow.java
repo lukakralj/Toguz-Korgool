@@ -13,8 +13,10 @@ import java.io.File;
 public class GameWindow extends JFrame {
 
     private static final Color bgColor = Color.LIGHT_GRAY;
+    private static final Color topPanelColor = Color.GRAY;
     private JTextArea kazanRight, kazanLeft;
-    BufferedImage buttonIcon;
+    BufferedImage darkButtonIcon;
+    BufferedImage lightButtonIcon;
 
     /**
      * Construct the game window
@@ -22,9 +24,10 @@ public class GameWindow extends JFrame {
     public GameWindow() {
         setTitle("Toguz Korgol");
         try{
-            buttonIcon = ImageIO.read(new File("oval_button.png"));
+            darkButtonIcon = ImageIO.read(new File("src/main/resources/oval_button_dark.png"));
+            lightButtonIcon = ImageIO.read(new File("src/main/resources/oval_button_light.png"));
         }catch(Exception e){
-            System.out.print("can't read file");
+            System.out.print("Error opening files!");
         }
         setResizable(false);
         setPreferredSize(new Dimension(1280, 720));
@@ -67,12 +70,12 @@ public class GameWindow extends JFrame {
     private void setUpTopPanel() {
         JPanel topPanel = new JPanel();
         topPanel.setBorder(new EmptyBorder(10, 10, 20, 10));
-        topPanel.setBackground(bgColor);
+        topPanel.setBackground(topPanelColor);
         getContentPane().add(topPanel, BorderLayout.NORTH);
         GridLayout topButtons = new GridLayout(0, 9, 10, 10);
         topPanel.setLayout(topButtons);
         for (int i = 9; i > 0; --i) {
-            JButton button = new JButton(new ImageIcon(buttonIcon));
+            JButton button = new JButton(new ImageIcon(darkButtonIcon));
             button.setBorderPainted(false);
             button.setFocusPainted(false);
             button.setContentAreaFilled(false);
@@ -101,7 +104,7 @@ public class GameWindow extends JFrame {
         lowerPanel.add(lowerButtonPanel, BorderLayout.SOUTH);
         lowerPanel.add(setUpKazans(), BorderLayout.CENTER);
         for (int i = 1; i < 10; ++i) {
-            JButton button = new JButton(new ImageIcon(buttonIcon));
+            JButton button = new JButton(new ImageIcon(lightButtonIcon));
             button.setBorderPainted(false);
             button.setFocusPainted(false);
             button.setContentAreaFilled(false);
