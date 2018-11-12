@@ -42,11 +42,15 @@ public class BoardTest {
     @Test
     public void testMovesThatShouldReturnSUCCESSFUL() {
         Board board = new Board();
+        assertTrue("ifMovePossible returned wrong value", board.testCheckIfMovePossible(true));
         assertEquals("Make move returned wrong value.", BoardStatus.SUCCESSFUL, board.makeMove(0, true));
         assertEquals("Make move returned wrong value.", BoardStatus.SUCCESSFUL, board.makeMove(0, true));
+        assertTrue("ifMovePossible returned wrong value", board.testCheckIfMovePossible(true));
         assertEquals("Make move returned wrong value.", BoardStatus.SUCCESSFUL, board.makeMove(6, true));
+        assertTrue("ifMovePossible returned wrong value", board.testCheckIfMovePossible(false));
         assertEquals("Make move returned wrong value.", BoardStatus.SUCCESSFUL, board.makeMove(8, false));
         assertEquals("Make move returned wrong value.", BoardStatus.SUCCESSFUL, board.makeMove(0, true));
+        assertTrue("ifMovePossible returned wrong value", board.testCheckIfMovePossible(false));
         assertEquals("Make move returned wrong value.", BoardStatus.SUCCESSFUL, board.makeMove(8, false));
 
         testNumberOfKorgools(board);
@@ -60,14 +64,20 @@ public class BoardTest {
     public void testMovesThatShouldReturnUNSUCCESSFUL() {
         Board board = new Board();
         assertEquals("Make move returned wrong value.", BoardStatus.SUCCESSFUL, board.makeMove(0, true));
+        assertTrue("ifMovePossible returned wrong value", board.testCheckIfMovePossible(true));
         assertEquals("Make move returned wrong value.", BoardStatus.SUCCESSFUL, board.makeMove(0, true));
+        assertTrue("ifMovePossible returned wrong value", board.testCheckIfMovePossible(true));
         assertEquals("Make move returned wrong value.", BoardStatus.MOVE_UNSUCCESSFUL, board.makeMove(0, true));
+        assertTrue("ifMovePossible returned wrong value", board.testCheckIfMovePossible(true));
         assertEquals("Make move returned wrong value.", BoardStatus.MOVE_UNSUCCESSFUL, board.makeMove(0, true));
         assertEquals("Make move returned wrong value.", BoardStatus.SUCCESSFUL, board.makeMove(7, false));
+        assertTrue("ifMovePossible returned wrong value", board.testCheckIfMovePossible(false));
         assertEquals("Make move returned wrong value.", BoardStatus.SUCCESSFUL, board.makeMove(7, false));
+        assertTrue("ifMovePossible returned wrong value", board.testCheckIfMovePossible(false));
         assertEquals("Make move returned wrong value.", BoardStatus.MOVE_UNSUCCESSFUL, board.makeMove(7, false));
         assertEquals("Make move returned wrong value.", BoardStatus.MOVE_UNSUCCESSFUL, board.makeMove(7, false));
         assertEquals("Make move returned wrong value.", BoardStatus.SUCCESSFUL, board.makeMove(0, true));
+        assertTrue("ifMovePossible returned wrong value", board.testCheckIfMovePossible(true));
         assertEquals("Make move returned wrong value.", BoardStatus.MOVE_UNSUCCESSFUL, board.makeMove(0, true));
 
         testNumberOfKorgools(board);
@@ -126,6 +136,51 @@ public class BoardTest {
             assertEquals("Black holes incorrect (in second black tuz test).", blackHolesShouldBe[i], board.getHolesB()[i]);
             assertEquals("White holes incorrect (in second black tuz test).", whiteHolesShouldBe[i], board.getHolesW()[i]);
         }
+        testNumberOfKorgools(board);
+    }
+
+    /**
+     * Test if endMove behaves correctly during the game (when game is not finished yet).
+     */
+    @Test
+    public void testEndMove() {
+        Board board = setupBoardAttemptSecondBlackTuz();
+        // The board is now:
+        //Black:  16 17 7 17  1 0 1  3 0
+        //White:   3 17 0 18 15 0 1 12 0
+        //kazanB: 22
+        //kazanW: 12
+        // tuzB: 5
+        // tuzW: -1
+
+        assertEquals("endMove didn't return correct result.", BoardStatus.SUCCESSFUL, board.testEndMove(0, true, true));
+        assertEquals("tuz was changed", -1, board.getTuzW());
+
+        assertEquals("endMove didn't return correct result.", BoardStatus.SUCCESSFUL, board.testEndMove(1, false, true));
+        assertEquals("tuz was not changed", 1, board.getTuzW());
+        assertEquals("New tuz was not emptied.", 0, board.getHolesB()[1]);
+        assertEquals("Score was not updated.", 15, board.getKazanW());
+        testNumberOfKorgools(board);
+        // The board is now:
+        //Black:  16 17 7 17  1 0 1  0 0
+        //White:   3 17 0 18 15 0 1 12 0
+        //kazanB: 22
+        //kazanW: 15
+        // tuzB: 5
+        // tuzW: 1
+
+        board.makeMove(7, true);
+        // The board is now:
+        //Black:  17 18 8 18  2 1 2 0 1
+        //White:   4 17 0 18 15 0 1 1 1
+        //kazanB: 22
+        //kazanW: 16
+        // tuzB: 5
+        // tuzW: 1
+        assertEquals("endMove didn't return correct result.", BoardStatus.SUCCESSFUL, board.testEndMove(0, true, true));
+        assertEquals("tuz was changed", 1, board.getTuzW());
+        assertEquals("Tuz was not emptied.", 0, board.getHolesB()[1]);
+        assertEquals("Score was not updated.", 16, board.getKazanW());
         testNumberOfKorgools(board);
     }
 
@@ -190,6 +245,7 @@ public class BoardTest {
         //kazanB: 14
         //kazanW: 10
 
+        assertTrue("ifMovePossible returned wrong value", toReturn.testCheckIfMovePossible(false));
         toReturn.makeMove(4, false);
         //Black:  12 12 2 12  1 2 10  1 11
         //White:  12 12 1 13 12 0  0 11 11
@@ -214,6 +270,7 @@ public class BoardTest {
         //kazanW: 10
         // tuzB: 5
 
+        assertTrue("ifMovePossible returned wrong value", toReturn.testCheckIfMovePossible(true));
         toReturn.makeMove(0, true);
         //Black:  12 12 2 12  1 2 11  2 12
         //White:   1 13 2 14 13 0  1 12 12
@@ -235,6 +292,7 @@ public class BoardTest {
         //kazanW: 10
         // tuzB: 5
 
+        assertTrue("ifMovePossible returned wrong value", toReturn.testCheckIfMovePossible(false));
         toReturn.makeMove(0, false);
         //Black:  14 14 4 14  3 4 14  3 1
         //White:   3 15 3 15 13 0  1 12 1
@@ -291,6 +349,7 @@ public class BoardTest {
         //kazanW: 12
         // tuzB: 5
 
+        assertTrue("ifMovePossible returned wrong value", toReturn.testCheckIfMovePossible(false));
         toReturn.makeMove(4, false);
         //Black:  16 17 7 17  1 0 1  3 0
         //White:   3 17 0 18 15 0 1 12 0
