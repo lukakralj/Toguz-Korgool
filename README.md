@@ -7,4 +7,5 @@ Currently, the GUI has 9 button on the top and bottom to represents the 9 circle
 - Change shape of the buttons
 - Complete the menu
 - Complete Custom Input Window
+- Create hashMap of all components so they are accessible by name
 - (other items listed in TODO comments)
