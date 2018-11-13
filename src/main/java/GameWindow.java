@@ -9,11 +9,13 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 import java.io.File;
+import java.util.*;
 
 public class GameWindow extends JFrame {
 
     private static final Color bgColor = Color.LIGHT_GRAY;
     private static final Color topPanelColor = Color.GRAY;
+    private HashMap<String, JButton> map;
     private JTextArea kazanRight, kazanLeft;
     BufferedImage darkButtonIcon;
     BufferedImage lightButtonIcon;
@@ -29,6 +31,7 @@ public class GameWindow extends JFrame {
         }catch(Exception e){
             System.out.print("Error opening files!");
         }
+        map = new HashMap<String, JButton>();
         setResizable(false);
         setPreferredSize(new Dimension(1280, 720));
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -81,6 +84,7 @@ public class GameWindow extends JFrame {
             button.setContentAreaFilled(false);
             button.setToolTipText(Integer.toString(i));
             button.setName("T" + i);
+            map.put(button.getName(),button);
             button.setPreferredSize(new Dimension(30, 160));
             button.addActionListener(e -> {
                 holeOnClickAction(button);
@@ -110,6 +114,7 @@ public class GameWindow extends JFrame {
             button.setContentAreaFilled(false);
             button.setToolTipText(Integer.toString(i));
             button.setName("B" + i);
+            map.put(button.getName(),button);
             button.setPreferredSize(new Dimension(30, 160));
             button.addActionListener(e -> {
                 holeOnClickAction(button);
