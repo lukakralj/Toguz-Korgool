@@ -25,12 +25,7 @@ public class GameWindow extends JFrame {
      */
     public GameWindow() {
         setTitle("Toguz Korgol");
-        try{
-            darkButtonIcon = ImageIO.read(new File("src/main/resources/oval_button_dark.png"));
-            lightButtonIcon = ImageIO.read(new File("src/main/resources/oval_button_light.png"));
-        }catch(Exception e){
-            System.out.print("Error opening files!");
-        }
+        loadImages();
         map = new HashMap<String, JButton>();
         setResizable(false);
         setPreferredSize(new Dimension(1280, 720));
@@ -68,6 +63,21 @@ public class GameWindow extends JFrame {
         menuBar.add(FileMenu);
         menuBar.setBackground(bgColor);
         setJMenuBar(menuBar);
+    }
+
+    /**
+     * Tries to load up the required image file from the specified destination
+     * If it cannot find the images, prints the stack trace to the terminal
+     * 
+     */
+    private void loadImages(){
+        try{
+            darkButtonIcon = ImageIO.read(new File("src/main/resources/oval_button_dark.png"));
+            lightButtonIcon = ImageIO.read(new File("src/main/resources/oval_button_light.png"));
+        }catch(Exception e){
+            System.out.print("Error opening files!");
+            e.printStackTrace();
+        }
     }
 
     /**
