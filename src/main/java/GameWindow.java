@@ -10,6 +10,7 @@ import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 import java.io.File;
 import java.util.*;
+import javax.swing.ImageIcon;
 
 public class GameWindow extends JFrame {
 
@@ -19,6 +20,7 @@ public class GameWindow extends JFrame {
     private JTextArea kazanRight, kazanLeft;
     BufferedImage darkButtonIcon;
     BufferedImage lightButtonIcon;
+    BufferedImage altButtonIcon;
 
     /**
      * Construct the game window
@@ -74,6 +76,7 @@ public class GameWindow extends JFrame {
         try{
             darkButtonIcon = ImageIO.read(new File("src/main/resources/oval_button_dark.png"));
             lightButtonIcon = ImageIO.read(new File("src/main/resources/oval_button_light.png"));
+            altButtonIcon = ImageIO.read(new File("src/main/resources/oval_button_alt.png"));
         }catch(Exception e){
             System.out.print("Error opening files!");
             e.printStackTrace();
@@ -138,6 +141,16 @@ public class GameWindow extends JFrame {
             });
             lowerButtonPanel.add(button);
         }
+    }
+
+    /**
+     * Sets a button to be tuz by changing its color
+     * 
+     * @param button The button to be set to a Tuz
+     */
+    private void setTuz(JButton button){
+        ImageIcon image = new ImageIcon(altButtonIcon);
+        button.setIcon(image);
     }
 
     /**
