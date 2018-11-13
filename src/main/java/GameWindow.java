@@ -78,12 +78,13 @@ public class GameWindow extends JFrame {
         GridLayout topButtons = new GridLayout(0, 9, 10, 10);
         topPanel.setLayout(topButtons);
         for (int i = 9; i > 0; --i) {
-            JButton button = new JButton(new ImageIcon(darkButtonIcon));
+            JButton button = new JButton(Integer.toString(i), new ImageIcon(darkButtonIcon));
+            button.setHorizontalTextPosition(JButton.CENTER);
+            button.setVerticalTextPosition(JButton.CENTER);
             button.setBorderPainted(false);
             button.setFocusPainted(false);
             button.setContentAreaFilled(false);
-            button.setToolTipText(Integer.toString(i));
-            button.setName("T" + i);
+            button.setName("B" + i);
             map.put(button.getName(),button);
             button.setPreferredSize(new Dimension(30, 160));
             button.addActionListener(e -> {
@@ -108,12 +109,13 @@ public class GameWindow extends JFrame {
         lowerPanel.add(lowerButtonPanel, BorderLayout.SOUTH);
         lowerPanel.add(setUpKazans(), BorderLayout.CENTER);
         for (int i = 1; i < 10; ++i) {
-            JButton button = new JButton(new ImageIcon(lightButtonIcon));
+            JButton button = new JButton(Integer.toString(i), new ImageIcon(lightButtonIcon));
+            button.setHorizontalTextPosition(JButton.CENTER);
+            button.setVerticalTextPosition(JButton.CENTER);
             button.setBorderPainted(false);
             button.setFocusPainted(false);
             button.setContentAreaFilled(false);
-            button.setToolTipText(Integer.toString(i));
-            button.setName("B" + i);
+            button.setName("W" + i);
             map.put(button.getName(),button);
             button.setPreferredSize(new Dimension(30, 160));
             button.addActionListener(e -> {
@@ -171,7 +173,7 @@ public class GameWindow extends JFrame {
         String buttonId = buttonClicked.getName();
         System.out.println(buttonId + " Clicked");
         if (buttonId.startsWith("B")) kazanRight.append("\n" + buttonId + " Clicked");
-        else if (buttonId.startsWith("T")) kazanLeft.append("\n" + buttonId + " Clicked");
+        else if (buttonId.startsWith("W")) kazanLeft.append("\n" + buttonId + " Clicked");
     }
 
     /**
