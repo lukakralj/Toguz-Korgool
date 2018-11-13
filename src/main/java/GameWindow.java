@@ -47,6 +47,9 @@ public class GameWindow extends JFrame {
 
     /**
      * Helper function to set up the menu bar
+     * 
+     * Sets up the menu from a an array of strings and adds an
+     * ActionListner to each item in the menu
      */
     private void menuSetup() {
         String[] FileMenuItems = {"New Game", "Load Game", "Save Game", "CustomInput", "Preferences", "Quit"};
@@ -68,14 +71,15 @@ public class GameWindow extends JFrame {
     }
 
     /**
-     * Function to set up Top panel containing top buttons
+     * Function to set up 9 buttons on the top panel, put them in a HashMap 
+     * and then add an ActionListner to each individual button
      */
     private void setUpTopPanel() {
         JPanel topPanel = new JPanel();
-        topPanel.setBorder(new EmptyBorder(10, 10, 20, 10));
+        topPanel.setBorder(new EmptyBorder(10, 10, 20, 10));//Set Padding around the Top Panel
         topPanel.setBackground(topPanelColor);
         getContentPane().add(topPanel, BorderLayout.NORTH);
-        GridLayout topButtons = new GridLayout(0, 9, 10, 10);
+        GridLayout topButtons = new GridLayout(0, 9, 10, 10);//Set padding around invidual buttons
         topPanel.setLayout(topButtons);
         for (int i = 9; i > 0; --i) {
             JButton button = new JButton(Integer.toString(i), new ImageIcon(darkButtonIcon));
@@ -95,15 +99,16 @@ public class GameWindow extends JFrame {
     }
 
     /**
-     * Function to set up Lower panel containing bottom buttons and kazans
+     * Function to set up 9 buttons on the bottom panel, put them in a HashMap 
+     * and then add an ActionListner to each individual button
      */
     private void setUpLowerPanel() {
         JPanel lowerPanel = new JPanel(new BorderLayout());
-        lowerPanel.setBorder(new EmptyBorder(0, 10, 10, 10));
+        lowerPanel.setBorder(new EmptyBorder(0, 10, 10, 10));//Set Padding around the Bottom Panel
         lowerPanel.setBackground(bgColor);
         getContentPane().add(lowerPanel, BorderLayout.CENTER);
         JPanel lowerButtonPanel = new JPanel();
-        GridLayout botButtons = new GridLayout(0, 9, 10, 10);
+        GridLayout botButtons = new GridLayout(0, 9, 10, 10);//Set padding around invidual buttons
         lowerButtonPanel.setLayout(botButtons);
         lowerButtonPanel.setBackground(bgColor);
         lowerPanel.add(lowerButtonPanel, BorderLayout.SOUTH);
@@ -167,7 +172,7 @@ public class GameWindow extends JFrame {
      * onClick action for clicking a hole. Inclusion of buttonId allows for identification of which
      * hole the player wishes to make a move from.
      *
-     * @param String the id of the most recently clicked button
+     * @param buttonID the id of the most recently clicked button
      */
     private void holeOnClickAction(String buttonId) {
         System.out.println(buttonId + " Clicked");
