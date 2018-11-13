@@ -88,7 +88,7 @@ public class GameWindow extends JFrame {
             map.put(button.getName(),button);
             button.setPreferredSize(new Dimension(30, 160));
             button.addActionListener(e -> {
-                holeOnClickAction(button);
+                holeOnClickAction(button.getName());
             });
             topPanel.add(button);
         }
@@ -119,7 +119,7 @@ public class GameWindow extends JFrame {
             map.put(button.getName(),button);
             button.setPreferredSize(new Dimension(30, 160));
             button.addActionListener(e -> {
-                holeOnClickAction(button);
+                holeOnClickAction(button.getName());
             });
             lowerButtonPanel.add(button);
         }
@@ -167,10 +167,9 @@ public class GameWindow extends JFrame {
      * onClick action for clicking a hole. Inclusion of buttonId allows for identification of which
      * hole the player wishes to make a move from.
      *
-     * @param buttonClicked the button clicked
+     * @param String the id of the most recently clicked button
      */
-    private void holeOnClickAction(JButton buttonClicked) {
-        String buttonId = buttonClicked.getName();
+    private void holeOnClickAction(String buttonId) {
         System.out.println(buttonId + " Clicked");
         if (buttonId.startsWith("B")) kazanRight.append("\n" + buttonId + " Clicked");
         else if (buttonId.startsWith("W")) kazanLeft.append("\n" + buttonId + " Clicked");
