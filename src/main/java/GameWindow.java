@@ -94,21 +94,7 @@ public class GameWindow extends JFrame {
         getContentPane().add(topPanel, BorderLayout.NORTH);
         GridLayout topButtons = new GridLayout(0, 9, 10, 10);//Set padding around invidual buttons
         topPanel.setLayout(topButtons);
-        for (int i = 9; i > 0; --i) {
-            JButton button = new JButton(Integer.toString(i), new ImageIcon(darkButtonIcon));
-            button.setHorizontalTextPosition(JButton.CENTER);
-            button.setVerticalTextPosition(JButton.CENTER);
-            button.setBorderPainted(false);
-            button.setFocusPainted(false);
-            button.setContentAreaFilled(false);
-            button.setName("B" + i);
-            buttonMap.put(button.getName(), button);
-            button.setPreferredSize(new Dimension(30, 160));
-            button.addActionListener(e -> {
-                holeOnClickAction(button.getName());
-            });
-            topPanel.add(button);
-        }
+        fillPanelWithButtons(topPanel, darkButtonIcon, "B");
     }
 
     /**
@@ -126,20 +112,32 @@ public class GameWindow extends JFrame {
         lowerButtonPanel.setBackground(bgColor);
         lowerPanel.add(lowerButtonPanel, BorderLayout.SOUTH);
         lowerPanel.add(setUpKazans(), BorderLayout.CENTER);
+        fillPanelWithButtons(lowerButtonPanel, lightButtonIcon, "W");
+    }
+
+    /**
+     * 
+     * Fills a given JPanel with ImageIcons that act as buttons
+     * 
+     * @param panel The Panel where the buttons are to be added
+     * @param image The Image used as the button
+     * @param color A single digit string to define the color of the added image
+     */
+    private void fillPanelWithButtons(JPanel panel, BufferedImage image, String color){
         for (int i = 1; i < 10; ++i) {
-            JButton button = new JButton(Integer.toString(i), new ImageIcon(lightButtonIcon));
+            JButton button = new JButton(Integer.toString(i), new ImageIcon(image));
             button.setHorizontalTextPosition(JButton.CENTER);
             button.setVerticalTextPosition(JButton.CENTER);
             button.setBorderPainted(false);
             button.setFocusPainted(false);
             button.setContentAreaFilled(false);
-            button.setName("W" + i);
+            button.setName(color + i);
             buttonMap.put(button.getName(), button);
             button.setPreferredSize(new Dimension(30, 160));
             button.addActionListener(e -> {
                 holeOnClickAction(button.getName());
             });
-            lowerButtonPanel.add(button);
+            panel.add(button);
         }
     }
 
