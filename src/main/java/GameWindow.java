@@ -16,7 +16,7 @@ public class GameWindow extends JFrame {
 
     private static final Color bgColor = Color.LIGHT_GRAY;
     private static final Color topPanelColor = Color.GRAY;
-    private HashMap<String, JButton> map;
+    private HashMap<String, JButton> buttonMap;
     private JTextArea kazanRight, kazanLeft;
     BufferedImage darkButtonIcon;
     BufferedImage lightButtonIcon;
@@ -28,7 +28,7 @@ public class GameWindow extends JFrame {
     public GameWindow() {
         setTitle("Toguz Korgol");
         loadImages();
-        map = new HashMap<String, JButton>();
+        buttonMap = new HashMap<String, JButton>();
         setResizable(false);
         setPreferredSize(new Dimension(1280, 720));
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -102,7 +102,7 @@ public class GameWindow extends JFrame {
             button.setFocusPainted(false);
             button.setContentAreaFilled(false);
             button.setName("B" + i);
-            map.put(button.getName(),button);
+            buttonMap.put(button.getName(), button);
             button.setPreferredSize(new Dimension(30, 160));
             button.addActionListener(e -> {
                 holeOnClickAction(button.getName());
@@ -134,7 +134,7 @@ public class GameWindow extends JFrame {
             button.setFocusPainted(false);
             button.setContentAreaFilled(false);
             button.setName("W" + i);
-            map.put(button.getName(),button);
+            buttonMap.put(button.getName(), button);
             button.setPreferredSize(new Dimension(30, 160));
             button.addActionListener(e -> {
                 holeOnClickAction(button.getName());
@@ -195,7 +195,7 @@ public class GameWindow extends JFrame {
      * onClick action for clicking a hole. Inclusion of buttonId allows for identification of which
      * hole the player wishes to make a move from.
      *
-     * @param buttonID the id of the most recently clicked button
+     * @param buttonId the id of the most recently clicked button
      */
     private void holeOnClickAction(String buttonId) {
         System.out.println(buttonId + " Clicked");
@@ -230,5 +230,36 @@ public class GameWindow extends JFrame {
             case "Quit":
                 dispose(); // TODO: Implement a 'save before quit' functionality.
         }
+    }
+
+    /**
+     * Function to set the text of a specific hole by ID.
+     *
+     * @param buttonId the ID of the button to set
+     * @param input    the text to make the button display
+     */
+    public void setHoleText(String buttonId, String input) {
+        JButton button = buttonMap.get(buttonId);
+        if (button != null) {
+            button.setText(input);
+        } else System.out.println("Invalid button ID");
+    }
+
+    /**
+     * Function to set the text of the right kazan
+     *
+     * @param input the text to make the kazan display
+     */
+    public void setKazanRightText(String input) {
+        kazanRight.setText(input);
+    }
+
+    /**
+     * Function to set the text of the left kazan
+     *
+     * @param input the text to make the kazan display
+     */
+    public void setKazanLeftText(String input) {
+        kazanLeft.setText(input);
     }
 }
