@@ -18,14 +18,15 @@ public class GameWindow extends JFrame {
     private static final Color topPanelColor = Color.GRAY;
     private HashMap<String, JButton> buttonMap;
     private JTextArea kazanRight, kazanLeft;
-    BufferedImage darkButtonIcon;
-    BufferedImage lightButtonIcon;
-    BufferedImage altButtonIcon;
+    private BufferedImage darkButtonIcon;
+    private BufferedImage lightButtonIcon;
+    private BufferedImage altButtonIcon;
+    // private GameManager manager;
 
     /**
      * Construct the game window
      */
-    public GameWindow() {
+    public GameWindow() { //TODO: add manager to parameters
         setTitle("Toguz Korgol");
         loadImages();
         buttonMap = new HashMap<String, JButton>();
@@ -202,7 +203,10 @@ public class GameWindow extends JFrame {
     private void holeOnClickAction(String buttonId) {
         System.out.println(buttonId + " Clicked");
         if (buttonId.startsWith("B")) kazanRight.append("\n" + buttonId + " Clicked");
-        else if (buttonId.startsWith("W")) kazanLeft.append("\n" + buttonId + " Clicked");
+        else if (buttonId.startsWith("W")) {
+            kazanLeft.append("\n" + buttonId + " Clicked");
+            //manager.makeMove(buttonId) TODO: implement game manager move making
+        }
     }
 
     /**
@@ -227,10 +231,10 @@ public class GameWindow extends JFrame {
         kazanRight.append("\n" + menuItemId + " Clicked");
         switch (menuItemId) {
             case "CustomInput":
-                new CustomInputWindow(bgColor); //TODO: Prompt the user whether they want to save their game before making changes.
+                new CustomInputWindow(bgColor); // TODO: pass through game manager
                 break;
             case "Quit":
-                dispose(); // TODO: Implement a 'save before quit' functionality.
+                dispose();
         }
     }
 
@@ -264,4 +268,7 @@ public class GameWindow extends JFrame {
     public void setKazanLeftText(String input) {
         kazanLeft.setText(input);
     }
+
+    //TODO: implement hashMap return function (IF NEEDED)
+
 }
