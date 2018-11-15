@@ -83,6 +83,10 @@ public class GameWindow extends JFrame {
         }
     }
 
+    public HashMap<String, JButton> getButtonMap(){
+        return buttonMap;
+    }
+
     /**
      * Function to set up 9 buttons on the top panel, put them in a HashMap 
      * and then add an ActionListner to each individual button
