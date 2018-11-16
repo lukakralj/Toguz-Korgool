@@ -20,12 +20,13 @@ public class GameWindow extends JFrame {
     private BufferedImage darkButtonIcon;
     private BufferedImage lightButtonIcon;
     private BufferedImage altButtonIcon;
-    // private GameManager manager;
+    private GameManager manager;
 
     /**
      * Construct the game window
      */
-    GameWindow() { //TODO: add manager to parameters
+    GameWindow(GameManager managerIn) {
+        manager = managerIn;
         loadImageIcons();
         setFrameProperties();
         buttonMap = new HashMap<>();
@@ -203,7 +204,7 @@ public class GameWindow extends JFrame {
         if (buttonId.startsWith("B")) kazanRight.append("\n" + buttonId + " Clicked");
         else if (buttonId.startsWith("W")) {
             kazanLeft.append("\n" + buttonId + " Clicked");
-            //manager.makeMove(buttonId) TODO: implement game manager move making
+            manager.makeMove(buttonId);
         }
     }
 
@@ -267,6 +268,8 @@ public class GameWindow extends JFrame {
         kazanLeft.setText(input);
     }
 
-    //TODO: implement hashMap return function (IF NEEDED)
+    public void makeTuz(String buttonId) {
+        setTuz(buttonMap.get(buttonId));
+    }
 
 }
