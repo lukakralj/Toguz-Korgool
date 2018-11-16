@@ -60,7 +60,7 @@ class CustomInputWindow extends JDialog {
             inputArea.add(inputCell("W" + i, true));
         }
         getContentPane().add(inputArea, BorderLayout.CENTER);
-        infoLabel = new JLabel("Please enter in the number of Korgools per hole, and use the radio buttons to indicate which holes are Tuz. Current number of Korgools: " + numberOfKorgools);
+        infoLabel = new JLabel("<html>Please enter in the number of Korgools per hole, and use the radio buttons to indicate which holes are Tuz.<br> Current number of Korgools: " + numberOfKorgools + "</html>");
         getContentPane().add(infoLabel, BorderLayout.NORTH);
     }
 
@@ -111,7 +111,7 @@ class CustomInputWindow extends JDialog {
         spinner.addChangeListener(e -> {
             numberOfKorgools = 0;
             for (JSpinner currentSpinner : spinnerMap.values()) numberOfKorgools += (int) currentSpinner.getValue();
-            infoLabel.setText("Please enter in the number of Korgools per hole, and use the radio buttons to indicate which holes are Tuz. Current number of Korgools: " + numberOfKorgools);
+            infoLabel.setText("<html>Please enter in the number of Korgools per hole, and use the radio buttons to indicate which holes are Tuz.<br> Current number of Korgools: " + numberOfKorgools + "</html>");
             System.out.println(spinner.getValue());
         });
         spinner.setFont(spinner.getFont().deriveFont(20L));
