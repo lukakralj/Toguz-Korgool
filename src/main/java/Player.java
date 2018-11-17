@@ -43,6 +43,7 @@ public class Player {
     public void incrementHole(int index) {
         holes[index]++;
     }
+
     public void setKazan(int kazan) {
         this.kazan = kazan;
     }
