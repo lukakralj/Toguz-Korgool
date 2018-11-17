@@ -73,6 +73,9 @@ public class Board {
         } else {
             for (int i = korgools; i > 0; --i) {
                 currentBoard.incrementHole(hole);
+                if (i == 1) {
+                    break;
+                }
                 if (hole == 8) {
                     switchBoards();
                     hole = 0;
@@ -83,7 +86,7 @@ public class Board {
             }
         }
 
-        return endMove(hole - 1, player, opponent, currentBoard);
+        return endMove(hole, player, opponent, currentBoard);
 
 //        if (isWhiteCurrent) {
 //            korgools = holesW[hole];
@@ -149,10 +152,11 @@ public class Board {
         if(currentBoard.equals(opponent) && lastHoleFilled != player.getTuz()) {
             if (opponent.getHoleAt(lastHoleFilled) == 3 && player.getTuz() == -1 && opponent.getTuz() != lastHoleFilled && lastHoleFilled != 8) {
                 player.setTuz(lastHoleFilled);
-            } else if (opponent.getHoleAt(lastHoleFilled) % 2 ==0){
+            } else if (opponent.getHoleAt(lastHoleFilled) % 2 == 0){
                 player.setKazan(player.getKazan() + opponent.getHoleAt(lastHoleFilled));
                 opponent.setHole(lastHoleFilled, 0);
             }
+
         }
 
 //        if (isWhiteTurn && !isOnWhiteSide && lastHoleFilled != tuzW) {
@@ -176,10 +180,12 @@ public class Board {
 
         if (player.getTuz() != -1) {
             player.setKazan(player.getKazan() + opponent.getHoleAt(player.getTuz()));
+            opponent.setHole(player.getTuz(), 0);
         }
 
         if (opponent.getTuz() != -1) {
             opponent.setKazan(opponent.getKazan() + player.getHoleAt(opponent.getTuz()));
+            player.setHole(opponent.getTuz(), 0);
         }
 
 
