@@ -98,7 +98,7 @@ public class Board {
      * @return Status of the board
      */
     private BoardStatus endMove(int lastHoleFilled, Player player, Player opponent, Player currentBoard) {
-        if(currentBoard.equals(opponent) && lastHoleFilled != player.getTuz()) {
+        if(currentBoard == opponent && lastHoleFilled != player.getTuz()) {
             if (opponent.getHoleAt(lastHoleFilled) == 3 && player.getTuz() == -1 && opponent.getTuz() != lastHoleFilled && lastHoleFilled != 8) {
                 player.setTuz(lastHoleFilled);
             } else if (opponent.getHoleAt(lastHoleFilled) % 2 == 0){
