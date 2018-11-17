@@ -87,57 +87,6 @@ public class Board {
         }
 
         return endMove(hole, player, opponent, currentBoard);
-
-//        if (isWhiteCurrent) {
-//            korgools = holesW[hole];
-//            holesW[hole] = 0;
-//        }
-//        else {
-//            korgools = holesB[hole];
-//            holesB[hole] = 0;
-//        }
-//
-//        if (korgools == 0) {
-//            return BoardStatus.MOVE_UNSUCCESSFUL;
-//        }
-//        if (korgools == 1) {
-//            if (hole == 8) {
-//                hole = 0;
-//                isWhiteTurn != isWhiteTurn;
-//            }
-//            else {
-//                hole++;
-//            }
-//
-//            if (isWhiteCurrent) {
-//                holesW[hole] += 1;
-//            }
-//            else {
-//                holesB[hole] += 1;
-//            }
-//
-//        } else {
-//            for (int i = korgools; i > 0; --i) {
-//
-//                if (isWhiteCurrent) {
-//                    holesW[hole] += 1;
-//                }
-//                else {
-//                    holesB[hole] += 1;
-//                }
-//                if (i == 1) {
-//                    break;
-//                }
-//                if (hole == 8) {
-//                    isWhiteCurrent = !isWhiteCurrent;
-//                    hole = 0;
-//                }
-//                else {
-//                    hole++;
-//                }
-//            }
-//        }
-//        return endMove(hole, isWhiteCurrent, isWhiteTurn);
     }
 
     /**
@@ -158,25 +107,6 @@ public class Board {
             }
 
         }
-
-//        if (isWhiteTurn && !isOnWhiteSide && lastHoleFilled != tuzW) {
-//            if (holesB[lastHoleFilled] == 3 && tuzW == -1 && tuzB != lastHoleFilled && lastHoleFilled !=8) {
-//                tuzW = lastHoleFilled;
-//            }
-//            else if (holesB[lastHoleFilled] % 2 == 0) {
-//                kazanW += holesB[lastHoleFilled];
-//                holesB[lastHoleFilled] = 0;
-//            }
-//        }
-//        else if (!isWhiteTurn && isOnWhiteSide && lastHoleFilled != tuzB) {
-//            if (holesW[lastHoleFilled] == 3 && tuzB == -1 && tuzW != lastHoleFilled && lastHoleFilled !=8) {
-//                tuzB = lastHoleFilled;
-//            }
-//            else if (holesW[lastHoleFilled] % 2 == 0) {
-//                kazanB += holesW[lastHoleFilled];
-//                holesW[lastHoleFilled] = 0;
-//            }
-//        }
 
         if (player.getTuz() != -1) {
             player.setKazan(player.getKazan() + opponent.getHoleAt(player.getTuz()));
@@ -239,29 +169,18 @@ public class Board {
     //   Used for testing private method
     // ===================================
 
-    public BoardStatus testCheckResult() {
+    BoardStatus testCheckResult() {
         return checkResult();
     }
 
-    public BoardStatus testEndMove(int lastHoleFilled, Player player, Player opponent, Player currentBoard) {
+    BoardStatus testEndMove(int lastHoleFilled, Player player, Player opponent, Player currentBoard) {
         return endMove(lastHoleFilled, player, opponent, currentBoard);
     }
 
-    public boolean testCheckIfMovePossible(Player currentPlayer) {
+    boolean testCheckIfMovePossible(Player currentPlayer) {
         return checkIfMovePossible(currentPlayer);
     }
 
-//    public BoardStatus testCheckResult() {
-//        return checkResult();
-//    }
-//
-//    public BoardStatus testEndMove(int lastHoleFilled, boolean isOnWhiteSide, boolean isWhiteTurn) {
-//        return endMove(lastHoleFilled, isOnWhiteSide, isWhiteTurn);
-//    }
-//
-//    public boolean testCheckIfMovePossible(boolean isWhiteTurn) {
-//        return checkIfMovePossible(isWhiteTurn);
-//    }
 }
 
 /**
