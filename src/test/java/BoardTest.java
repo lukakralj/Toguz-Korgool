@@ -159,7 +159,7 @@ public class BoardTest {
         assertEquals("endMove didn't return correct result.", BoardStatus.SUCCESSFUL, board.testEndMove(0, board.getWhitePlayer(), board.getBlackPlayer(), board.getWhitePlayer()));
         assertEquals("tuz was changed", -1, board.getWhitePlayer().getTuz());
 
-        assertEquals("endMove didn't return correct result.", BoardStatus.SUCCESSFUL, board.testEndMove(1, board.getBlackPlayer(), board.getWhitePlayer(), board.getWhitePlayer()));
+        assertEquals("endMove didn't return correct result.", BoardStatus.SUCCESSFUL, board.testEndMove(1, board.getWhitePlayer(), board.getBlackPlayer(), board.getBlackPlayer()));
         assertEquals("tuz was not changed", 1, board.getWhitePlayer().getTuz());
         assertEquals("New tuz was not emptied.", 0, board.getBlackPlayer().getHoles()[1]);
         assertEquals("Score was not updated.", 15, board.getWhitePlayer().getKazan());
