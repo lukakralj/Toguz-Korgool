@@ -1,6 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
+import java.awt.geom.*;
 import java.awt.event.ActionListener;
 
 public class OvalButton extends JButton {
@@ -9,6 +9,7 @@ public class OvalButton extends JButton {
     private Color colorHighlighted;
     private Color colorBorderNormal;
     private Color colorBorderHighlighted;
+    private int borderThickness;
 
     /**
      * Construct a default oval button.
@@ -42,6 +43,7 @@ public class OvalButton extends JButton {
         this.colorHighlighted = colorHighlighted;
         this.colorBorderNormal = colorBorderNormal;
         this.colorBorderHighlighted = colorBorderHighlighted;
+        borderThickness = 5;
     }
 
     /**
@@ -79,6 +81,20 @@ public class OvalButton extends JButton {
      */
     public void setColorBorderHighlighted(Color colorBorderHighlighted) {
         this.colorBorderHighlighted = colorBorderHighlighted;
+    }
+
+    /**
+     * Set the thickness of the border on the button.
+     *
+     * @param borderThickness Thickness in pixels.
+     */
+    public void setBorderThickness(int borderThickness) {
+        if (borderThickness < 0) {
+            this.borderThickness = 0;
+        }
+        else {
+            this.borderThickness = borderThickness;
+        }
     }
 
     /**
@@ -125,11 +141,37 @@ public class OvalButton extends JButton {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-
+        Graphics2D gr = (Graphics2D) g;
         Dimension d = getSize();
-        g.setColor(colorNormal);
-        g.fillOval(0, 0, d.width, d.height);
 
+        gr.setColor(colorNormal);
+        gr.fillOval(0, 0, d.width, d.height);
+
+        Shape border = createBorder(0, 0, d.width, d.height);
+        gr.setColor(colorBorderNormal);
+        gr.fill(border);
+
+    }
+
+    /**
+     * Creates a border shape (like a ring).
+     *
+     * @param x The x coordinate of the upper-left corner of the framing rectangle.
+     * @param y The y coordinate of the upper-left corner of the framing rectangle.
+     * @param width The width of the framing rectangle.
+     * @param height The width of the framing rectangle.
+     * @return Border shape.
+     */
+    private Shape createBorder(double x, double y, double width, double height) {
+        Ellipse2D outer = new Ellipse2D.Double(x, y, width, height);
+        double inX = (x + width/2) - (width/2 - borderThickness);
+        double inY = (y + height/2) - (height/2 - borderThickness);
+        double inW = width - 2*borderThickness;
+        double inH = height - 2*borderThickness;
+        Ellipse2D inner = new Ellipse2D.Double(inX, inY, inW, inH);
+        Area area = new Area(outer);
+        area.subtract(new Area(inner));
+        return area;
     }
 
 
