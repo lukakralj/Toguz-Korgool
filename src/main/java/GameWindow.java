@@ -125,22 +125,13 @@ public class GameWindow extends JFrame {
      */
     private void fillPanelWithButtons(JPanel panel, BufferedImage image, String color){
         for (int i = 1; i < 10; ++i) {
-            JButton button;
-            if (color.equals("W")) {
-                button = new OvalButton(Integer.toString(i));
-            }
-            else {
-                button = new JButton(Integer.toString(i), new ImageIcon(image));
-            }
+            JButton button = new JButton(Integer.toString(i), new ImageIcon(image));
             button.setHorizontalTextPosition(JButton.CENTER);
             button.setVerticalTextPosition(JButton.CENTER);
             button.setBorderPainted(false);
             button.setFocusPainted(false);
             button.setContentAreaFilled(false);
             button.setName(color + i);
-            if (i == 3 && button instanceof OvalButton) {
-                ((OvalButton)button).setHighlighted(true);
-            }
             buttonMap.put(button.getName(), button);
             button.setPreferredSize(new Dimension(30, 160));
             button.addActionListener(e -> {
