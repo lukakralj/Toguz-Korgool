@@ -1,8 +1,17 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.geom.*;
 import java.awt.event.ActionListener;
 
+/**
+ * This class represents an oval button. This means that the button will only trigger
+ * an acton if it is clicked within the oval shape drawn on it.
+ *
+ * @author Luka Kralj
+ * @version 18 November 2018
+ */
 public class OvalButton extends JButton {
 
     private Color colorNormal;
@@ -10,6 +19,7 @@ public class OvalButton extends JButton {
     private Color colorBorderNormal;
     private Color colorBorderHighlighted;
     private int borderThickness;
+    private boolean highlighted;
 
     /**
      * Construct a default oval button.
@@ -44,6 +54,33 @@ public class OvalButton extends JButton {
         this.colorBorderNormal = colorBorderNormal;
         this.colorBorderHighlighted = colorBorderHighlighted;
         borderThickness = 5;
+        highlighted = false;
+
+        // TODO: buttons get highlighted also when the click is outside the oval
+        addMouseListener(new MouseAdapter() {
+            private Color prevNormal;
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                setColorNormal(colorHighlighted.darker());
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                setColorNormal(colorHighlighted);
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                prevNormal = colorNormal;
+                setColorNormal(colorHighlighted);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                setColorNormal(prevNormal);
+            }
+        });
     }
 
     /**
@@ -98,6 +135,14 @@ public class OvalButton extends JButton {
     }
 
     /**
+     *
+     * @param isHighlighted True if you want this button to be highlighted, false otherwise.
+     */
+    public void setHighlighted(boolean isHighlighted) {
+        highlighted = isHighlighted;
+    }
+
+    /**
      * This method is overridden because it adds additional checks before executing the
      * action specified by the user of the button.
      *
@@ -106,8 +151,7 @@ public class OvalButton extends JButton {
     @Override
     public void addActionListener(ActionListener l) {
         super.addActionListener(e -> {
-            Point p = MouseInfo.getPointerInfo().getLocation();
-            if (isInOval(p.x, p.y)) {
+            if (isInOval(MouseInfo.getPointerInfo().getLocation())) {
                 l.actionPerformed(e);
             }
         });
@@ -116,11 +160,13 @@ public class OvalButton extends JButton {
     /**
      * Check if the specified point is within the oval of the button.
      *
-     * @param x Coordinate x of the point we want to check.
-     * @param y Coordinate y of the point we want to check.
+     * @param p Point to check.
      * @return True if the point is within the borders or on the border of the oval, false if it is outside of it.
      */
-    private boolean isInOval(int x, int y) {
+    private boolean isInOval(Point p) {
+        double x = p.x;
+        double y = p.y;
+
         // Calculate centre of the ellipse.
         double s1 = getLocationOnScreen().x + getSize().width / 2;
         double s2 = getLocationOnScreen().y + getSize().height / 2;
@@ -148,7 +194,12 @@ public class OvalButton extends JButton {
         gr.fillOval(0, 0, d.width, d.height);
 
         Shape border = createBorder(0, 0, d.width, d.height);
-        gr.setColor(colorBorderNormal);
+        if (highlighted) {
+            gr.setColor(colorBorderHighlighted);
+        }
+        else {
+            gr.setColor(colorBorderNormal);
+        }
         gr.fill(border);
 
     }

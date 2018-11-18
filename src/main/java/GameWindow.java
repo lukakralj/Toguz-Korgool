@@ -138,6 +138,9 @@ public class GameWindow extends JFrame {
             button.setFocusPainted(false);
             button.setContentAreaFilled(false);
             button.setName(color + i);
+            if (i == 3 && button instanceof OvalButton) {
+                ((OvalButton)button).setHighlighted(true);
+            }
             buttonMap.put(button.getName(), button);
             button.setPreferredSize(new Dimension(30, 160));
             button.addActionListener(e -> {
