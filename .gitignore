@@ -45,6 +45,8 @@ gradle-app.setting
 *.idea
 *.iml
 
+out/
+
 [Bb]uild/
 [Tt]emp/
 [Tt]mp/
