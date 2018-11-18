@@ -1,9 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.awt.geom.*;
-import java.awt.event.ActionListener;
 
 /**
  * This class represents an oval button. This means that the button will only trigger
@@ -12,7 +10,7 @@ import java.awt.event.ActionListener;
  * @author Luka Kralj
  * @version 18 November 2018
  */
-public class OvalButton extends JButton {
+public class OvalButton extends JButton implements MouseListener {
 
     private Color colorNormal;
     private Color colorHighlighted;
@@ -20,6 +18,8 @@ public class OvalButton extends JButton {
     private Color colorBorderHighlighted;
     private int borderThickness;
     private boolean highlighted;
+    private Color prevNormal; // needed for highlighting functionality
+
 
     /**
      * Construct a default oval button.
@@ -57,30 +57,33 @@ public class OvalButton extends JButton {
         highlighted = false;
 
         // TODO: buttons get highlighted also when the click is outside the oval
-        addMouseListener(new MouseAdapter() {
-            private Color prevNormal;
+        addMouseListener(this);
+    }
 
-            @Override
-            public void mousePressed(MouseEvent e) {
-                setColorNormal(colorHighlighted.darker());
-            }
+    @Override
+    public void mousePressed(MouseEvent e) {
+        colorNormal = colorHighlighted.darker();
+    }
 
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                setColorNormal(colorHighlighted);
-            }
+    @Override
+    public void mouseReleased(MouseEvent e) {
+        colorNormal = colorHighlighted;
+    }
 
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                prevNormal = colorNormal;
-                setColorNormal(colorHighlighted);
-            }
+    @Override
+    public void mouseEntered(MouseEvent e) {
+        prevNormal = colorNormal;
+        colorNormal = colorHighlighted;
+    }
 
-            @Override
-            public void mouseExited(MouseEvent e) {
-                setColorNormal(prevNormal);
-            }
-        });
+    @Override
+    public void mouseExited(MouseEvent e) {
+        colorNormal = prevNormal;
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+
     }
 
     /**
@@ -202,6 +205,8 @@ public class OvalButton extends JButton {
         }
         gr.fill(border);
 
+        g.setColor(Color.BLACK);
+        g.drawString(getText(), d.width/2, d.height/2);
     }
 
     /**
