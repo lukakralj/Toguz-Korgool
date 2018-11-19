@@ -1,4 +1,3 @@
-
 /**
  * Class representing a board of the game.
  *
@@ -41,11 +40,12 @@ public class Board {
 
 
     /**
-     * Represents making a move on the board
-     * @param hole The hole the move starts with
+     * Represents making a move on the board.
+     *
+     * @param hole the hole the move starts with
      * @param player player whose turn it is this move
      * @param opponent other player
-     * @return Status of the board
+     * @return status of the board
      */
     public BoardStatus makeMove(int hole, Player player, Player opponent) {
         if (!checkIfMovePossible(player)) {
@@ -90,12 +90,13 @@ public class Board {
     }
 
     /**
-     * Helper function implementing ending conditions of a move
-     * @param lastHoleFilled The index of hole that was filled last
+     * Helper function implementing ending conditions of a move.
+     *
+     * @param lastHoleFilled the index of hole that was filled last
      * @param player player whose turn it is this move
      * @param opponent other player
      * @param currentBoard player whose board we are on
-     * @return Status of the board
+     * @return status of the board
      */
     private BoardStatus endMove(int lastHoleFilled, Player player, Player opponent, Player currentBoard) {
         if(currentBoard == opponent && lastHoleFilled != player.getTuz()) {
@@ -118,14 +119,13 @@ public class Board {
             player.setHole(opponent.getTuz(), 0);
         }
 
-
         return checkResult();
-
     }
 
     /**
-     * Helper function checking status of the board after a move
-     * @return Status of the board
+     * Helper function checking status of the board after a move.
+     *
+     * @return status of the board
      */
     private BoardStatus checkResult() {
         if (whitePlayer.getKazan() >= 82) {
@@ -137,12 +137,12 @@ public class Board {
         } else {
             return BoardStatus.SUCCESSFUL;
         }
-
     }
 
     /**
      * Helper function determines whether given player can make a move,
-     * ie if there are any non-empty hole on player's board
+     * ie if there are any non-empty holes on player's board.
+     *
      * @param currentPlayer player whose turn it is this move
      * @return true if move is possible, false otherwise
      */
@@ -156,7 +156,7 @@ public class Board {
     }
 
     /**
-     * Helper function switching that toggles current board between player's and opponent's board
+     * Helper function that toggles current board between player's and opponent's board.
      */
     private void switchBoards() {
         Player temp = currentBoard;
@@ -184,12 +184,12 @@ public class Board {
 }
 
 /**
- * Enum class representing statuses a board can have
+ * Enum class representing statuses a board can have.
  */
 enum BoardStatus {
-    SUCCESSFUL, //move went well but the game is not finished, next player should make a move
-    MOVE_UNSUCCESSFUL,
-    MOVE_IMPOSSIBLE,
+    SUCCESSFUL, // Move went well but the game is not finished, next player should make a move.
+    MOVE_UNSUCCESSFUL, // The selected hole is empty.
+    MOVE_IMPOSSIBLE, // All holes on the player's side are empty.
     B_WON,
     W_WON,
     DRAW
