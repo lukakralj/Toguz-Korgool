@@ -229,7 +229,7 @@ public class GameWindow extends JFrame {
         kazanRight.append("\n" + menuItemId + " Clicked");
         switch (menuItemId) {
             case "CustomInput":
-                new CustomInputWindow(backgroundColor); // TODO: pass through game manager
+                new CustomInputWindow(backgroundColor, manager);
                 break;
             case "Quit":
                 dispose();
