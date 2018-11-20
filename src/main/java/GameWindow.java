@@ -153,7 +153,7 @@ public class GameWindow extends JFrame {
      * @param button The button to be set to a Tuz
      */
     private void setTuz(JButton button) {
-        ((OvalButton)button).setHighlighted(true);
+        ((OvalButton)button).setHighlightedBorder(true);
     }
 
     /**
