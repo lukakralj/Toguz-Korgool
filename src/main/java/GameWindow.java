@@ -133,7 +133,7 @@ public class GameWindow extends JFrame {
      */
     private void fillPanelWithButtons(JPanel panel, BufferedImage image, String color) {
         for (int i = 1; i < 10; ++i) {
-            JButton button = new JButton(Integer.toString(i), new ImageIcon(image));
+            JButton button = new OvalButton(Integer.toString(i));
             button.setHorizontalTextPosition(JButton.CENTER);
             button.setVerticalTextPosition(JButton.CENTER);
             button.setBorderPainted(false);
@@ -153,8 +153,7 @@ public class GameWindow extends JFrame {
      * @param button The button to be set to a Tuz
      */
     private void setTuz(JButton button) {
-        ImageIcon image = new ImageIcon(altButtonIcon);
-        button.setIcon(image);
+        ((OvalButton)button).setHighlighted(true);
     }
 
     /**
