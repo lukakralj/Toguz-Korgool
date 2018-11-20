@@ -203,7 +203,7 @@ public class GameWindow extends JFrame {
         if (buttonId.startsWith("B")) kazanRight.append("\n" + buttonId + " Clicked");
         else if (buttonId.startsWith("W")) {
             kazanLeft.append("\n" + buttonId + " Clicked");
-            manager.makeMove(buttonId);
+            manager.makeMove(buttonId.substring(1), true);
         }
     }
 
