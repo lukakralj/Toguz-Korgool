@@ -1,16 +1,9 @@
-import org.junit.After;
-import org.junit.Before;
+import gui.GameWindow;
+import logic.GameManager;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import com.athaydes.automaton.Swinger;
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import javax.imageio.ImageIO;
-import java.io.File;
-import java.util.*;
-import javax.swing.ImageIcon;
 
 /**
  * Class that contains tests for the GUI.

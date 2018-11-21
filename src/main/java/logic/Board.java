@@ -1,3 +1,5 @@
+package logic;
+
 import java.util.Arrays;
 
 /**
@@ -299,16 +301,4 @@ public class Board {
     public boolean testCheckIfMovePossible(boolean isWhiteTurn) {
         return checkIfMovePossible(isWhiteTurn);
     }
-}
-
-/**
- * Enum class representing statuses a board can have
- */
-enum BoardStatus {
-    SUCCESSFUL, //move went well but the game is not finished, next player should make a move
-    MOVE_UNSUCCESSFUL,
-    MOVE_IMPOSSIBLE,
-    B_WON,
-    W_WON,
-    DRAW
 }

@@ -1,10 +1,10 @@
-import org.junit.After;
-import org.junit.Before;
+import logic.Board;
+import logic.BoardStatus;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- * Class that contains tests for Board.java.
+ * Class that contains tests for logic.Board.java.
  *
  * @author Luka Kralj
  * @version 12 November 2018
@@ -92,7 +92,7 @@ public class BoardTest {
     @Test
     public void testIfStateOfBoardIsCorrectWhenBlackPlayerClaimsTuz() {
         Board board = setupBoardBlackTuz();
-        // Board should be:
+        // logic.Board should be:
         //Black:  12 12 2 12  1 2 10  1 11
         //White:  12 12 1 13 12 0  0 11 11
         //kazanB: 17
@@ -121,7 +121,7 @@ public class BoardTest {
     @Test
     public void testIfChangingTuzIsRejected() {
         Board board = setupBoardAttemptSecondBlackTuz();
-        // Board should be:
+        // logic.Board should be:
         //Black:  16 17 7 17  1 0 1  3 0
         //White:   3 17 0 18 15 0 1 12 0
         //kazanB: 22
@@ -197,7 +197,7 @@ public class BoardTest {
     @Test
     public void testStateOfAlmostFinishedBoard() {
         Board board = setupAlmostFinishedGameBoard();
-        // Board is now:
+        // logic.Board is now:
         //Black:  7 4 3 2 4 3 4 0 0
         //White:  1 0 0 4 2 0 2 2 0
         //kazanB: 74
@@ -227,7 +227,7 @@ public class BoardTest {
     @Test
     public void testBlackPlayerWinning() {
         Board board = setupAlmostFinishedGameBoard();
-        // Board is now:
+        // logic.Board is now:
         //Black:  7 4 3 2 4 3 4 0 0
         //White:  1 0 0 4 2 0 2 2 0
         //kazanB: 74
@@ -312,7 +312,7 @@ public class BoardTest {
     /**
      * This method tests if number of all korgools on board is correct (162 in total).
      *
-     * @param board Board to check.
+     * @param board logic.Board to check.
      */
     private void testNumberOfKorgools(Board board) {
         int all = 0;
@@ -495,7 +495,7 @@ public class BoardTest {
      */
     private Board setupAlmostFinishedGameBoard() {
         Board toReturn = setupBoardAttemptSecondBlackTuz();
-        // Board is now:
+        // logic.Board is now:
         //Black:  16 17 7 17  1 0 1  3 0
         //White:   3 17 0 18 15 0 1 12 0
         //kazanB: 22

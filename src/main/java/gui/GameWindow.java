@@ -1,7 +1,10 @@
+package gui;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.util.*;
+import logic.GameManager;
 
 /**
  * A Swing graphical user interface for the Team Platypus Agile Project
@@ -17,7 +20,7 @@ public class GameWindow extends JFrame {
     /**
      * Construct the game window
      */
-    GameWindow(GameManager managerIn) {
+    public GameWindow(GameManager managerIn) {
         manager = managerIn;
         setFrameProperties();
         buttonMap = new HashMap<>();
@@ -29,7 +32,7 @@ public class GameWindow extends JFrame {
         setVisible(true);
     }
 	
-	GameWindow() {
+	public GameWindow() {
         setFrameProperties();
         buttonMap = new HashMap<>();
         setUpMenu();

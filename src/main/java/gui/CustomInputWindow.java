@@ -1,7 +1,9 @@
-/*
+package gui;/*
  * A Modal JDialog for the custom input window
  *
  */
+
+import logic.GameManager;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -19,7 +21,7 @@ class CustomInputWindow extends JDialog {
     private GameManager manager;
 
     /**
-     * Construct an object of type CustomInputWindow
+     * Construct an object of type gui.CustomInputWindow
      *
      * @param bgColour the background colour.
      */
@@ -87,7 +89,7 @@ class CustomInputWindow extends JDialog {
         if (selectedTuzBlack == selectedTuzWhite && selectedTuzWhite != -1) {
             outputLog.setText("The Tuz cannot be the same hole on opposite sides");
         } else if (selectedTuzWhite == 9 || selectedTuzBlack == 9) {
-            outputLog.setText("Hole 9 cannot be a Tuz");
+            outputLog.setText("gui.Hole 9 cannot be a Tuz");
         } else if (numberOfKorgools != 162) {
             outputLog.setText("Please ensure the number of Korgools adds to 162");
         } else {

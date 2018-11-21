@@ -1,3 +1,5 @@
+package gui;
+
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
@@ -64,7 +66,7 @@ public class Hole extends OvalButton {
     /**
      * Adds a korgool to this hole. All hole and korgool paramenters are updated accordingly.
      *
-     * @param k Korgool to add.
+     * @param k gui.Korgool to add.
      */
     public void addKorgool(Korgool k) {
         updateKorgoolArea();

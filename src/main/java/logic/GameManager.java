@@ -1,5 +1,7 @@
-import java.util.List;
-import java.util.Scanner;
+package logic;
+
+import gui.GameWindow;
+
 import java.util.Random;
 import java.util.Set;
 
@@ -11,11 +13,6 @@ public class GameManager {
 
     private GameWindow gameWindow;
     private Board core;
-
-    public static void main(String[] args) {
-        System.out.println("Main method works as intended");
-        GameManager manager = new GameManager();
-    }
 
     /**
      * Construct the game manager
