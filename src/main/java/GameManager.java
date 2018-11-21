@@ -39,8 +39,8 @@ public class GameManager {
     public void setUpBoard(int[] wHoles, int[] bHoles, int wTuz, int bTuz, int wKazan, int bKazan) {
         core.setHolesW(wHoles);  //updates game logic
         core.setHolesB(bHoles);
-        core.setTuzW(wTuz);
-        core.setTuzB(bTuz);
+        core.setTuzW(wTuz - 1);
+        core.setTuzB(bTuz - 1);
         core.setKazanW(wKazan);
         core.setKazanB(bKazan);
         updateDisplayOnSuccess();   //updates display
@@ -199,7 +199,6 @@ public class GameManager {
         }
         if (moveStatus == BoardStatus.MOVE_IMPOSSIBLE) {
             endImpossibleGame(isWhiteTurn);
-            return;
         }
     }
 
@@ -216,7 +215,7 @@ public class GameManager {
             moveStatus = core.makeMove(hole, true);
         }
         else {
-            if (core.testCheckIfMovePossible(false) == true) {
+            if (core.testCheckIfMovePossible(false)) {
                 hole = machineChooseHole();
                 moveStatus = core.makeMove(hole, false);
             }

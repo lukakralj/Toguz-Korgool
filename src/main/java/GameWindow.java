@@ -168,6 +168,15 @@ public class GameWindow extends JFrame {
     }
 
     /**
+     * Sets a button to be tuz by changing its color
+     *
+     * @param button The button to be set to a Tuz
+     */
+    private void unsetTuz(JButton button) {
+        ((OvalButton) button).setHighlighted(false);
+    }
+
+    /**
      * Function to construct the bottom bar of the GUI.
      */
     private void setUpBottomBar() {

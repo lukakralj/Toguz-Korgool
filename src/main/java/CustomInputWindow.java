@@ -54,10 +54,10 @@ class CustomInputWindow extends JDialog {
         }
         inputArea.add(new JLabel());
         inputArea.add(inputCell("BlackKazan"));
-        inputArea.add(new JLabel("<html>No black<br>Tuz</html>"));
+        inputArea.add(new JLabel("<html>No white<br>Tuz</html>"));
         for (int i = 0; i < 4; ++i) inputArea.add(new JLabel());
         inputArea.add(inputCell("WhiteKazan"));
-        inputArea.add(new JLabel("<html>No white<br>Tuz</html>"));
+        inputArea.add(new JLabel("<html>No black<br>Tuz</html>"));
         for (int i = 1; i < 10; ++i) {
             inputArea.add(inputCell("W" + i));
         }
@@ -84,7 +84,9 @@ class CustomInputWindow extends JDialog {
      * Function to validate user input and apply changes if input is valid
      */
     private void confirmAction() {
-        if (selectedTuzWhite == 9 || selectedTuzBlack == 9) {
+        if (selectedTuzBlack == selectedTuzWhite && selectedTuzWhite != -1) {
+            outputLog.setText("The Tuz cannot be the same hole on opposite sides");
+        } else if (selectedTuzWhite == 9 || selectedTuzBlack == 9) {
             outputLog.setText("Hole 9 cannot be a Tuz");
         } else if (numberOfKorgools != 162) {
             outputLog.setText("Please ensure the number of Korgools adds to 162");
@@ -145,9 +147,9 @@ class CustomInputWindow extends JDialog {
      * @param componentId the ID of the selected radio button
      */
     private void updateSelectedTuz(String componentId) {
-        if (componentId.equals("BlackKazan")) selectedTuzBlack = -1;
-        else if (componentId.equals("WhiteKazan")) selectedTuzWhite = -1;
-        else if (componentId.startsWith("B")) selectedTuzBlack = Integer.parseInt(componentId.substring(1));
-        else if (componentId.startsWith("W")) selectedTuzWhite = Integer.parseInt(componentId.substring(1));
+        if (componentId.equals("BlackKazan")) selectedTuzWhite = -1;
+        else if (componentId.equals("WhiteKazan")) selectedTuzBlack = -1;
+        else if (componentId.startsWith("W")) selectedTuzBlack = Integer.parseInt(componentId.substring(1));
+        else if (componentId.startsWith("B")) selectedTuzWhite = Integer.parseInt(componentId.substring(1));
     }
 }
