@@ -183,6 +183,27 @@ public class GameManager {
     }
 
     /**
+     *  Checks whether the move was succesful, or if a move is impossible.
+     *  @param moveStatus the status of the most recent move.
+     *  @param isWhiteTurn boolean indicating whether it is the white player's turn.
+     *  @param endStatus the endStatus of the board at this point
+     */
+    public void checkMoveStatus(BoardStatus moveStatus, boolean isWhiteTurn, BoardStatus endStatus) {
+        if (moveStatus == BoardStatus.SUCCESSFUL) {  //move went well but the game is not finished, next player should make a move
+            updateDisplayOnSuccess();
+            if (isWhiteTurn) {
+                makeMove("", false);   //calls makeMove with hole chosen by the machine.
+            }
+            updateDisplayOnSuccess();
+            checkEndStatus(endStatus);
+        }
+        if (moveStatus == BoardStatus.MOVE_IMPOSSIBLE) {
+            endImpossibleGame(isWhiteTurn);
+            return;
+        }
+    }
+
+    /**
      * Makes a move and updates the board display.
      *  @param line the string representing the buttonID
      *  @param isWhiteTurn boolean indicating whether it is the white player's turn
@@ -205,19 +226,7 @@ public class GameManager {
             }
         }
         BoardStatus endStatus = core.testCheckResult();
-
-        if (moveStatus == BoardStatus.SUCCESSFUL) {  //move went well but the game is not finished, next player should make a move
-            updateDisplayOnSuccess();
-            if (isWhiteTurn) makeMove("", false);   //calls makeMove with hole chosen by the machine.
-            updateDisplayOnSuccess();
-            checkEndStatus(endStatus);
-
-        }
-        if (moveStatus == BoardStatus.MOVE_IMPOSSIBLE) {
-            endImpossibleGame(isWhiteTurn);
-            return;
-        }
-        //core.printBoard();   //for testing on console
+        checkMoveStatus(moveStatus, isWhiteTurn, endStatus);
         checkEndStatus(endStatus);
 
     }
