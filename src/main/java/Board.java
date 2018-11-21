@@ -57,6 +57,30 @@ public class Board {
     public int getTuzB() {
         return tuzB;
     }
+    
+    public void setKazanW(int kazanWIn) {
+        kazanW = kazanWIn;
+    }
+
+    public void setKazanB(int kazanBIn) { 
+        kazanB = kazanBIn; 
+    }
+
+    public void setHolesW(int[] holesWIn) { 
+        holesW = holesWIn; 
+    }
+
+    public void setHolesB(int[] holesBIn) { 
+        holesB = holesBIn; 
+    }
+
+    public void setTuzW(int tuzWIn) { 
+        tuzW = tuzWIn; 
+    }
+
+    public void setTuzB(int tuzBIn) { 
+        tuzB = tuzBIn; 
+    }
 
     /**
      * Helper function, prints state of the board
