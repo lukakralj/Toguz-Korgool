@@ -133,7 +133,8 @@ public class GameWindow extends JFrame {
      */
     private void fillPanelWithButtons(JPanel panel, BufferedImage image, String color) {
         for (int i = 1; i < 10; ++i) {
-            JButton button = new OvalButton(Integer.toString(i));
+            JButton button = new Hole();
+            ((Hole) button).addKorgool(new Korgool((Hole) button));
             button.setHorizontalTextPosition(JButton.CENTER);
             button.setVerticalTextPosition(JButton.CENTER);
             button.setBorderPainted(false);
