@@ -197,6 +197,7 @@ public class GameWindow extends JFrame {
         kazanRight.setPreferredSize(new Dimension(620, kazanPanel.getHeight() - 10));
         kazanLeft = new JTextArea();
         kazanLeft.setLineWrap(true);
+		kazanLeft.setName("leftKazan");
         kazanLeft.setPreferredSize(new Dimension(620, kazanPanel.getHeight() - 10));
         kazanPanel.add(kazanRight, BorderLayout.EAST);
         kazanPanel.add(kazanLeft, BorderLayout.WEST);
