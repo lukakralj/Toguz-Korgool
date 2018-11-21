@@ -240,6 +240,22 @@ public class Board {
         }
 
     }
+    
+     /**
+     * Helper function checking status of the board after a move has been declared impossible
+     * @return Status of the board
+     */
+    private BoardStatus checkResultOnImpossible() {
+        if (kazanW > kazanB) {
+            return BoardStatus.W_WON;
+        }
+        else if (kazanB > kazanW) {
+            return BoardStatus.B_WON;
+        }
+        else {
+            return BoardStatus.DRAW;
+        }
+    }
 
 
     // ===================================
@@ -248,6 +264,10 @@ public class Board {
 
     public BoardStatus testCheckResult() {
         return checkResult();
+    }
+    
+    public BoardStatus testCheckResultOnImpossible() {
+        return checkResultOnImpossible();
     }
 
     public BoardStatus testEndMove(int lastHoleFilled, boolean isOnWhiteSide, boolean isWhiteTurn) {
