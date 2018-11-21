@@ -116,6 +116,14 @@ public class OvalButton extends JButton implements MouseListener, MouseMotionLis
 
     /**
      *
+     * @return Thickness of the current border on the oval.
+     */
+    public int getBorderThickness() {
+        return borderThickness;
+    }
+
+    /**
+     *
      * @param isHighlighted True if you want this button's border to be highlighted, false otherwise.
      */
     public void setHighlightedBorder(boolean isHighlighted) {
