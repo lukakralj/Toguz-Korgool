@@ -55,7 +55,7 @@ public class GameWindow extends JFrame {
      */
     private void setFrameProperties() {
         setTitle("Toguz Korgol");
-        setResizable(false);
+        setResizable(true);
         setPreferredSize(new Dimension(1280, 720));
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setBackground(backgroundColor);
@@ -145,7 +145,7 @@ public class GameWindow extends JFrame {
     private void fillPanelWithButtons(JPanel panel, BufferedImage image, String color) {
         for (int i = 1; i < 10; ++i) {
             JButton button = new Hole();
-            ((Hole) button).addKorgool(new Korgool((Hole) button));
+            ((Hole) button).createAndAdd(9);
             button.setHorizontalTextPosition(JButton.CENTER);
             button.setVerticalTextPosition(JButton.CENTER);
             button.setBorderPainted(false);
@@ -174,7 +174,7 @@ public class GameWindow extends JFrame {
      * @param button The button to be set to a Tuz
      */
     private void unsetTuz(JButton button) {
-        ((OvalButton) button).setHighlighted(false);
+        ((OvalButton) button).setHighlightedBorder(false);
     }
 
     /**

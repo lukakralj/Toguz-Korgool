@@ -1,4 +1,6 @@
 import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -18,12 +20,38 @@ public class Hole extends OvalButton {
     public Hole() {
         korgools = new ArrayList<>(32);
         rand = new Random();
+        korgoolArea = new Rectangle(0,0,10,10);
+        korgoolSize = new Dimension(10, 10);
         setLayout(null);
         isTuz = false;
         setBorderPainted(false);
         setFocusPainted(false);
         setContentAreaFilled(false);
-        updateKorgoolArea();
+
+        // Update korgools size and location only when the hole is moved/resized.
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                updateKorgoolArea();
+                for (Korgool k : korgools) {
+                    k.setSize(korgoolSize);
+                    //TODO: the korgools should stay in the same place once they are in the hole. For now the
+                    //TODO: for now they are always randomly placed.
+                    k.setLocation(calculateKorgoolLocation());
+                }
+            }
+
+            @Override
+            public void componentMoved(ComponentEvent e) {
+                updateKorgoolArea();
+                for (Korgool k : korgools) {
+                    k.setSize(korgoolSize);
+                    //TODO: the korgools should stay in the same place once they are in the hole. For now the
+                    //TODO: for now they are always randomly placed.
+                    k.setLocation(calculateKorgoolLocation());
+                }
+            }
+        });
     }
 
     /**
@@ -32,9 +60,10 @@ public class Hole extends OvalButton {
      * @param k Korgool to add.
      */
     public void addKorgool(Korgool k) {
+        updateKorgoolArea();
         add(k);
         korgools.add(k);
-        //k.setParentHole(this);
+        k.setParentHole(this);
         k.setSize(korgoolSize);
         k.setLocation(calculateKorgoolLocation());
     }
@@ -113,23 +142,6 @@ public class Hole extends OvalButton {
     }
 
     /**
-     * Repaint this hole and make sure the korgools are still in the valid place.
-     *
-     * @param g
-     */
-    @Override
-    public void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        updateKorgoolArea();
-        for (Korgool k : korgools) {
-            k.setSize(korgoolSize);
-            //TODO: the korgools should stay in the same place once they are in the hole. For now the
-            //TODO: for now they are always randomly placed.
-            k.setLocation(calculateKorgoolLocation());
-        }
-    }
-
-    /**
      * Updates the area on which the korgools can be drawn.
      * It also updates the size of korgools.
      */
@@ -152,22 +164,28 @@ public class Hole extends OvalButton {
         Insert linear function in ellipse equation and we can then calculate the intersect at (x, y).
         This is origin of the new korgoolsArea.
          */
+        if (getSize().height == 0 || getSize().width == 0) {
+            return;
+        }
 
         double sqrt2 = 1.4142135623730951;
+        System.out.println("=====Start calculations:");
 
         double a = (double)getSize().width / 2;
         double b = (double)getSize().height / 2;
 
-        double x = (a*(2*b - sqrt2) / (2*b)) + getBorderThickness();
-        double y = ((2*b - sqrt2) / 2) + getBorderThickness();
+        double x = ((a*(2 - sqrt2)) / 2) + getBorderThickness();
+        double y = ((b*(2 - sqrt2)) / 2) + getBorderThickness();
+        System.out.println("\tpar: x = " + getLocation().x + ", y = " + getLocation().y);
+        System.out.println("\tx = " + x + ", y = " + y + "\n");
 
-        double newW = 2*a - 2*x;
-        double newH = 2*b - 2*y;
-
-        korgoolArea = new Rectangle((int)x, (int)y, (int)(newW - x), (int)(newH - y));
+        double newW = (double)getSize().width - 2*x;
+        double newH = (double)getSize().height - 2*y;
 
         double diameter = (newW < newH) ? (newW / 4) : (newH / 4);
         korgoolSize = new Dimension((int)diameter, (int)diameter);
+
+        korgoolArea = new Rectangle((int)x, (int)y, (int)(newW - diameter), (int)(newH - diameter));
     }
 
     /**
@@ -176,11 +194,10 @@ public class Hole extends OvalButton {
      * @return Point of the top left corner of where the korgool should be placed.
      */
     private Point calculateKorgoolLocation() {
-        double x = rand.nextDouble() * korgoolArea.width;
-        double y = rand.nextDouble() * korgoolArea.height;
-
+        double x = korgoolArea.x + rand.nextDouble() * korgoolArea.width;
+        double y = korgoolArea.y + rand.nextDouble() * korgoolArea.height;
+        //System.out.println("Random location set to (" + x + ", " + y + ")");
         return new Point((int)x, (int)y);
     }
-
 
 }
