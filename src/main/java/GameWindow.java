@@ -1,25 +1,17 @@
-/*
- * A Swing graphical user interface for the Team Platypus Agile Project
- *
- */
-
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import javax.imageio.ImageIO;
-import java.io.File;
 import java.util.*;
-import javax.swing.ImageIcon;
 
+/**
+ * A Swing graphical user interface for the Team Platypus Agile Project
+ *
+ */
 public class GameWindow extends JFrame {
 
     private static final Color backgroundColor = Color.LIGHT_GRAY, topPanelColor = Color.GRAY;
-    private HashMap<String, JButton> buttonMap;
+    private HashMap<String, Hole> buttonMap;
     private JTextArea kazanRight, kazanLeft;
-    private BufferedImage darkButtonIcon;
-    private BufferedImage lightButtonIcon;
-    private BufferedImage altButtonIcon;
     private GameManager manager;
 
     /**
@@ -27,7 +19,6 @@ public class GameWindow extends JFrame {
      */
     GameWindow(GameManager managerIn) {
         manager = managerIn;
-        loadImageIcons();
         setFrameProperties();
         buttonMap = new HashMap<>();
         setUpMenu();
@@ -39,7 +30,6 @@ public class GameWindow extends JFrame {
     }
 	
 	GameWindow() {
-        loadImageIcons();
         setFrameProperties();
         buttonMap = new HashMap<>();
         setUpMenu();
@@ -85,21 +75,7 @@ public class GameWindow extends JFrame {
         setJMenuBar(menuBar);
     }
 
-    /**
-     * Tries to load up the required image file from the specified destination
-     * If it cannot find the images, prints the stack trace to the terminal
-     */
-    private void loadImageIcons() {
-        try {
-            darkButtonIcon = ImageIO.read(new File("src/main/resources/oval_button_dark.png"));
-            lightButtonIcon = ImageIO.read(new File("src/main/resources/oval_button_light.png"));
-            altButtonIcon = ImageIO.read(new File("src/main/resources/oval_button_alt.png"));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public HashMap<String, JButton> getButtonMap() {
+    public HashMap<String, Hole> getButtonMap() {
         return buttonMap;
     }
 
@@ -111,15 +87,15 @@ public class GameWindow extends JFrame {
         JPanel topPanel = new JPanel();
         topPanel.setBorder(new EmptyBorder(10, 10, 20, 10));//Set Padding around the Top Panel
         topPanel.setBackground(topPanelColor);
-        GridLayout topButtons = new GridLayout(0, 9, 10, 10);//Set padding around invidual buttons
+        GridLayout topButtons = new GridLayout(0, 9, 10, 10);//Set padding around individual buttons
         topPanel.setLayout(topButtons);
-        fillPanelWithButtons(topPanel, darkButtonIcon, "B");
+        fillPanelWithButtons(topPanel, "B");
         getContentPane().add(topPanel, BorderLayout.NORTH);
     }
 
     /**
      * Function to set up 9 buttons on the bottom panel, put them in a HashMap
-     * and then add an ActionListner to each individual button
+     * and then add an ActionListener to each individual button
      */
     private void setUpLowerPanel() {
         JPanel lowerPanel = new JPanel(new BorderLayout());
@@ -127,30 +103,26 @@ public class GameWindow extends JFrame {
         lowerPanel.setBackground(backgroundColor);
         getContentPane().add(lowerPanel, BorderLayout.CENTER);
         JPanel lowerButtonPanel = new JPanel();
-        GridLayout botButtons = new GridLayout(0, 9, 10, 10);//Set padding around invidual buttons
+        GridLayout botButtons = new GridLayout(0, 9, 10, 10);//Set padding around individual buttons
         lowerButtonPanel.setLayout(botButtons);
         lowerButtonPanel.setBackground(backgroundColor);
         lowerPanel.add(lowerButtonPanel, BorderLayout.SOUTH);
         lowerPanel.add(setUpKazans(), BorderLayout.CENTER);
-        fillPanelWithButtons(lowerButtonPanel, lightButtonIcon, "W");
+        fillPanelWithButtons(lowerButtonPanel, "W");
     }
 
     /**
      * Fills a given JPanel with ImageIcons that act as buttons
      *
      * @param panel The Panel where the buttons are to be added
-     * @param image The Image used as the button
      * @param color A single digit string to define the color of the added image
      */
-    private void fillPanelWithButtons(JPanel panel, BufferedImage image, String color) {
+    private void fillPanelWithButtons(JPanel panel, String color) {
         for (int i = 1; i < 10; ++i) {
-            JButton button = new Hole();
-            ((Hole) button).createAndAdd(9);
+            Hole button = new Hole();
+            button.createAndAdd(9);
             button.setHorizontalTextPosition(JButton.CENTER);
             button.setVerticalTextPosition(JButton.CENTER);
-            button.setBorderPainted(false);
-            button.setFocusPainted(false);
-            button.setContentAreaFilled(false);
             button.setName(color + i);
             buttonMap.put(button.getName(), button);
             button.setPreferredSize(new Dimension(30, 160));
@@ -162,19 +134,19 @@ public class GameWindow extends JFrame {
     /**
      * Sets a button to be tuz by changing its color
      *
-     * @param button The button to be set to a Tuz
+     * @param hole The button to be set to a Tuz
      */
-    private void setTuz(JButton button) {
-        ((OvalButton)button).setHighlightedBorder(true);
+    private void setTuz(Hole hole) {
+        hole.setTuz(true);
     }
 
     /**
      * Sets a button to be tuz by changing its color
      *
-     * @param button The button to be set to a Tuz
+     * @param hole The button to be set to a Tuz
      */
-    private void unsetTuz(JButton button) {
-        ((OvalButton) button).setHighlightedBorder(false);
+    private void unsetTuz(Hole hole) {
+        hole.setTuz(true);
     }
 
     /**
