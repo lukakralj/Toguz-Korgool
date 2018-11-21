@@ -2,6 +2,12 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 
+/**
+ * This class represents korgools in the game.
+ *
+ * @author Luka Kralj
+ * @version 21 November 2018
+ */
 public class Korgool extends OvalButton {
 
     private Hole parentHole;

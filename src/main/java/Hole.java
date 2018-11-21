@@ -5,6 +5,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * This class represents a hole in the game. It can be used either for player holes
+ * or for their kazans.
+ *
+ * @author Luka Kralj
+ * @version 21 November 2018
+ */
 public class Hole extends OvalButton {
 
     private List<Korgool> korgools;
@@ -147,7 +154,6 @@ public class Hole extends OvalButton {
      */
     private void updateKorgoolArea() {
         /*
-        TODO: derive the formulas again to double check.
         The following formulas are derived from formulas for a linear function and ellipse.
 
         ellipse:  ((x - x')^2 / a^2) + ((y - y')^2 / b^2) = 1
@@ -169,15 +175,12 @@ public class Hole extends OvalButton {
         }
 
         double sqrt2 = 1.4142135623730951;
-        System.out.println("=====Start calculations:");
 
         double a = (double)getSize().width / 2;
         double b = (double)getSize().height / 2;
 
         double x = ((a*(2 - sqrt2)) / 2) + getBorderThickness();
         double y = ((b*(2 - sqrt2)) / 2) + getBorderThickness();
-        System.out.println("\tpar: x = " + getLocation().x + ", y = " + getLocation().y);
-        System.out.println("\tx = " + x + ", y = " + y + "\n");
 
         double newW = (double)getSize().width - 2*x;
         double newH = (double)getSize().height - 2*y;
@@ -196,7 +199,7 @@ public class Hole extends OvalButton {
     private Point calculateKorgoolLocation() {
         double x = korgoolArea.x + rand.nextDouble() * korgoolArea.width;
         double y = korgoolArea.y + rand.nextDouble() * korgoolArea.height;
-        //System.out.println("Random location set to (" + x + ", " + y + ")");
+
         return new Point((int)x, (int)y);
     }
 
