@@ -15,7 +15,7 @@ public class GUITest {
      */
     @Test
     public void GUISetup(){
-        new GameWindow();
+        new GameManager();
     }
 
     /**
@@ -26,7 +26,7 @@ public class GUITest {
         GameWindow gamewindow = new GameWindow();
         assertEquals("Hashmap incorrectly initialised",18,gamewindow.getButtonMap().size());
     }
-
+	
     /**
      * Test that the hasmap of Buttons contains the correct contents
      */

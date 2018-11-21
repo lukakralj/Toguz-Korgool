@@ -37,6 +37,18 @@ public class GameWindow extends JFrame {
         pack();
         setVisible(true);
     }
+	
+	GameWindow() {
+        loadImageIcons();
+        setFrameProperties();
+        buttonMap = new HashMap<>();
+        setUpMenu();
+        setUpTopPanel();
+        setUpBottomBar();
+        setUpLowerPanel();
+        pack();
+        setVisible(true);
+    }
 
     /**
      * Set the properties of the window
@@ -200,7 +212,9 @@ public class GameWindow extends JFrame {
     private void holeOnClickAction(String buttonId) {
         if (buttonId.startsWith("W")) {
             kazanLeft.append("\n" + buttonId + " Clicked");
-            manager.makeMove(buttonId.substring(1), true);
+			if(manager!=null){
+				manager.makeMove(buttonId.substring(1), true);
+			}
         }
     }
 
@@ -223,7 +237,9 @@ public class GameWindow extends JFrame {
     private void menuOnClickAction(String menuItemId) {
         switch (menuItemId) {
             case "CustomInput":
-                new CustomInputWindow(backgroundColor, manager);
+				if(manager!=null){
+					new CustomInputWindow(backgroundColor, manager);
+				}
                 break;
             case "Quit":
                 dispose();
