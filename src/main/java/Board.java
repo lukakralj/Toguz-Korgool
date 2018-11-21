@@ -256,6 +256,28 @@ public class Board {
             return BoardStatus.DRAW;
         }
     }
+    
+     /**
+     * Add all the korgools in the black player's holes into the black player's kazaan.
+     * Sets black player's holes to 0.
+     */
+    public void getAllBlackKorgools() {
+        for (int valueInHole : holesB) {
+            kazanB =  kazanB + valueInHole;
+        }
+        Arrays.fill(holesB, 0);
+    }
+
+    /**
+     * Add all the korgools in the white player's holes into the black player's kazaan.
+     * Sets white player's holes to 0.
+     */
+    public void getAllWhiteKorgools() {
+        for (int valueInHole : holesW) {
+            kazanW =  kazanW + valueInHole;
+        }
+        Arrays.fill(holesW, 0);
+    }
 
 
     // ===================================
