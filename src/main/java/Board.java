@@ -57,6 +57,30 @@ public class Board {
     public int getTuzB() {
         return tuzB;
     }
+    
+    public void setKazanW(int kazanWIn) {
+        kazanW = kazanWIn;
+    }
+
+    public void setKazanB(int kazanBIn) { 
+        kazanB = kazanBIn; 
+    }
+
+    public void setHolesW(int[] holesWIn) { 
+        holesW = holesWIn; 
+    }
+
+    public void setHolesB(int[] holesBIn) { 
+        holesB = holesBIn; 
+    }
+
+    public void setTuzW(int tuzWIn) { 
+        tuzW = tuzWIn; 
+    }
+
+    public void setTuzB(int tuzBIn) { 
+        tuzB = tuzBIn; 
+    }
 
     /**
      * Helper function, prints state of the board
@@ -216,6 +240,44 @@ public class Board {
         }
 
     }
+    
+     /**
+     * Helper function checking status of the board after a move has been declared impossible
+     * @return Status of the board
+     */
+    private BoardStatus checkResultOnImpossible() {
+        if (kazanW > kazanB) {
+            return BoardStatus.W_WON;
+        }
+        else if (kazanB > kazanW) {
+            return BoardStatus.B_WON;
+        }
+        else {
+            return BoardStatus.DRAW;
+        }
+    }
+    
+     /**
+     * Add all the korgools in the black player's holes into the black player's kazaan.
+     * Sets black player's holes to 0.
+     */
+    public void getAllBlackKorgools() {
+        for (int valueInHole : holesB) {
+            kazanB =  kazanB + valueInHole;
+        }
+        Arrays.fill(holesB, 0);
+    }
+
+    /**
+     * Add all the korgools in the white player's holes into the black player's kazaan.
+     * Sets white player's holes to 0.
+     */
+    public void getAllWhiteKorgools() {
+        for (int valueInHole : holesW) {
+            kazanW =  kazanW + valueInHole;
+        }
+        Arrays.fill(holesW, 0);
+    }
 
 
     // ===================================
@@ -224,6 +286,10 @@ public class Board {
 
     public BoardStatus testCheckResult() {
         return checkResult();
+    }
+    
+    public BoardStatus testCheckResultOnImpossible() {
+        return checkResultOnImpossible();
     }
 
     public BoardStatus testEndMove(int lastHoleFilled, boolean isOnWhiteSide, boolean isWhiteTurn) {

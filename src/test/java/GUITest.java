@@ -2,6 +2,15 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import com.athaydes.automaton.Swinger;
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import javax.imageio.ImageIO;
+import java.io.File;
+import java.util.*;
+import javax.swing.ImageIcon;
 
 /**
  * Class that contains tests for the GUI.
@@ -15,7 +24,7 @@ public class GUITest {
      */
     @Test
     public void GUISetup(){
-        new GameWindow();
+        new GameManager();
     }
 
     /**
@@ -26,7 +35,7 @@ public class GUITest {
         GameWindow gamewindow = new GameWindow();
         assertEquals("Hashmap incorrectly initialised",18,gamewindow.getButtonMap().size());
     }
-
+	
     /**
      * Test that the hasmap of Buttons contains the correct contents
      */
@@ -42,4 +51,27 @@ public class GUITest {
         assertEquals("Hashmap has incorrect contents","W9",gamewindow.getButtonMap().get("W9").getName());//edge case
         assertEquals("Hashmap has incorrect contents","W4",gamewindow.getButtonMap().get("W4").getName());
     }
+	
+	/**
+	* Test that the first and second button can be pressed without the application crashing
+	*/
+	@Test
+	public void testCorrectButtonInteraction() {
+		new GameManager();
+		Swinger swinger = Swinger.forSwingWindow();
+		swinger.pause(200).clickOn("name:W1")
+		.pause(200).clickOn("name:W2");
+	}
+	
+	@Test
+	public void testLegitimateValsInKazans() {
+		new GameManager();
+		Swinger swinger = Swinger.forSwingWindow();
+		swinger.pause(200).clickOn("name:W1")
+		.pause(200).clickOn("name:W2")
+		.pause(200).clickOn("name:W3");
+		JTextArea txt = (JTextArea)swinger.getAt("name:leftKazan");
+		int actual = Integer.parseInt(txt.getText());
+		assertTrue(actual>=0);
+	}
 }

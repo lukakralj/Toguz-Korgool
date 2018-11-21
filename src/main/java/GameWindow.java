@@ -37,6 +37,18 @@ public class GameWindow extends JFrame {
         pack();
         setVisible(true);
     }
+	
+	GameWindow() {
+        loadImageIcons();
+        setFrameProperties();
+        buttonMap = new HashMap<>();
+        setUpMenu();
+        setUpTopPanel();
+        setUpBottomBar();
+        setUpLowerPanel();
+        pack();
+        setVisible(true);
+    }
 
     /**
      * Set the properties of the window
@@ -83,7 +95,6 @@ public class GameWindow extends JFrame {
             lightButtonIcon = ImageIO.read(new File("src/main/resources/oval_button_light.png"));
             altButtonIcon = ImageIO.read(new File("src/main/resources/oval_button_alt.png"));
         } catch (Exception e) {
-            System.out.println("Error opening files!");
             e.printStackTrace();
         }
     }
@@ -158,6 +169,15 @@ public class GameWindow extends JFrame {
     }
 
     /**
+     * Sets a button to be tuz by changing its color
+     *
+     * @param button The button to be set to a Tuz
+     */
+    private void unsetTuz(JButton button) {
+        ((OvalButton) button).setHighlighted(false);
+    }
+
+    /**
      * Function to construct the bottom bar of the GUI.
      */
     private void setUpBottomBar() {
@@ -187,6 +207,7 @@ public class GameWindow extends JFrame {
         kazanRight.setPreferredSize(new Dimension(620, kazanPanel.getHeight() - 10));
         kazanLeft = new JTextArea();
         kazanLeft.setLineWrap(true);
+		kazanLeft.setName("leftKazan");
         kazanLeft.setPreferredSize(new Dimension(620, kazanPanel.getHeight() - 10));
         kazanPanel.add(kazanRight, BorderLayout.EAST);
         kazanPanel.add(kazanLeft, BorderLayout.WEST);
@@ -200,11 +221,11 @@ public class GameWindow extends JFrame {
      * @param buttonId the id of the most recently clicked button
      */
     private void holeOnClickAction(String buttonId) {
-        System.out.println(buttonId + " Clicked");
-        if (buttonId.startsWith("B")) kazanRight.append("\n" + buttonId + " Clicked");
-        else if (buttonId.startsWith("W")) {
+        if (buttonId.startsWith("W")) {
             kazanLeft.append("\n" + buttonId + " Clicked");
-            manager.makeMove(buttonId.substring(1), true);
+			if(manager!=null){
+				manager.makeMove(buttonId.substring(1), true);
+			}
         }
     }
 
@@ -215,8 +236,7 @@ public class GameWindow extends JFrame {
      * @param buttonId the ID of the button clicked
      */
     private void genericOnClickAction(String buttonId) {
-        System.out.println(buttonId + " Clicked");
-        kazanRight.append("\n" + buttonId + " Clicked");
+
     }
 
     /**
@@ -226,11 +246,11 @@ public class GameWindow extends JFrame {
      * @param menuItemId the ID of the menu item clicked
      */
     private void menuOnClickAction(String menuItemId) {
-        System.out.println(menuItemId + " Clicked");
-        kazanRight.append("\n" + menuItemId + " Clicked");
         switch (menuItemId) {
             case "CustomInput":
-                new CustomInputWindow(backgroundColor); // TODO: pass through game manager
+				if(manager!=null){
+					new CustomInputWindow(backgroundColor, manager);
+				}
                 break;
             case "Quit":
                 dispose();
@@ -247,7 +267,7 @@ public class GameWindow extends JFrame {
         JButton button = buttonMap.get(buttonId);
         if (button != null) {
             button.setText(input);
-        } else System.out.println("Invalid button ID");
+        }
     }
 
     /**

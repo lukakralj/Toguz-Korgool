@@ -36,6 +36,17 @@ public class GameManager {
         }
     }
 
+    public void setUpBoard(int[] wHoles, int[] bHoles, int wTuz, int bTuz, int wKazan, int bKazan) {
+        core.setHolesW(wHoles);  //updates game logic
+        core.setHolesB(bHoles);
+        core.setTuzW(wTuz - 1);
+        core.setTuzB(bTuz - 1);
+        core.setKazanW(wKazan);
+        core.setKazanB(bKazan);
+        updateDisplayOnSuccess();   //updates display
+
+    }
+
     /**
      * Update the GUI to correctly display the changes that have occurred in the array of white holes.
      */
@@ -136,6 +147,62 @@ public class GameManager {
     }
 
     /**
+     * If a move is impossible, the opponent collects all of their own korgools and puts them into
+     * their kazaan. The kazans of the two players are then compared to determine the winner (more korgools wins)
+     *  @param isWhiteTurn boolean indicating whether it is the white player's turn
+     */
+    public void endImpossibleGame(boolean isWhiteTurn) {
+        if (isWhiteTurn) {
+            core.getAllBlackKorgools();
+        }
+        else {
+            core.getAllWhiteKorgools();
+        }
+        updateDisplayOnSuccess();
+        BoardStatus endStatus = core.testCheckResultOnImpossible();
+        checkEndStatus(endStatus);
+
+    }
+
+    /**
+     *  Checks whether the game has ended, either because of a win, loss, or tie.
+     *  @param endStatus the endStatus of the board at this point
+     */
+    public void checkEndStatus(BoardStatus endStatus) {
+
+        if (endStatus == BoardStatus.B_WON) {
+            gameWindow.setKazanLeftText("Black player won!");
+
+        } else if (endStatus == BoardStatus.W_WON) {
+            gameWindow.setKazanRightText("White player won!");
+
+        } else if (endStatus == BoardStatus.DRAW) {
+            gameWindow.setKazanLeftText("It's a tie!");
+            gameWindow.setKazanRightText("It's a tie!");
+        }
+    }
+
+    /**
+     *  Checks whether the move was succesful, or if a move is impossible.
+     *  @param moveStatus the status of the most recent move.
+     *  @param isWhiteTurn boolean indicating whether it is the white player's turn.
+     *  @param endStatus the endStatus of the board at this point
+     */
+    public void checkMoveStatus(BoardStatus moveStatus, boolean isWhiteTurn, BoardStatus endStatus) {
+        if (moveStatus == BoardStatus.SUCCESSFUL) {  //move went well but the game is not finished, next player should make a move
+            updateDisplayOnSuccess();
+            if (isWhiteTurn) {
+                makeMove("", false);   //calls makeMove with hole chosen by the machine.
+            }
+            updateDisplayOnSuccess();
+            checkEndStatus(endStatus);
+        }
+        if (moveStatus == BoardStatus.MOVE_IMPOSSIBLE) {
+            endImpossibleGame(isWhiteTurn);
+        }
+    }
+
+    /**
      * Makes a move and updates the board display.
      *  @param line the string representing the buttonID
      *  @param isWhiteTurn boolean indicating whether it is the white player's turn
@@ -148,53 +215,21 @@ public class GameManager {
             moveStatus = core.makeMove(hole, true);
         }
         else {
-            hole = machineChooseHole();
-            moveStatus = core.makeMove(hole, false);
+            if (core.testCheckIfMovePossible(false)) {
+                hole = machineChooseHole();
+                moveStatus = core.makeMove(hole, false);
+            }
+            else {
+                endImpossibleGame(isWhiteTurn);
+                return;
+            }
         }
         BoardStatus endStatus = core.testCheckResult();
-
-        if (moveStatus == BoardStatus.SUCCESSFUL) {  //move went well but the game is not finished, next player should make a move
-            if (isWhiteTurn) makeMove("", false);   //calls makeMove with hole chosen by the machine.
-            updateDisplayOnSuccess();
-            checkEndStatus(endStatus);
-
-        }
-        if (moveStatus == BoardStatus.MOVE_IMPOSSIBLE) {
-            System.out.println("The player cannot make a move. Will skip turn. If your board is empty, click any hole to skip turn");
-            if (isWhiteTurn) {
-                while (core.testCheckIfMovePossible(isWhiteTurn) == false) {
-                    makeMove("", false);
-                }
-                //makeMove("", false);
-                gameWindow.setKazanRightText("White skip turn. White keep clicking any button to allow black to make moves");
-            }
-            else gameWindow.setKazanLeftText("Black skipped turn! White go again ");
-
-        }
-        core.printBoard();   //for testing on console
+        checkMoveStatus(moveStatus, isWhiteTurn, endStatus);
         checkEndStatus(endStatus);
 
     }
 
-    /**
-     *  Checks whether the game has ended, either because of a win, loss, or tie.
-     *  @param endStatus the endStatus of the board at this point
-     */
-    public void checkEndStatus(BoardStatus endStatus) {
-
-        if (endStatus == BoardStatus.B_WON) {
-            System.out.println("Black player won!");
-            gameWindow.setKazanLeftText("Black player won!");
-
-        } else if (endStatus == BoardStatus.W_WON) {
-            System.out.println("White player won!");
-            gameWindow.setKazanRightText("White player won!");
-
-        } else if (endStatus == BoardStatus.DRAW) {
-            System.out.println("It's a tie!");
-            gameWindow.setKazanLeftText("It's a tie!");
-            gameWindow.setKazanRightText("It's a tie!");
-        }
-    }
 
 }
+
