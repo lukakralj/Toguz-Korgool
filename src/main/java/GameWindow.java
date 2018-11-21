@@ -83,7 +83,6 @@ public class GameWindow extends JFrame {
             lightButtonIcon = ImageIO.read(new File("src/main/resources/oval_button_light.png"));
             altButtonIcon = ImageIO.read(new File("src/main/resources/oval_button_alt.png"));
         } catch (Exception e) {
-            System.out.println("Error opening files!");
             e.printStackTrace();
         }
     }
@@ -199,9 +198,7 @@ public class GameWindow extends JFrame {
      * @param buttonId the id of the most recently clicked button
      */
     private void holeOnClickAction(String buttonId) {
-        System.out.println(buttonId + " Clicked");
-        if (buttonId.startsWith("B")) kazanRight.append("\n" + buttonId + " Clicked");
-        else if (buttonId.startsWith("W")) {
+        if (buttonId.startsWith("W")) {
             kazanLeft.append("\n" + buttonId + " Clicked");
             manager.makeMove(buttonId.substring(1), true);
         }
@@ -214,8 +211,7 @@ public class GameWindow extends JFrame {
      * @param buttonId the ID of the button clicked
      */
     private void genericOnClickAction(String buttonId) {
-        System.out.println(buttonId + " Clicked");
-        kazanRight.append("\n" + buttonId + " Clicked");
+
     }
 
     /**
@@ -225,8 +221,6 @@ public class GameWindow extends JFrame {
      * @param menuItemId the ID of the menu item clicked
      */
     private void menuOnClickAction(String menuItemId) {
-        System.out.println(menuItemId + " Clicked");
-        kazanRight.append("\n" + menuItemId + " Clicked");
         switch (menuItemId) {
             case "CustomInput":
                 new CustomInputWindow(backgroundColor, manager);
@@ -246,7 +240,7 @@ public class GameWindow extends JFrame {
         JButton button = buttonMap.get(buttonId);
         if (button != null) {
             button.setText(input);
-        } else System.out.println("Invalid button ID");
+        }
     }
 
     /**

@@ -89,7 +89,15 @@ class CustomInputWindow extends JDialog {
         } else if (numberOfKorgools != 162) {
             outputLog.setText("Please ensure the number of Korgools adds to 162");
         } else {
-            // TODO: run necessary game manager code!
+            int blackHoles[] = new int[9];
+            int whiteHoles[] = new int[9];
+            int blackKazan = (int) spinnerMap.get("BlackKazan").getValue();
+            int whiteKazan = (int) spinnerMap.get("WhiteKazan").getValue();
+            for (int i = 1; i <= 9; ++i) {
+                blackHoles[i - 1] = (int) spinnerMap.get("B" + i).getValue();
+                whiteHoles[i - 1] = (int) spinnerMap.get("W" + i).getValue();
+            }
+            // manager.setUpBoard(whiteHoles,blackHoles,selectedTuzWhite,selectedTuzBlack,whiteKazan,blackKazan);
             dispose();
         }
     }
@@ -110,7 +118,6 @@ class CustomInputWindow extends JDialog {
             numberOfKorgools = 0;
             for (JSpinner currentSpinner : spinnerMap.values()) numberOfKorgools += (int) currentSpinner.getValue();
             infoLabel.setText("<html>Please enter in the number of Korgools per hole, and use the radio buttons to indicate which holes are Tuz.<br> Current number of Korgools: " + numberOfKorgools + "</html>");
-            System.out.println(spinner.getValue());
         });
         spinner.setFont(spinner.getFont().deriveFont(20L));
         spinner.setName(componentId);
