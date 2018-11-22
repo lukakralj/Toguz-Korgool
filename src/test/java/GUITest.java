@@ -11,6 +11,7 @@ import javax.imageio.ImageIO;
 import java.io.File;
 import java.util.*;
 import javax.swing.ImageIcon;
+import static com.athaydes.automaton.assertion.AutomatonMatcher.hasText;
 
 /**
  * Class that contains tests for the GUI.
@@ -61,6 +62,7 @@ public class GUITest {
 		Swinger swinger = Swinger.forSwingWindow();
 		swinger.pause(200).clickOn("name:W1")
 		.pause(200).clickOn("name:W2");
+		swinger.pause(100);
 	}
 	
 	@Test
@@ -72,6 +74,85 @@ public class GUITest {
 		.pause(200).clickOn("name:W3");
 		JTextArea txt = (JTextArea)swinger.getAt("name:leftKazan");
 		int actual = Integer.parseInt(txt.getText());
+		System.out.println(actual);
 		assertTrue(actual>=0);
+		swinger.pause(100);
+	}
+	
+	@Test
+	public void TestW2Correct() {
+		new GameManager();
+		Swinger swinger = Swinger.forSwingWindow();
+		swinger.pause(200).clickOn("name:W2")
+		.pause(800);
+		JTextArea txt2 = (JTextArea)swinger.getAt("name:rightKazan");
+		int actual = Integer.parseInt(txt2.getText());
+		System.out.println(actual);
+		assertTrue(actual==10);
+		swinger.pause(100);
+		swinger.pause(100);
+	}
+	
+	@Test
+	public void TestW8Correct() {
+		new GameManager();
+		Swinger swinger = Swinger.forSwingWindow();
+		swinger.pause(200).clickOn("name:W8")
+		.pause(800);
+		JTextArea txt2 = (JTextArea)swinger.getAt("name:rightKazan");
+		int actual = Integer.parseInt(txt2.getText());
+		System.out.println(actual);
+		assertTrue(actual==10);
+		swinger.pause(100);
+		swinger.pause(100);
+	}
+	
+	@Test
+	public void TestW9Correct() {
+		new GameManager();
+		Swinger swinger = Swinger.forSwingWindow();
+		swinger.pause(200).clickOn("name:W9")
+		.pause(800);
+		JTextArea txt2 = (JTextArea)swinger.getAt("name:rightKazan");
+		int actual = Integer.parseInt(txt2.getText());
+		System.out.println(actual);
+		assertTrue(actual==10);
+		swinger.pause(100);
+		swinger.pause(100);
+	}
+	
+	@Test
+	public void TestW2W3Sequence() {
+		new GameManager();
+		Swinger swinger = Swinger.forSwingWindow();
+		swinger.pause(200).clickOn("name:W2")
+		.pause(200).clickOn("name:W3")
+		.pause(800);
+		JTextArea txt2 = (JTextArea)swinger.getAt("name:rightKazan");
+		int actual = Integer.parseInt(txt2.getText());
+		System.out.println(actual);
+		assertTrue(actual>=10);
+		swinger.pause(100);
+	}
+	
+	@Test
+	public void TestFullSequence() {
+		new GameManager();
+		Swinger swinger = Swinger.forSwingWindow();
+		swinger.pause(200).clickOn("name:W1")
+		.pause(200).clickOn("name:W2")
+		.pause(200).clickOn("name:W3")
+		.pause(200).clickOn("name:W4")
+		.pause(200).clickOn("name:W5")
+		.pause(200).clickOn("name:W6")
+		.pause(200).clickOn("name:W7")
+		.pause(200).clickOn("name:W8")
+		.pause(200).clickOn("name:W9")
+		.pause(800);
+		JTextArea txt2 = (JTextArea)swinger.getAt("name:rightKazan");
+		int actual = Integer.parseInt(txt2.getText());
+		System.out.println(actual);
+		assertTrue(actual>=10);
+		swinger.pause(100);
 	}
 }
