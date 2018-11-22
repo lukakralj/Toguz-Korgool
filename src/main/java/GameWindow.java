@@ -287,6 +287,14 @@ public class GameWindow extends JFrame {
     public void setKazanLeftText(String input) {
         kazanLeft.setText(input);
     }
+	
+	public JTextArea getKazanLeft() {
+        return kazanLeft;
+    }
+	
+	public JTextArea getKazanRight() {
+        return kazanRight;
+    }
 
     public void makeTuz(String buttonId) {
         setTuz(buttonMap.get(buttonId));

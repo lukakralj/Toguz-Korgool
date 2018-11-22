@@ -81,25 +81,24 @@ public class GUITest {
 	
 	@Test
 	public void TestW2Correct() {
-		new GameManager();
+		GameManager m = new GameManager();
 		Swinger swinger = Swinger.forSwingWindow();
 		swinger.pause(200).clickOn("name:W2")
 		.pause(800);
-		JTextArea txt2 = (JTextArea)swinger.getAt("name:rightKazan");
+		JTextArea txt2 = m.getKazanRight();
 		int actual = Integer.parseInt(txt2.getText());
 		System.out.println(actual);
 		assertTrue(actual==10);
-		swinger.pause(100);
-		swinger.pause(100);
+		swinger.pause(150);
 	}
 	
 	@Test
 	public void TestW8Correct() {
-		new GameManager();
+		GameManager m = new GameManager();
 		Swinger swinger = Swinger.forSwingWindow();
 		swinger.pause(200).clickOn("name:W8")
 		.pause(800);
-		JTextArea txt2 = (JTextArea)swinger.getAt("name:rightKazan");
+		JTextArea txt2 = m.getKazanRight();
 		int actual = Integer.parseInt(txt2.getText());
 		System.out.println(actual);
 		assertTrue(actual==10);
@@ -109,11 +108,11 @@ public class GUITest {
 	
 	@Test
 	public void TestW9Correct() {
-		new GameManager();
+		GameManager m = new GameManager();
 		Swinger swinger = Swinger.forSwingWindow();
 		swinger.pause(200).clickOn("name:W9")
 		.pause(800);
-		JTextArea txt2 = (JTextArea)swinger.getAt("name:rightKazan");
+		JTextArea txt2 = m.getKazanRight();
 		int actual = Integer.parseInt(txt2.getText());
 		System.out.println(actual);
 		assertTrue(actual==10);
@@ -123,12 +122,12 @@ public class GUITest {
 	
 	@Test
 	public void TestW2W3Sequence() {
-		new GameManager();
+		GameManager m = new GameManager();
 		Swinger swinger = Swinger.forSwingWindow();
 		swinger.pause(200).clickOn("name:W2")
 		.pause(200).clickOn("name:W3")
 		.pause(800);
-		JTextArea txt2 = (JTextArea)swinger.getAt("name:rightKazan");
+		JTextArea txt2 = m.getKazanRight();
 		int actual = Integer.parseInt(txt2.getText());
 		System.out.println(actual);
 		assertTrue(actual>=10);
@@ -137,7 +136,7 @@ public class GUITest {
 	
 	@Test
 	public void TestFullSequence() {
-		new GameManager();
+		GameManager m = new GameManager();
 		Swinger swinger = Swinger.forSwingWindow();
 		swinger.pause(200).clickOn("name:W1")
 		.pause(200).clickOn("name:W2")
@@ -149,7 +148,7 @@ public class GUITest {
 		.pause(200).clickOn("name:W8")
 		.pause(200).clickOn("name:W9")
 		.pause(800);
-		JTextArea txt2 = (JTextArea)swinger.getAt("name:rightKazan");
+		JTextArea txt2 = m.getKazanRight();
 		int actual = Integer.parseInt(txt2.getText());
 		System.out.println(actual);
 		assertTrue(actual>=10);
