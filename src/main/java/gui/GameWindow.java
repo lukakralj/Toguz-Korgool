@@ -33,6 +33,7 @@ public class GameWindow extends JFrame {
     }
 	
 	public GameWindow() {
+        // TODO: use constructor overloading - insert on this line: this(null); (delete all others)
         setFrameProperties();
         buttonMap = new HashMap<>();
         setUpMenu();
@@ -123,33 +124,12 @@ public class GameWindow extends JFrame {
     private void fillPanelWithButtons(JPanel panel, String color) {
         for (int i = 1; i < 10; ++i) {
             Hole button = new Hole();
-            button.createAndAdd(9);
-            button.setHorizontalTextPosition(JButton.CENTER);
-            button.setVerticalTextPosition(JButton.CENTER);
             button.setName(color + i);
             buttonMap.put(button.getName(), button);
             button.setPreferredSize(new Dimension(30, 160));
             button.addActionListener(e -> holeOnClickAction(button.getName()));
             panel.add(button);
         }
-    }
-
-    /**
-     * Sets a button to be tuz by changing its color
-     *
-     * @param hole The button to be set to a Tuz
-     */
-    private void setTuz(Hole hole) {
-        hole.setTuz(true);
-    }
-
-    /**
-     * Sets a button to be tuz by changing its color
-     *
-     * @param hole The button to be set to a Tuz
-     */
-    private void unsetTuz(Hole hole) {
-        hole.setTuz(true);
     }
 
     /**
@@ -196,6 +176,9 @@ public class GameWindow extends JFrame {
      * @param buttonId the id of the most recently clicked button
      */
     private void holeOnClickAction(String buttonId) {
+        buttonMap.get(buttonId).releaseKorgools().forEach(k -> k.getParent().remove(k));
+        buttonMap.get(buttonId).repaint();
+        revalidate();
         if (buttonId.startsWith("W")) {
             kazanLeft.append("\n" + buttonId + " Clicked");
 			if(manager!=null){
@@ -236,13 +219,14 @@ public class GameWindow extends JFrame {
      * Function to set the text of a specific hole by ID.
      *
      * @param buttonId the ID of the button to set
-     * @param input    the text to make the button display
+     * @param numOfKorgools number of korgools that we want to have in this hole
      */
-    public void setHoleText(String buttonId, String input) {
-        JButton button = buttonMap.get(buttonId);
-        if (button != null) {
-            button.setText(input);
-        }
+    public void setHoleText(String buttonId, int numOfKorgools) {
+        // TODO: place korgools
+        buttonMap.get(buttonId).releaseKorgools().forEach(k -> k.getParent().remove(k));
+        buttonMap.get(buttonId).createAndAdd(numOfKorgools);
+        buttonMap.get(buttonId).repaint();
+
     }
 
     /**
@@ -264,7 +248,7 @@ public class GameWindow extends JFrame {
     }
 
     public void makeTuz(String buttonId) {
-        setTuz(buttonMap.get(buttonId));
+        buttonMap.get(buttonId).setTuz(true);
     }
 
 }

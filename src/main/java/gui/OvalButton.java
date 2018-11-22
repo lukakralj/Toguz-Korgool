@@ -205,9 +205,6 @@ public class OvalButton extends JButton implements MouseListener, MouseMotionLis
             gr.setColor(colorBorderNormal);
         }
         gr.fill(border);
-
-        g.setColor(Color.BLACK);
-        g.drawString(getText(), (int)(d.width * 0.08), (int)(d.height * 0.95));
     }
 
     /**

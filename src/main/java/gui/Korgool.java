@@ -30,7 +30,7 @@ public class Korgool extends OvalButton {
      * @param color Color of the korgool.
      */
     public Korgool(Hole parentHole, Color color) {
-        this(parentHole, color, 5);
+        this(parentHole, color, 2);
     }
 
     /**

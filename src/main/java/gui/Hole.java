@@ -205,4 +205,17 @@ public class Hole extends OvalButton {
         return new Point((int)x, (int)y);
     }
 
+    /**
+     * Takes care of rendering the oval button correctly.
+     *
+     * @param g
+     */
+    @Override
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+
+        g.setColor(Color.BLACK);
+        g.drawString("" + korgools.size(), (int)(getSize().width * 0.08), (int)(getSize().height * 0.95));
+    }
+
 }
