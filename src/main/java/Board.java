@@ -23,30 +23,6 @@ public class Board {
     public Player getBlackPlayer() {
         return blackPlayer;
     }
-    
-    public void setKazanW(int kazanWIn) {
-        kazanW = kazanWIn;
-    }
-
-    public void setKazanB(int kazanBIn) { 
-        kazanB = kazanBIn; 
-    }
-
-    public void setHolesW(int[] holesWIn) { 
-        holesW = holesWIn; 
-    }
-
-    public void setHolesB(int[] holesBIn) { 
-        holesB = holesBIn; 
-    }
-
-    public void setTuzW(int tuzWIn) { 
-        tuzW = tuzWIn; 
-    }
-
-    public void setTuzB(int tuzBIn) { 
-        tuzB = tuzBIn; 
-    }
 
     /**
      * Helper function, prints state of the board
@@ -133,12 +109,12 @@ public class Board {
 
         }
 
-        if (player.getTuz() != -1) {
+        if (player.getTuz() > -1) {
             player.setKazan(player.getKazan() + opponent.getHoleAt(player.getTuz()));
             opponent.setHole(player.getTuz(), 0);
         }
 
-        if (opponent.getTuz() != -1) {
+        if (opponent.getTuz() > -1) {
             opponent.setKazan(opponent.getKazan() + player.getHoleAt(opponent.getTuz()));
             player.setHole(opponent.getTuz(), 0);
         }
@@ -151,7 +127,7 @@ public class Board {
      *
      * @return status of the board
      */
-    private BoardStatus checkResult() {
+    public BoardStatus checkResult() {
         if (whitePlayer.getKazan() >= 82) {
             return BoardStatus.W_WON;
         } else if (blackPlayer.getKazan() >= 82) {
@@ -164,13 +140,29 @@ public class Board {
     }
 
     /**
+     * Helper function checking status of the board after a move has been declared impossible
+     * @return Status of the board
+     */
+    public BoardStatus checkResultOnImpossible() {
+        if (whitePlayer.getKazan() > blackPlayer.getKazan()) {
+            return BoardStatus.W_WON;
+        }
+        else if (blackPlayer.getKazan() > whitePlayer.getKazan()) {
+            return BoardStatus.B_WON;
+        }
+        else {
+            return BoardStatus.DRAW;
+        }
+    }
+
+    /**
      * Helper function determines whether given player can make a move,
      * ie if there are any non-empty holes on player's board.
      *
      * @param currentPlayer player whose turn it is this move
      * @return true if move is possible, false otherwise
      */
-    private boolean checkIfMovePossible(Player currentPlayer) {
+    public boolean checkIfMovePossible(Player currentPlayer) {
         for (int hole : currentPlayer.getHoles()) {
             if (hole != 0) {
                 return true;
@@ -188,42 +180,16 @@ public class Board {
         otherBoard = temp;
     }
     
-     /**
-     * Helper function checking status of the board after a move has been declared impossible
-     * @return Status of the board
-     */
-    private BoardStatus checkResultOnImpossible() {
-        if (kazanW > kazanB) {
-            return BoardStatus.W_WON;
-        }
-        else if (kazanB > kazanW) {
-            return BoardStatus.B_WON;
-        }
-        else {
-            return BoardStatus.DRAW;
-        }
-    }
-    
-     /**
-     * Add all the korgools in the black player's holes into the black player's kazaan.
-     * Sets black player's holes to 0.
-     */
-    public void getAllBlackKorgools() {
-        for (int valueInHole : holesB) {
-            kazanB =  kazanB + valueInHole;
-        }
-        Arrays.fill(holesB, 0);
-    }
 
-    /**
-     * Add all the korgools in the white player's holes into the black player's kazaan.
-     * Sets white player's holes to 0.
+     /**
+     * Add all the korgools in the player's holes into the player's kazaan.
+     * Sets player's holes to 0.
      */
-    public void getAllWhiteKorgools() {
-        for (int valueInHole : holesW) {
-            kazanW =  kazanW + valueInHole;
+     public void getAllKorgools(Player player) {
+        for (int valueInHole : player.getHoles()) {
+            player.setKazan(player.getKazan() + valueInHole);
         }
-        Arrays.fill(holesW, 0);
+        player.reset();
     }
 
 

@@ -100,7 +100,7 @@ class CustomInputWindow extends JDialog {
                 whiteHoles[i - 1] = (int) spinnerMap.get("W" + i).getValue();
             }
             manager.resetTuzes();
-            manager.setUpBoard(whiteHoles,blackHoles,selectedTuzWhite,selectedTuzBlack,whiteKazan,blackKazan);
+            manager.populateInitialBoard(whiteHoles,blackHoles,selectedTuzWhite,selectedTuzBlack,whiteKazan,blackKazan);
             dispose();
         }
     }

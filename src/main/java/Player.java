@@ -17,6 +17,7 @@ public class Player {
         holes = new int[9];
         tuz = -1;
 
+
         Arrays.fill(holes, 9);
     }
 
@@ -46,6 +47,10 @@ public class Player {
         holes[index] = numOfKorgools;
     }
 
+    public void setHoles(int[] holes) {
+        this.holes = holes;
+    }
+
     public void incrementHole(int index) {
         holes[index]++;
     }
@@ -56,6 +61,11 @@ public class Player {
 
     public void setTuz(int holeIndex) {
         this.tuz = holeIndex;
+    }
+
+    public void reset() {
+        Arrays.fill(holes, 0);
+
     }
 
     public void printHoles() {
