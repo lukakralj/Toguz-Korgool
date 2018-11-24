@@ -168,12 +168,13 @@ public class GameWindow extends JFrame {
     }
 
     /**
-     * Sets a button to be tuz by changing its color
+     * Unsets all the tuzes to being normal buttons by changing its color
      *
-     * @param button The button to be set to a Tuz
      */
-    private void unsetTuz(JButton button) {
-        ((OvalButton) button).setHighlighted(false);
+    public void unsetTuzes() {
+        for (JButton button : buttonMap.values()) {
+            ((OvalButton) button).setHighlighted(false);
+        }
     }
 
     /**

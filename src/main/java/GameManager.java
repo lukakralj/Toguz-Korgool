@@ -246,6 +246,13 @@ public class GameManager {
 
     }
 
+    /**
+     * Unsets all the tuzes to being normal buttons by changing its color
+     */
+    public void resetTuzes() {
+        gameWindow.unsetTuzes();
+    }
+
 
 }
 
