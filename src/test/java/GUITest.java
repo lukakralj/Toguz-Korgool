@@ -85,7 +85,7 @@ public class GUITest {
 		Swinger swinger = Swinger.forSwingWindow();
 		swinger.pause(200).clickOn("name:W2")
 		.pause(800);
-		JTextArea txt2 = m.getKazanRight();
+		OvalButton txt2 = m.getKazanRight();
 		int actual = Integer.parseInt(txt2.getText());
 		System.out.println(actual);
 		assertTrue(actual==10);
@@ -98,7 +98,7 @@ public class GUITest {
 		Swinger swinger = Swinger.forSwingWindow();
 		swinger.pause(200).clickOn("name:W8")
 		.pause(800);
-		JTextArea txt2 = m.getKazanRight();
+		OvalButton txt2 = m.getKazanRight();
 		int actual = Integer.parseInt(txt2.getText());
 		System.out.println(actual);
 		assertTrue(actual==10);
@@ -112,7 +112,7 @@ public class GUITest {
 		Swinger swinger = Swinger.forSwingWindow();
 		swinger.pause(200).clickOn("name:W9")
 		.pause(800);
-		JTextArea txt2 = m.getKazanRight();
+		OvalButton txt2 = m.getKazanRight();
 		int actual = Integer.parseInt(txt2.getText());
 		System.out.println(actual);
 		assertTrue(actual==10);
@@ -127,7 +127,7 @@ public class GUITest {
 		swinger.pause(200).clickOn("name:W2")
 		.pause(200).clickOn("name:W3")
 		.pause(800);
-		JTextArea txt2 = m.getKazanRight();
+		OvalButton txt2 = m.getKazanRight();
 		int actual = Integer.parseInt(txt2.getText());
 		System.out.println(actual);
 		assertTrue(actual>=10);
@@ -148,7 +148,7 @@ public class GUITest {
 		.pause(200).clickOn("name:W8")
 		.pause(200).clickOn("name:W9")
 		.pause(800);
-		JTextArea txt2 = m.getKazanRight();
+		OvalButton txt2 = m.getKazanRight();
 		int actual = Integer.parseInt(txt2.getText());
 		System.out.println(actual);
 		assertTrue(actual>=10);

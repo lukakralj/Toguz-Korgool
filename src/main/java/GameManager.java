@@ -13,7 +13,7 @@ public class GameManager {
 
     public static void main(String[] args) {
         System.out.println("Main method works as intended");
-        GameManager manager = new GameManager();
+        new GameManager();
     }
 
     /**
@@ -252,11 +252,11 @@ public class GameManager {
         gameWindow.unsetTuzes();
     }
 
-    public JTextArea getKazanLeft() {
+    public OvalButton getKazanLeft() {
         return gameWindow.getKazanLeft();
     }
 
-    public JTextArea getKazanRight() {
+    public OvalButton getKazanRight() {
         return gameWindow.getKazanRight();
     }
 

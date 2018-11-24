@@ -16,7 +16,7 @@ public class GameWindow extends JFrame {
 
     private static final Color backgroundColor = Color.LIGHT_GRAY, topPanelColor = Color.GRAY;
     private HashMap<String, JButton> buttonMap;
-    private JTextArea kazanRight, kazanLeft;
+    private OvalButton kazanRight, kazanLeft;
     private BufferedImage darkButtonIcon;
     private BufferedImage lightButtonIcon;
     private BufferedImage altButtonIcon;
@@ -202,12 +202,20 @@ public class GameWindow extends JFrame {
         JPanel kazanPanel = new JPanel(new BorderLayout());
         kazanPanel.setBackground(backgroundColor);
         kazanPanel.setBorder(new EmptyBorder(0, 0, 20, 0));
-        kazanRight = new JTextArea();
-        kazanRight.setLineWrap(true);
+        kazanRight = new OvalButton();
+        kazanRight.setBorderPainted(false);
+        kazanRight.setFocusPainted(false);
+        kazanRight.setContentAreaFilled(false);
+        kazanRight.setColorHighlighted(kazanRight.getColorNormal()); // TODO: this is only a temporary "fix"
+        kazanRight.setColorBorderNormal(new Color(160,82,45));
 		kazanRight.setName("rightKazan");
         kazanRight.setPreferredSize(new Dimension(620, kazanPanel.getHeight() - 10));
-        kazanLeft = new JTextArea();
-        kazanLeft.setLineWrap(true);
+        kazanLeft = new OvalButton();
+        kazanLeft.setBorderPainted(false);
+        kazanLeft.setFocusPainted(false);
+        kazanLeft.setContentAreaFilled(false);
+        kazanLeft.setColorHighlighted(kazanLeft.getColorNormal()); // TODO: this is only a temporary "fix"
+        kazanLeft.setColorBorderNormal(new Color(160,82,45));
 		kazanLeft.setName("leftKazan");
         kazanLeft.setPreferredSize(new Dimension(620, kazanPanel.getHeight() - 10));
         kazanPanel.add(kazanRight, BorderLayout.EAST);
@@ -223,7 +231,7 @@ public class GameWindow extends JFrame {
      */
     private void holeOnClickAction(String buttonId) {
         if (buttonId.startsWith("W")) {
-            kazanLeft.append("\n" + buttonId + " Clicked");
+            kazanLeft.setText(buttonId + " Clicked");
 			if(manager!=null){
 				manager.makeMove(buttonId.substring(1), true);
 			}
@@ -289,11 +297,11 @@ public class GameWindow extends JFrame {
         kazanLeft.setText(input);
     }
 	
-	public JTextArea getKazanLeft() {
+	public OvalButton getKazanLeft() {
         return kazanLeft;
     }
 	
-	public JTextArea getKazanRight() {
+	public OvalButton getKazanRight() {
         return kazanRight;
     }
 
