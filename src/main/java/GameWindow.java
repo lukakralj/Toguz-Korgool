@@ -71,6 +71,7 @@ public class GameWindow extends JFrame {
     private void setUpMenu() {
         String[] FileMenuItems = {"CustomInput", "Quit"};
         JMenu FileMenu = new JMenu("File");
+		FileMenu.setName("filemenu");
         FileMenu.setFont(FileMenu.getFont().deriveFont(16F));
         for (String menuItem : FileMenuItems) {
             JMenuItem item = new JMenuItem(menuItem);
