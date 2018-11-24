@@ -37,22 +37,8 @@ public class Player {
         return tuz;
     }
 
-    /**
-     * Set the hole specified to contain specific number of korgools.
-     *
-     * @param index Index of the hole.
-     * @param numOfKorgools Number of korgools in this hole.
-     */
-    public void setHole(int index, int numOfKorgools) {
-        holes[index] = numOfKorgools;
-    }
-
     public void setHoles(int[] holes) {
         this.holes = holes;
-    }
-
-    public void incrementHole(int index) {
-        holes[index]++;
     }
 
     public void setKazan(int numOfKorgools) {
@@ -63,6 +49,23 @@ public class Player {
         this.tuz = holeIndex;
     }
 
+    public void incrementHole(int index) {
+        holes[index]++;
+    }
+
+    /**
+     * Set the hole specified to contain specific number of korgools.
+     *
+     * @param index Index of the hole.
+     * @param numOfKorgools Number of korgools in this hole.
+     */
+    public void setHole(int index, int numOfKorgools) {
+        holes[index] = numOfKorgools;
+    }
+
+    /**
+     * Reset player's holes to all have 0 as value
+     */
     public void reset() {
         Arrays.fill(holes, 0);
 

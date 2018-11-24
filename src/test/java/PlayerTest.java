@@ -53,6 +53,29 @@ public class PlayerTest {
     }
 
     /**
+     * Test setting array of holes to existing array works correctly
+     */
+    @Test
+    public void testSettingHolesToExistingArray() {
+        int[] expected = {2,4,6,8,10,12,14,16,18};
+        Player player = new Player();
+        player.setHoles(expected);
+        assertEquals(expected, player.getHoles());
+    }
+
+    /**
+     * Test resetting holes to all have value 0
+     */
+    @Test
+    public void testResettingHoles() {
+        Player player = new Player();
+        player.reset();
+        for (int h : player.getHoles()) {
+            assertEquals(0, h);
+        }
+    }
+
+    /**
      * Test if setting holes at valid indices to desired values works correctly
      */
     @Test
