@@ -7,8 +7,7 @@ plugins {
 }
 
 mainClassName = 'Main'
-
-version '0.1'
+version '1.0'
 
 repositories {
     mavenCentral()
@@ -30,4 +29,15 @@ jacocoTestReport {
         csv.enabled false
         html.destination file("$buildDir/jacocoHtml")
     }
+}
+
+task fatJar(type: Jar) {
+    manifest {
+        attributes 'Implementation-Title': 'Toguz Korgool',
+                'Implementation-Version': version,
+                'Main-Class': mainClassName
+    }
+    baseName = 'Toguz_Korgool'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
 }
