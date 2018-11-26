@@ -35,6 +35,15 @@ public class GameManager {
         }
     }
 
+    /**
+     * Return the GUI window
+     *
+     * @return the game window JFrame
+     */
+    public GameWindow getWindow() {
+        return gameWindow;
+    }
+
 
     /**
      * Set the initial state of the board with given custom parameters
