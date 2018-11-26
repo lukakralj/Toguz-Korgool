@@ -198,7 +198,7 @@ public class Hole extends OvalButton {
      *
      * @return Point of the top left corner of where the korgool should be placed.
      */
-    private Point calculateKorgoolLocation() {
+    public Point calculateKorgoolLocation() {
         double x = korgoolArea.x + rand.nextDouble() * korgoolArea.width;
         double y = korgoolArea.y + rand.nextDouble() * korgoolArea.height;
 

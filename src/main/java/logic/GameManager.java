@@ -14,6 +14,7 @@ public class GameManager {
 
     private GameWindow gameWindow;
     private Board core;
+    private AnimationController anim;
 
     /**
      * Construct the game manager
@@ -22,6 +23,8 @@ public class GameManager {
         gameWindow = new GameWindow(this);
         populateInitialBoard();
         core = new Board();
+        anim = new AnimationController(gameWindow);
+        anim.addEvent(AnimationController.EMPTY_HOLE, "W3");
     }
 
     /**
@@ -269,6 +272,10 @@ public class GameManager {
 
     public OvalButton getKazanRight() {
         return gameWindow.getKazanRight();
+    }
+
+    public void genclick() {
+        anim.runEvents();
     }
 
 }

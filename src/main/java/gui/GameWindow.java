@@ -56,6 +56,10 @@ public class GameWindow extends JFrame {
         this(null);
     }
 
+    public JLayeredPane getLayeredPane() {
+        return layeredPane;
+    }
+
     /**
      * Set the properties of the window
      */
@@ -223,6 +227,7 @@ public class GameWindow extends JFrame {
      */
     private void genericOnClickAction(String buttonId) {
         setKazanRightText("Make move button pressed");
+        manager.genclick();
     }
 
     /**
