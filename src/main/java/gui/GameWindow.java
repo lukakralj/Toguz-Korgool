@@ -6,6 +6,8 @@ import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.util.*;
+
+import logic.AnimationController;
 import logic.GameManager;
 
 /*
@@ -209,9 +211,6 @@ public class GameWindow extends JFrame {
      * @param buttonId the id of the most recently clicked button
      */
     private void holeOnClickAction(String buttonId) {
-        buttonMap.get(buttonId).releaseKorgools().forEach(k -> k.getParent().remove(k));
-        buttonMap.get(buttonId).repaint();
-        revalidate();
         if (buttonId.startsWith("W")) {
 			if(manager!=null){
 				manager.makeMove(buttonId.substring(1), true);
@@ -227,7 +226,6 @@ public class GameWindow extends JFrame {
      */
     private void genericOnClickAction(String buttonId) {
         setKazanRightText("Make move button pressed");
-        manager.genclick();
     }
 
     /**
@@ -255,11 +253,16 @@ public class GameWindow extends JFrame {
      * @param numOfKorgools number of korgools that we want to have in this hole
      */
     public void setHoleText(String buttonId, int numOfKorgools) {
-        // TODO: place korgools
-        buttonMap.get(buttonId).releaseKorgools().forEach(k -> k.getParent().remove(k));
-        buttonMap.get(buttonId).createAndAdd(numOfKorgools);
-        buttonMap.get(buttonId).repaint();
-
+        if (manager.getAnimationController() == null) {
+            // Game only just started. TODO: refactor. this is ugly! :(
+            buttonMap.get(buttonId).createAndAdd(numOfKorgools);
+        }
+        else {
+            if (!(numOfKorgools == 0 || numOfKorgools == buttonMap.get(buttonId).getNumberOfKorgools())) {
+                int diff = numOfKorgools - buttonMap.get(buttonId).getNumberOfKorgools();
+                manager.getAnimationController().addEvent(AnimationController.MOVE_KORGOOLS, buttonId, diff);
+            }
+        }
     }
 
     /**
@@ -270,12 +273,12 @@ public class GameWindow extends JFrame {
     public void setKazanRightText(String input) {
         try {
             int num = Integer.parseInt(input);
-            kazanRight.releaseKorgools().forEach(k -> k.getParent().remove(k));
-            kazanRight.createAndAdd(num);
-            kazanRight.repaint();
+            if (!(num == 0 || num == kazanRight.getNumberOfKorgools())) {
+                int prev = num - kazanRight.getNumberOfKorgools();
+                manager.getAnimationController().addEvent(AnimationController.MOVE_KORGOOLS, AnimationController.RIGHT, prev);
+            }
         }
         catch (NumberFormatException e) {
-
             System.out.println(input);
         }
         kazanRight.setText(input);
@@ -290,12 +293,12 @@ public class GameWindow extends JFrame {
     public void setKazanLeftText(String input) {
         try {
             int num = Integer.parseInt(input);
-            kazanLeft.releaseKorgools().forEach(k -> k.getParent().remove(k));
-            kazanLeft.createAndAdd(num);
-            kazanLeft.repaint();
+            if (!(num == 0 || num == kazanLeft.getNumberOfKorgools())) {
+                int prev = num - kazanLeft.getNumberOfKorgools();
+                manager.getAnimationController().addEvent(AnimationController.MOVE_KORGOOLS, AnimationController.LEFT, prev);
+            }
         }
         catch (NumberFormatException e) {
-
             System.out.println(input);
         }
         kazanLeft.setText(input);

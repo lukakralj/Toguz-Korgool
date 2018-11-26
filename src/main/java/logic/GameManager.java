@@ -2,6 +2,7 @@ package logic;
 
 import gui.GameWindow;
 import gui.OvalButton;
+import javafx.scene.layout.BorderPane;
 import logic.Player;
 import java.util.Random;
 import java.util.Set;
@@ -15,6 +16,7 @@ public class GameManager {
     private GameWindow gameWindow;
     private Board core;
     private AnimationController anim;
+    private Thread animThread;
 
     /**
      * Construct the game manager
@@ -24,8 +26,8 @@ public class GameManager {
         populateInitialBoard();
         core = new Board();
         anim = new AnimationController(gameWindow);
-        anim.addEvent(AnimationController.EMPTY_HOLE, "W3");
-
+        animThread = new Thread(anim);
+        animThread.start();
     }
 
     /**
@@ -163,11 +165,17 @@ public class GameManager {
         if (isWhiteTurn) {
             hole = Integer.parseInt(buttonID) - 1;     //subtract 1 because logic goes from 0-8, while GUI goes from 1-9
             moveStatus = core.makeMove(hole, core.getWhitePlayer(), core.getBlackPlayer());
+            if (moveStatus == BoardStatus.SUCCESSFUL) {
+                anim.addEvent(AnimationController.EMPTY_HOLE, "W" + buttonID);
+            }
         }
         else {
             if (core.checkIfMovePossible(core.getBlackPlayer())) {
                 hole = machineChooseHole();
                 moveStatus = core.makeMove(hole, core.getBlackPlayer(), core.getWhitePlayer());
+                if (moveStatus == BoardStatus.SUCCESSFUL) {
+                    anim.addEvent(AnimationController.EMPTY_HOLE, "B" + hole);
+                }
             }
             else {
                 endImpossibleGame(false);
@@ -275,13 +283,8 @@ public class GameManager {
         return gameWindow.getKazanRight();
     }
 
-    public void genclick() {
-        anim.runEvents();
-        anim.addEvent(AnimationController.MOVE_KORGOOLS, "W3", 1);
-        anim.addEvent(AnimationController.MOVE_KORGOOLS, "W4", 1);
-        anim.addEvent(AnimationController.MOVE_KORGOOLS, "W5", 1);
-        anim.addEvent(AnimationController.MOVE_KORGOOLS, "W6", 2);
+    public AnimationController getAnimationController() {
+        return anim;
     }
-
 }
 
