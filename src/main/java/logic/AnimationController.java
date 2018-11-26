@@ -25,12 +25,14 @@ public class AnimationController {
     private JPanel glassPane;
     private int numOfNotLocated;
     private boolean wasResizable;
+    private List<Korgool> toDistribute;
 
     public AnimationController(GameWindow animateFor) {
         if (animateFor == null) {
             throw new NullPointerException("Animation controller cannot work without a GameWindow.");
         }
         events = new ArrayList<>();
+        toDistribute = new ArrayList<>();
         numOfNotLocated = 0;
         this.animateFor = animateFor;
     }
@@ -77,6 +79,12 @@ public class AnimationController {
             if (e.type == EMPTY_HOLE) {
                 emptyEvent(e.id);
             }
+            else if (e.type == MOVE_KORGOOLS) {
+                moveEvent(e.id, e.numOfKorgools);
+            }
+            else {
+                throw new RuntimeException("Invalid AnimEvent type: " + e.type);
+            }
         }
 
 
@@ -97,6 +105,7 @@ public class AnimationController {
         toMove.forEach(k -> {
             Point kLoc = k.getLocationOnScreen();
             glassPane.add(k);
+            toDistribute.add(k);
             k.setLocation(kLoc.x - paneLoc.x, kLoc.y - paneLoc.y);
         });
 
@@ -153,6 +162,28 @@ public class AnimationController {
         timer.start();
     }
 
+    private void moveEvent(String id, int numOfKorgools) {
+        Hole hole;
+        if (id == LEFT) {
+            hole = animateFor.getKazanLeft();
+        }
+        else if (id == RIGHT) {
+            hole = animateFor.getKazanRight();
+        }
+        else {
+            hole = animateFor.getButtonMap().get(id);
+        }
+        List<Korgool> toMove = new ArrayList<>();
+        for (int i = 0; i < numOfKorgools; i++) {
+            toMove.add(toDistribute.remove(toDistribute.size() - 1));
+        }
+
+        Point paneLoc = animateFor.getContentPane().getLocationOnScreen();
+        toMove.forEach(k -> {
+            Point hLoc = hole.getLocationOnScreen();
+            performMove(k, k.getLocation(), new Point(hLoc.x - paneLoc.x + hole.getSize().width/2, hLoc.y - paneLoc.y + hole.getSize().height/2) , hole);
+        });
+    }
 
     /**
      * Calculates new location for the korgool.

@@ -25,6 +25,7 @@ public class GameManager {
         core = new Board();
         anim = new AnimationController(gameWindow);
         anim.addEvent(AnimationController.EMPTY_HOLE, "W3");
+
     }
 
     /**
@@ -276,6 +277,10 @@ public class GameManager {
 
     public void genclick() {
         anim.runEvents();
+        anim.addEvent(AnimationController.MOVE_KORGOOLS, "W3", 1);
+        anim.addEvent(AnimationController.MOVE_KORGOOLS, "W4", 1);
+        anim.addEvent(AnimationController.MOVE_KORGOOLS, "W5", 1);
+        anim.addEvent(AnimationController.MOVE_KORGOOLS, "W6", 2);
     }
 
 }
