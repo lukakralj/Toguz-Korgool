@@ -38,11 +38,10 @@ public class GameWindow extends JFrame {
         layeredPane = new JLayeredPane();
         root.setSize(new Dimension(1280, 720));
         root.setLocation(0, 0);
-        System.out.println(root);
         layeredPane.add(root, new Integer(0));
         //layeredPane.setLayer(root, 0);
         getContentPane().add(layeredPane);
-        
+
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
