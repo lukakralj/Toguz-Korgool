@@ -103,6 +103,27 @@ public class GUITest {
 		Swinger swinger = Swinger.forSwingWindow();
 		swinger.pause(200).clickOn("name:NEXT");
 		swinger.pause(150);
+		OvalButton txt2 = m.getKazanRight();
+		String actual = txt2.getText();
+		System.out.println(actual);
+		assertTrue(actual.contains("Make move button pressed"));
+		swinger.pause(150);
+	}
+
+	/**
+	 * Test that the 1st button works as intended and gives the correct value in the right kazan
+	 */
+	@Test
+	public void TestW1Correct() {
+		GameManager m = new GameManager();
+		Swinger swinger = Swinger.forSwingWindow();
+		swinger.pause(200).clickOn("name:W1")
+		.pause(800);
+		OvalButton txt2 = m.getKazanRight();
+		int actual = Integer.parseInt(txt2.getText());
+		System.out.println(actual);
+		assertTrue(actual==0);
+		swinger.pause(150);
 	}
 	
 	/**

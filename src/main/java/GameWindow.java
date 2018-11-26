@@ -10,7 +10,6 @@ import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 import java.io.File;
 import java.util.*;
-import javax.swing.ImageIcon;
 
 public class GameWindow extends JFrame {
 
@@ -246,7 +245,7 @@ public class GameWindow extends JFrame {
      * @param buttonId the ID of the button clicked
      */
     private void genericOnClickAction(String buttonId) {
-
+        setKazanRightText("Make move button pressed");
     }
 
     /**
