@@ -35,7 +35,7 @@ public class GUITest {
      */
     @Test
     public void TestHashMapHasCorrectSize(){
-        GameWindow gamewindow = new GameWindow();4
+        GameWindow gamewindow = new GameWindow();
         assertEquals("Hashmap incorrectly initialised",18,gamewindow.getButtonMap().size());
     }
 	
