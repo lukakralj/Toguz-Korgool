@@ -3,6 +3,8 @@ package gui;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.util.*;
 import logic.GameManager;
 
@@ -16,12 +18,15 @@ public class GameWindow extends JFrame {
     private static final Color BACKGROUND_COLOR = Color.LIGHT_GRAY, TOP_PANEL_COLOR = Color.GRAY;
     private HashMap<String, Hole> buttonMap;
     private Hole kazanRight, kazanLeft;
+    private JPanel root;
+    private JLayeredPane layeredPane;
     private GameManager manager;
 
     /**
      * Construct the game window
      */
     public GameWindow(GameManager managerIn) {
+        root = new JPanel();
         manager = managerIn;
         setFrameProperties();
         buttonMap = new HashMap<>();
@@ -29,6 +34,21 @@ public class GameWindow extends JFrame {
         setUpTopPanel();
         setUpBottomBar();
         setUpLowerPanel();
+
+        layeredPane = new JLayeredPane();
+        root.setSize(new Dimension(1280, 720));
+        root.setLocation(0, 0);
+        System.out.println(root);
+        layeredPane.add(root, new Integer(0));
+        //layeredPane.setLayer(root, 0);
+        getContentPane().add(layeredPane);
+        
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                root.setSize(getContentPane().getSize());
+            }
+        });
         pack();
         setVisible(true);
     }
@@ -45,8 +65,8 @@ public class GameWindow extends JFrame {
         setResizable(true);
         setPreferredSize(new Dimension(1280, 720));
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        getContentPane().setBackground(BACKGROUND_COLOR);
-        getContentPane().setLayout(new BorderLayout());
+        root.setBackground(BACKGROUND_COLOR);
+        root.setLayout(new BorderLayout());
     }
 
     /**
@@ -91,7 +111,7 @@ public class GameWindow extends JFrame {
         GridLayout topButtons = new GridLayout(0, 9, 10, 10);//Set padding around invidual buttons
         topPanel.setLayout(topButtons);
         fillPanelWithButtons(topPanel, "B");
-        getContentPane().add(topPanel, BorderLayout.NORTH);
+        root.add(topPanel, BorderLayout.NORTH);
     }
 
     /**
@@ -102,7 +122,7 @@ public class GameWindow extends JFrame {
         JPanel lowerPanel = new JPanel(new BorderLayout());
         lowerPanel.setBorder(new EmptyBorder(0, 10, 10, 10));//Set Padding around the Bottom Panel
         lowerPanel.setBackground(BACKGROUND_COLOR);
-        getContentPane().add(lowerPanel, BorderLayout.CENTER);
+        root.add(lowerPanel, BorderLayout.CENTER);
         JPanel lowerButtonPanel = new JPanel();
         GridLayout botButtons = new GridLayout(0, 9, 10, 10);//Set padding around individual buttons
         lowerButtonPanel.setLayout(botButtons);
@@ -146,7 +166,7 @@ public class GameWindow extends JFrame {
         JPanel bottomPanel = new JPanel();
         bottomPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
         bottomPanel.setBackground(BACKGROUND_COLOR);
-        getContentPane().add(bottomPanel, BorderLayout.SOUTH);
+        root.add(bottomPanel, BorderLayout.SOUTH);
         BorderLayout bl = new BorderLayout();
         bottomPanel.setLayout(bl);
         JButton makeMove = new JButton("Make this move");
