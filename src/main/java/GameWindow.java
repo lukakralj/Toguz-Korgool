@@ -1,8 +1,3 @@
-/*
- * A Swing graphical user interface for the Team Platypus Agile Project
- *
- */
-
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
@@ -11,14 +6,16 @@ import javax.imageio.ImageIO;
 import java.io.File;
 import java.util.*;
 
+/*
+ * Presents the main game window for the user
+ *
+ * @version 0.1 26/11/2018
+ */
 public class GameWindow extends JFrame {
 
-    private static final Color backgroundColor = Color.LIGHT_GRAY, topPanelColor = Color.GRAY;
+    private static final Color BACKGROUND_COLOR = Color.LIGHT_GRAY, TOP_PANEL_COLOR = Color.GRAY;
     private HashMap<String, JButton> buttonMap;
     private OvalButton kazanRight, kazanLeft;
-    private BufferedImage darkButtonIcon;
-    private BufferedImage lightButtonIcon;
-    private BufferedImage altButtonIcon;
     private GameManager manager;
 
     /**
@@ -26,7 +23,6 @@ public class GameWindow extends JFrame {
      */
     GameWindow(GameManager managerIn) {
         manager = managerIn;
-        loadImageIcons();
         setFrameProperties();
         buttonMap = new HashMap<>();
         setUpMenu();
@@ -38,15 +34,7 @@ public class GameWindow extends JFrame {
     }
 	
 	GameWindow() {
-        loadImageIcons();
-        setFrameProperties();
-        buttonMap = new HashMap<>();
-        setUpMenu();
-        setUpTopPanel();
-        setUpBottomBar();
-        setUpLowerPanel();
-        pack();
-        setVisible(true);
+        this(null);
     }
 
     /**
@@ -57,15 +45,15 @@ public class GameWindow extends JFrame {
         setResizable(false);
         setPreferredSize(new Dimension(1280, 720));
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        getContentPane().setBackground(backgroundColor);
+        getContentPane().setBackground(BACKGROUND_COLOR);
         getContentPane().setLayout(new BorderLayout());
     }
 
     /**
-     * Helper function to set up the menu bar
-     * <p>
+     * Helper function to set up the menu bar.
+     * 
      * Sets up the menu from a an array of strings and adds an
-     * ActionListener to each item in the menu
+     * ActionListener to each item in the menu.
      */
     private void setUpMenu() {
         String[] FileMenuItems = {"CustomInput", "Quit"};
@@ -81,68 +69,56 @@ public class GameWindow extends JFrame {
         }
         JMenuBar menuBar = new JMenuBar();
         menuBar.add(FileMenu);
-        menuBar.setBackground(backgroundColor);
+        menuBar.setBackground(BACKGROUND_COLOR);
         setJMenuBar(menuBar);
     }
 
     /**
-     * Tries to load up the required image file from the specified destination
-     * If it cannot find the images, prints the stack trace to the terminal
+     * @return The map containing all the ButtonIds
      */
-    private void loadImageIcons() {
-        try {
-            darkButtonIcon = ImageIO.read(new File("src/main/resources/oval_button_dark.png"));
-            lightButtonIcon = ImageIO.read(new File("src/main/resources/oval_button_light.png"));
-            altButtonIcon = ImageIO.read(new File("src/main/resources/oval_button_alt.png"));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     public HashMap<String, JButton> getButtonMap() {
         return buttonMap;
     }
 
     /**
      * Function to set up 9 buttons on the top panel, put them in a HashMap
-     * and then add an ActionListener to each individual button
+     * and then add an ActionListener to each individual button.
      */
     private void setUpTopPanel() {
         JPanel topPanel = new JPanel();
         topPanel.setBorder(new EmptyBorder(10, 10, 20, 10));//Set Padding around the Top Panel
-        topPanel.setBackground(topPanelColor);
+        topPanel.setBackground(TOP_PANEL_COLOR);
         GridLayout topButtons = new GridLayout(0, 9, 10, 10);//Set padding around invidual buttons
         topPanel.setLayout(topButtons);
-        fillPanelWithButtons(topPanel, darkButtonIcon, "B");
+        fillPanelWithButtons(topPanel, "B");
         getContentPane().add(topPanel, BorderLayout.NORTH);
     }
 
     /**
      * Function to set up 9 buttons on the bottom panel, put them in a HashMap
-     * and then add an ActionListner to each individual button
+     * and then add an ActionListner to each individual button.
      */
     private void setUpLowerPanel() {
         JPanel lowerPanel = new JPanel(new BorderLayout());
         lowerPanel.setBorder(new EmptyBorder(0, 10, 10, 10));//Set Padding around the Bottom Panel
-        lowerPanel.setBackground(backgroundColor);
+        lowerPanel.setBackground(BACKGROUND_COLOR);
         getContentPane().add(lowerPanel, BorderLayout.CENTER);
         JPanel lowerButtonPanel = new JPanel();
         GridLayout botButtons = new GridLayout(0, 9, 10, 10);//Set padding around invidual buttons
         lowerButtonPanel.setLayout(botButtons);
-        lowerButtonPanel.setBackground(backgroundColor);
+        lowerButtonPanel.setBackground(BACKGROUND_COLOR);
         lowerPanel.add(lowerButtonPanel, BorderLayout.SOUTH);
         lowerPanel.add(setUpKazans(), BorderLayout.CENTER);
-        fillPanelWithButtons(lowerButtonPanel, lightButtonIcon, "W");
+        fillPanelWithButtons(lowerButtonPanel, "W");
     }
 
     /**
-     * Fills a given JPanel with ImageIcons that act as buttons
+     * Fills a given JPanel with ImageIcons that act as buttons.
      *
      * @param panel The Panel where the buttons are to be added
-     * @param image The Image used as the button
      * @param color A single digit string to define the color of the added image
      */
-    private void fillPanelWithButtons(JPanel panel, BufferedImage image, String color) {
+    private void fillPanelWithButtons(JPanel panel, String color) {
         for (int i = 1; i < 10; ++i) {
             JButton button = new OvalButton(Integer.toString(i));
             button.setHorizontalTextPosition(JButton.CENTER);
@@ -183,7 +159,7 @@ public class GameWindow extends JFrame {
     private void setUpBottomBar() {
         JPanel bottomPanel = new JPanel();
         bottomPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
-        bottomPanel.setBackground(backgroundColor);
+        bottomPanel.setBackground(BACKGROUND_COLOR);
         getContentPane().add(bottomPanel, BorderLayout.SOUTH);
         BorderLayout bl = new BorderLayout();
         bottomPanel.setLayout(bl);
@@ -200,7 +176,7 @@ public class GameWindow extends JFrame {
      */
     private JPanel setUpKazans() {
         JPanel kazanPanel = new JPanel(new BorderLayout());
-        kazanPanel.setBackground(backgroundColor);
+        kazanPanel.setBackground(BACKGROUND_COLOR);
         kazanPanel.setBorder(new EmptyBorder(0, 0, 20, 0));
         kazanRight = new OvalButton();
         kazanRight.setBorderPainted(false);
@@ -258,7 +234,7 @@ public class GameWindow extends JFrame {
         switch (menuItemId) {
             case "CustomInput":
 				if(manager!=null){
-					new CustomInputWindow(backgroundColor, manager);
+					new CustomInputWindow(BACKGROUND_COLOR, manager);
 				}
                 break;
             case "Quit":
