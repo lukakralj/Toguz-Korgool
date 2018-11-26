@@ -12,7 +12,6 @@ public class GameManager {
     private Board core;
 
     public static void main(String[] args) {
-        System.out.println("Main method works as intended");
         new GameManager();
     }
 

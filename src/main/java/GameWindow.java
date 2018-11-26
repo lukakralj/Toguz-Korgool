@@ -207,7 +207,6 @@ public class GameWindow extends JFrame {
      */
     private void holeOnClickAction(String buttonId) {
         if (buttonId.startsWith("W")) {
-            kazanLeft.setText(buttonId + " Clicked");
 			if(manager!=null){
 				manager.makeMove(buttonId.substring(1), true);
 			}
