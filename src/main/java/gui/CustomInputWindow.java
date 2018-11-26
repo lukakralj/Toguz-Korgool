@@ -27,10 +27,21 @@ class CustomInputWindow extends JDialog {
      */
     CustomInputWindow(Color bgColour, GameManager managerIn) {
         manager = managerIn;
+        this.bgColour = bgColour;
+        initialSetUp();
+        setModal(true);
+    }
+
+    CustomInputWindow() {
+        manager = null;
+        this.bgColour = Color.GRAY;
+        initialSetUp();
+        setModal(true);
+    }
+
+    public void initialSetUp() {
         selectedTuzBlack = selectedTuzWhite = -1;
         numberOfKorgools = 0;
-        this.bgColour = bgColour;
-        setModal(true);
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout());
         setResizable(false);
@@ -65,6 +76,7 @@ class CustomInputWindow extends JDialog {
         }
         getContentPane().add(inputArea, BorderLayout.CENTER);
         infoLabel = new JLabel("<html>Please enter in the number of Korgools per hole, and use the radio buttons to indicate which holes are Tuz.<br> Current number of Korgools: " + numberOfKorgools + "</html>");
+        infoLabel.setName("infoLabel");
         getContentPane().add(infoLabel, BorderLayout.NORTH);
     }
 
@@ -74,9 +86,11 @@ class CustomInputWindow extends JDialog {
     private void setUpBottomBar() {
         JPanel bottomBar = new JPanel(new BorderLayout());
         JButton confirmButton = new JButton("Confirm input");
+        confirmButton.setName("confirm");
         confirmButton.addActionListener(e -> confirmAction());
         outputLog = new JTextArea();
         outputLog.setEditable(false);
+        outputLog.setName("outputLog");
         bottomBar.add(outputLog, BorderLayout.CENTER);
         bottomBar.add(confirmButton, BorderLayout.EAST);
         getContentPane().add(bottomBar, BorderLayout.SOUTH);
@@ -101,7 +115,10 @@ class CustomInputWindow extends JDialog {
                 blackHoles[i - 1] = (int) spinnerMap.get("B" + i).getValue();
                 whiteHoles[i - 1] = (int) spinnerMap.get("W" + i).getValue();
             }
-            manager.setUpBoard(whiteHoles,blackHoles,selectedTuzWhite,selectedTuzBlack,whiteKazan,blackKazan);
+            if (manager != null) {
+                manager.resetTuzes();
+                manager.populateInitialBoard(whiteHoles, blackHoles, selectedTuzWhite, selectedTuzBlack, whiteKazan, blackKazan);
+            }
             dispose();
         }
     }
@@ -114,6 +131,7 @@ class CustomInputWindow extends JDialog {
      */
     private JPanel inputCell(String componentId) {
         JPanel cell = new JPanel(new BorderLayout());
+        cell.setName("C_" + componentId);
         cell.setMaximumSize(new Dimension(getWidth() / 10, getHeight() / 4));
         cell.setBackground(bgColour);
         SpinnerNumberModel spinnerModel = new SpinnerNumberModel(0, 0, 162, 1);
@@ -127,6 +145,7 @@ class CustomInputWindow extends JDialog {
         spinner.setName(componentId);
         spinnerMap.put(componentId, spinner);
         JRadioButton radio = new JRadioButton();
+        radio.setName("R_" + componentId);
         if (componentId.startsWith("B")) radioOptionsTop.add(radio);
         else if (componentId.startsWith("W")) radioOptionsBottom.add(radio);
         else if (componentId.equals("BlackKazan")) {
@@ -154,4 +173,5 @@ class CustomInputWindow extends JDialog {
         else if (componentId.startsWith("W")) selectedTuzBlack = Integer.parseInt(componentId.substring(1));
         else if (componentId.startsWith("B")) selectedTuzWhite = Integer.parseInt(componentId.substring(1));
     }
+
 }

@@ -75,6 +75,14 @@ public class OvalButton extends JButton implements MouseListener, MouseMotionLis
     }
 
     /**
+     *
+     * @return Main color of this button.
+     */
+    public Color getColorNormal() {
+        return colorNormal;
+    }
+
+    /**
      * Set the color of the button when it is highlighted (hovered over etc.).
      *
      * @param colorHighlighted

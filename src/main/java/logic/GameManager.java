@@ -1,10 +1,12 @@
 package logic;
 
 import gui.GameWindow;
+import gui.OvalButton;
+import logic.Player;
 import java.util.Random;
 import java.util.Set;
 
-/*
+/**
  * Main class for the Team Platypus Agile Project
  *
  */
@@ -32,91 +34,137 @@ public class GameManager {
         }
     }
 
-    public void setUpBoard(int[] wHoles, int[] bHoles, int wTuz, int bTuz, int wKazan, int bKazan) {
-        core.setHolesW(wHoles);  //updates game logic
-        core.setHolesB(bHoles);
-        core.setTuzW(wTuz - 1);
-        core.setTuzB(bTuz - 1);
-        core.setKazanW(wKazan);
-        core.setKazanB(bKazan);
-        updateDisplayOnSuccess();   //updates display
-
-    }
 
     /**
-     * Update the GUI to correctly display the changes that have occurred in the array of white holes.
+     * Set the initial state of the board with given custom parameters
+     *
+     * @param wHoles White player's holes
+     * @param bHoles Black player's holes
+     * @param wTuz White player's tuz
+     * @param bTuz Black player's tuz
+     * @param wKazan White player's kazan
+     * @param bKazan Black player's kazan
      */
-    private void updateWhiteDisplay() {
-        int[] holesW = core.getHolesW();
-        for (int i = 1; i <= 9; i++) {
-            gameWindow.setHoleText("W" + i, holesW[i - 1]);
-        }
+    public void populateInitialBoard(int[] wHoles, int[] bHoles, int wTuz, int bTuz, int wKazan, int bKazan) {
+        //updates game logic
+        populatePlayerBoard(core.getWhitePlayer(), wHoles, wTuz, wKazan);
+        populatePlayerBoard(core.getBlackPlayer(), bHoles, bTuz, bKazan);
+
+        //updates display
+        updateDisplay();
     }
 
-    /**
-     * Update the GUI to correctly display the changes that have occurred in the array of black holes.
-     */
-    private void updateBlackDisplay() {
-        int[] holesB = core.getHolesB();
-        int holeIndex = 0;
-        for (int i = 9; i >= 1; i--) {
-            gameWindow.setHoleText("B" + i, holesB[holeIndex]);
-            holeIndex++;
-        }
-    }
 
     /**
-     * Update the GUI to correctly display the changes that have occurred in the white player's kazan.
+     * Set the initial state of the player's board with given custom parameters
+     *
+     * @param player player whose board is to be initialised
+     * @param holes player's holes
+     * @param tuz player's tuz
+     * @param kazan player's kazan
      */
-    private void updateWhiteKazan() {
-        int kazanW = core.getKazanW();
-        gameWindow.setKazanRightText(kazanW + "");
-    }
-
-    /**
-     * Update the GUI to correctly display the changes that have occurred in the black player's kazan.
-     */
-    private void updateBlackKazan() {
-        int kazanB = core.getKazanB();
-        gameWindow.setKazanLeftText(kazanB + "");
-    }
-
-    /**
-     * Checks to see if a Tuz has been set for the white player. If yes, it updates the GUI to represent this change.
-     */
-    private void updateWhiteTuz() {
-        int tuzW = core.getTuzW();
-        if (tuzW != -1) {
-            int buttonNumber = 9 - tuzW;  //because ID's start from 1
-            gameWindow.makeTuz("B" + buttonNumber);
-            //System.out.print("white tuz was set to "+ tuzW);
-        }
-    }
-
-    /**
-     * Checks to see if a Tuz has been set for the black player. If yes, it updates the GUI to represent this change.
-     */
-    private void updateBlackTuz() {
-        int tuzB = core.getTuzB();
-        if (tuzB != -1) {
-            int buttonNumber = tuzB + 1;  //because ID's start from 1
-            gameWindow.makeTuz("W" + buttonNumber);
-            //System.out.print("black tuz was set to "+ tuzB);
-        }
+    private void populatePlayerBoard(Player player, int[] holes, int tuz, int kazan) {
+        player.setHoles(holes);
+        player.setTuz(tuz - 1);
+        player.setKazan(kazan);
     }
 
     /**
      * Combines all previous update methods into one general function meant to update the GUI after any changes.
      */
-    public void updateDisplayOnSuccess() {
+    private void updateDisplay() {
         updateWhiteDisplay();
         updateBlackDisplay();
+    }
 
-        updateWhiteKazan();
-        updateBlackKazan();
+    /**
+     * Update the GUI to correctly display the changes that have occurred in the white player's board
+     */
+    private void updateWhiteDisplay() {
+        Player player = core.getWhitePlayer();
+        for (int i = 1; i <= 9; i++) {
+            gameWindow.setHoleText("W" + i, player.getHoleAt(i - 1));
+        }
 
-        updateWhiteTuz();
-        updateBlackTuz();
+        updateKazan(player);
+        updateTuz(player);
+    }
+
+    /**
+     * Update the GUI to correctly display the changes that have occurred in the black player's board
+     */
+    private void updateBlackDisplay() {
+        Player player = core.getBlackPlayer();
+        int holeIndex = 0;
+        for (int i = 9; i >= 1; i--) {
+            gameWindow.setHoleText("B" + i, player.getHoleAt(i - 1));
+            holeIndex++;
+        }
+
+        updateKazan(player);
+        updateTuz(player);
+    }
+
+    /**
+     * Update the GUI to correctly display the changes that have occurred in the player's kazan.
+     * @param player logic.Player whose kazan is to be updated
+     */
+    private void updateKazan(Player player) {
+        String text = player.getKazan() + "";
+        if (player == core.getWhitePlayer()) {
+            gameWindow.setKazanRightText(text);
+        } else {
+            gameWindow.setKazanLeftText(text);
+        }
+    }
+
+    /**
+     * Update GUI to correctly display player's tuz
+     * @param player player whose tuz is to be updated
+     */
+    private void updateTuz(Player player) {
+        int tuz = player.getTuz();
+        int buttonNumber;
+        String buttonTag;
+        if (tuz > -1) {
+            if (player == core.getWhitePlayer()) {
+                buttonNumber = 9 - tuz;  // because black player's buttonIDs are reversed
+                buttonTag = "B";
+            } else {
+                buttonNumber = tuz + 1;  // because ID's start from 1
+                buttonTag = "W";
+
+            }
+            gameWindow.makeTuz(buttonTag + buttonNumber);
+        }
+    }
+
+    /**
+     * Makes a move and updates the board display.
+     *  @param buttonID the string representing the buttonID
+     *  @param isWhiteTurn boolean indicating whether it is the white player's turn
+     */
+    public void makeMove(String buttonID, boolean isWhiteTurn) {
+        int hole;
+        BoardStatus moveStatus;
+        if (isWhiteTurn) {
+            hole = Integer.parseInt(buttonID) - 1;     //subtract 1 because logic goes from 0-8, while GUI goes from 1-9
+            moveStatus = core.makeMove(hole, core.getWhitePlayer(), core.getBlackPlayer());
+        }
+        else {
+            if (core.checkIfMovePossible(core.getBlackPlayer())) {
+                hole = machineChooseHole();
+                moveStatus = core.makeMove(hole, core.getBlackPlayer(), core.getWhitePlayer());
+            }
+            else {
+                endImpossibleGame(false);
+                return;
+            }
+        }
+        BoardStatus endStatus = core.checkResult();
+        checkMoveStatus(moveStatus, isWhiteTurn, endStatus);
+        checkEndStatus(endStatus);
+
     }
 
     /**
@@ -131,33 +179,32 @@ public class GameManager {
         int hole = -1;
         while (!foundNumber) {
             hole = random.nextInt(8);  //generate random number 0-7
-            if (hole >= core.getTuzW()) {         // if random number >= white Tuz
+            if (hole >= core.getWhitePlayer().getTuz()) {         // if random number >= white Tuz
                 hole += 1;                        // we increase by 1 to cover the full range 0-8 (except the tuz)
             }
-            int[] blackHoles = core.getHolesB();
-            if (blackHoles[hole] != 0) {
+            if (core.getBlackPlayer().getHoleAt(hole) != 0) {
                 foundNumber = true;
             }
         }
-        System.out.println("Randomly chose " + hole);
         return hole;
     }
 
+
     /**
      * If a move is impossible, the opponent collects all of their own korgools and puts them into
-     * their kazaan. The kazans of the two players are then compared to determine the winner (more korgools wins)
+     * their kazan. The kazans of the two players are then compared to determine the winner (more korgools wins)
      *
-     *  @param isWhiteTurn boolean indicating whether it is the white player's turn
+     * @param isWhiteTurn boolean indicating whether it is the white player's turn
      */
-    public void endImpossibleGame(boolean isWhiteTurn) {
+    private void endImpossibleGame(boolean isWhiteTurn) {
         if (isWhiteTurn) {
-            core.getAllBlackKorgools();
+            core.getAllKorgools(core.getBlackPlayer());
         }
         else {
-            core.getAllWhiteKorgools();
+            core.getAllKorgools(core.getWhitePlayer());
         }
-        updateDisplayOnSuccess();
-        BoardStatus endStatus = core.testCheckResultOnImpossible();
+        updateDisplay();
+        BoardStatus endStatus = core.checkResultOnImpossible();
         checkEndStatus(endStatus);
 
     }
@@ -167,7 +214,7 @@ public class GameManager {
      *
      *  @param endStatus the endStatus of the board at this point
      */
-    public void checkEndStatus(BoardStatus endStatus) {
+    private void checkEndStatus(BoardStatus endStatus) {
 
         if (endStatus == BoardStatus.B_WON) {
             gameWindow.setKazanLeftText("Black player won!");
@@ -187,13 +234,12 @@ public class GameManager {
      *  @param isWhiteTurn boolean indicating whether it is the white player's turn.
      *  @param endStatus the endStatus of the board at this point
      */
-    public void checkMoveStatus(BoardStatus moveStatus, boolean isWhiteTurn, BoardStatus endStatus) {
-        if (moveStatus == BoardStatus.SUCCESSFUL) {  //move went well but the game is not finished, next player should make a move
-            updateDisplayOnSuccess();
+    private void checkMoveStatus(BoardStatus moveStatus, boolean isWhiteTurn, BoardStatus endStatus) {
+        if (moveStatus == BoardStatus.SUCCESSFUL) {  // move went well but the game is not finished, next player should make a move
+            updateDisplay();
             if (isWhiteTurn) {
-                makeMove("", false);   //calls makeMove with hole chosen by the machine.
+                makeMove("", false);   // calls makeMove with hole chosen by the machine.
             }
-            updateDisplayOnSuccess();
             checkEndStatus(endStatus);
         }
         if (moveStatus == BoardStatus.MOVE_IMPOSSIBLE) {
@@ -202,33 +248,19 @@ public class GameManager {
     }
 
     /**
-     * Makes a move and updates the board display.
-     *  @param line the string representing the buttonID
-     *  @param isWhiteTurn boolean indicating whether it is the white player's turn
+     * Unsets all the tuzes to being normal buttons by changing its color
      */
-    public void makeMove(String line, boolean isWhiteTurn) {
-        int hole;
-        BoardStatus moveStatus;
-        if (isWhiteTurn) {
-            hole = Integer.parseInt(line) - 1;     //subtract 1 because logic goes from 0-8, while GUI goes from 1-9
-            moveStatus = core.makeMove(hole, true);
-        }
-        else {
-            if (core.testCheckIfMovePossible(false)) {
-                hole = machineChooseHole();
-                moveStatus = core.makeMove(hole, false);
-            }
-            else {
-                endImpossibleGame(isWhiteTurn);
-                return;
-            }
-        }
-        BoardStatus endStatus = core.testCheckResult();
-        checkMoveStatus(moveStatus, isWhiteTurn, endStatus);
-        checkEndStatus(endStatus);
-
+    public void resetTuzes() {
+        gameWindow.unsetTuzes();
     }
 
+    public OvalButton getKazanLeft() {
+        return gameWindow.getKazanLeft();
+    }
+
+    public OvalButton getKazanRight() {
+        return gameWindow.getKazanRight();
+    }
 
 }
 

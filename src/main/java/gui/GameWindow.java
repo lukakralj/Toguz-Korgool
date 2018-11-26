@@ -6,15 +6,16 @@ import java.awt.*;
 import java.util.*;
 import logic.GameManager;
 
-/**
- * A Swing graphical user interface for the Team Platypus Agile Project
+/*
+ * Presents the main game window for the user
  *
+ * @version 0.1 26/11/2018
  */
 public class GameWindow extends JFrame {
 
-    private static final Color backgroundColor = Color.LIGHT_GRAY, topPanelColor = Color.GRAY;
+    private static final Color BACKGROUND_COLOR = Color.LIGHT_GRAY, TOP_PANEL_COLOR = Color.GRAY;
     private HashMap<String, Hole> buttonMap;
-    private JTextArea kazanRight, kazanLeft;
+    private Hole kazanRight, kazanLeft;
     private GameManager manager;
 
     /**
@@ -31,17 +32,9 @@ public class GameWindow extends JFrame {
         pack();
         setVisible(true);
     }
-	
+
 	public GameWindow() {
-        // TODO: use constructor overloading - insert on this line: this(null); (delete all others)
-        setFrameProperties();
-        buttonMap = new HashMap<>();
-        setUpMenu();
-        setUpTopPanel();
-        setUpBottomBar();
-        setUpLowerPanel();
-        pack();
-        setVisible(true);
+        this(null);
     }
 
     /**
@@ -52,19 +45,20 @@ public class GameWindow extends JFrame {
         setResizable(true);
         setPreferredSize(new Dimension(1280, 720));
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        getContentPane().setBackground(backgroundColor);
+        getContentPane().setBackground(BACKGROUND_COLOR);
         getContentPane().setLayout(new BorderLayout());
     }
 
     /**
-     * Helper function to set up the menu bar
-     * <p>
+     * Helper function to set up the menu bar.
+     * 
      * Sets up the menu from a an array of strings and adds an
-     * ActionListener to each item in the menu
+     * ActionListener to each item in the menu.
      */
     private void setUpMenu() {
         String[] FileMenuItems = {"CustomInput", "Quit"};
         JMenu FileMenu = new JMenu("File");
+		FileMenu.setName("filemenu");
         FileMenu.setFont(FileMenu.getFont().deriveFont(16F));
         for (String menuItem : FileMenuItems) {
             JMenuItem item = new JMenuItem(menuItem);
@@ -75,23 +69,26 @@ public class GameWindow extends JFrame {
         }
         JMenuBar menuBar = new JMenuBar();
         menuBar.add(FileMenu);
-        menuBar.setBackground(backgroundColor);
+        menuBar.setBackground(BACKGROUND_COLOR);
         setJMenuBar(menuBar);
     }
 
+    /**
+     * @return The map containing all the ButtonIds
+     */
     public HashMap<String, Hole> getButtonMap() {
         return buttonMap;
     }
 
     /**
      * Function to set up 9 buttons on the top panel, put them in a HashMap
-     * and then add an ActionListener to each individual button
+     * and then add an ActionListener to each individual button.
      */
     private void setUpTopPanel() {
         JPanel topPanel = new JPanel();
         topPanel.setBorder(new EmptyBorder(10, 10, 20, 10));//Set Padding around the Top Panel
-        topPanel.setBackground(topPanelColor);
-        GridLayout topButtons = new GridLayout(0, 9, 10, 10);//Set padding around individual buttons
+        topPanel.setBackground(TOP_PANEL_COLOR);
+        GridLayout topButtons = new GridLayout(0, 9, 10, 10);//Set padding around invidual buttons
         topPanel.setLayout(topButtons);
         fillPanelWithButtons(topPanel, "B");
         getContentPane().add(topPanel, BorderLayout.NORTH);
@@ -99,24 +96,24 @@ public class GameWindow extends JFrame {
 
     /**
      * Function to set up 9 buttons on the bottom panel, put them in a HashMap
-     * and then add an ActionListener to each individual button
+     * and then add an ActionListner to each individual button.
      */
     private void setUpLowerPanel() {
         JPanel lowerPanel = new JPanel(new BorderLayout());
         lowerPanel.setBorder(new EmptyBorder(0, 10, 10, 10));//Set Padding around the Bottom Panel
-        lowerPanel.setBackground(backgroundColor);
+        lowerPanel.setBackground(BACKGROUND_COLOR);
         getContentPane().add(lowerPanel, BorderLayout.CENTER);
         JPanel lowerButtonPanel = new JPanel();
         GridLayout botButtons = new GridLayout(0, 9, 10, 10);//Set padding around individual buttons
         lowerButtonPanel.setLayout(botButtons);
-        lowerButtonPanel.setBackground(backgroundColor);
+        lowerButtonPanel.setBackground(BACKGROUND_COLOR);
         lowerPanel.add(lowerButtonPanel, BorderLayout.SOUTH);
         lowerPanel.add(setUpKazans(), BorderLayout.CENTER);
         fillPanelWithButtons(lowerButtonPanel, "W");
     }
 
     /**
-     * Fills a given JPanel with ImageIcons that act as buttons
+     * Fills a given JPanel with ImageIcons that act as buttons.
      *
      * @param panel The Panel where the buttons are to be added
      * @param color A single digit string to define the color of the added image
@@ -133,12 +130,22 @@ public class GameWindow extends JFrame {
     }
 
     /**
+     * Unsets all the tuzes to being normal buttons by changing its color
+     *
+     */
+    public void unsetTuzes() {
+        for (Hole hole : buttonMap.values()) {
+            hole.setTuz(false);
+        }
+    }
+
+    /**
      * Function to construct the bottom bar of the GUI.
      */
     private void setUpBottomBar() {
         JPanel bottomPanel = new JPanel();
         bottomPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
-        bottomPanel.setBackground(backgroundColor);
+        bottomPanel.setBackground(BACKGROUND_COLOR);
         getContentPane().add(bottomPanel, BorderLayout.SOUTH);
         BorderLayout bl = new BorderLayout();
         bottomPanel.setLayout(bl);
@@ -155,13 +162,16 @@ public class GameWindow extends JFrame {
      */
     private JPanel setUpKazans() {
         JPanel kazanPanel = new JPanel(new BorderLayout());
-        kazanPanel.setBackground(backgroundColor);
+        kazanPanel.setBackground(BACKGROUND_COLOR);
         kazanPanel.setBorder(new EmptyBorder(0, 0, 20, 0));
-        kazanRight = new JTextArea();
-        kazanRight.setLineWrap(true);
+        kazanRight = new Hole();
+        kazanRight.setColorHighlighted(kazanRight.getColorNormal()); // TODO: this is only a temporary "fix"
+        kazanRight.setColorBorderNormal(new Color(160,82,45));
+		kazanRight.setName("rightKazan");
         kazanRight.setPreferredSize(new Dimension(620, kazanPanel.getHeight() - 10));
-        kazanLeft = new JTextArea();
-        kazanLeft.setLineWrap(true);
+        kazanLeft = new Hole();
+        kazanLeft.setColorHighlighted(kazanLeft.getColorNormal()); // TODO: this is only a temporary "fix"
+        kazanLeft.setColorBorderNormal(new Color(160,82,45));
 		kazanLeft.setName("leftKazan");
         kazanLeft.setPreferredSize(new Dimension(620, kazanPanel.getHeight() - 10));
         kazanPanel.add(kazanRight, BorderLayout.EAST);
@@ -180,7 +190,7 @@ public class GameWindow extends JFrame {
         buttonMap.get(buttonId).repaint();
         revalidate();
         if (buttonId.startsWith("W")) {
-            kazanLeft.append("\n" + buttonId + " Clicked");
+            kazanLeft.setText(buttonId + " Clicked");
 			if(manager!=null){
 				manager.makeMove(buttonId.substring(1), true);
 			}
@@ -194,7 +204,7 @@ public class GameWindow extends JFrame {
      * @param buttonId the ID of the button clicked
      */
     private void genericOnClickAction(String buttonId) {
-
+        setKazanRightText("Make move button pressed");
     }
 
     /**
@@ -207,7 +217,7 @@ public class GameWindow extends JFrame {
         switch (menuItemId) {
             case "CustomInput":
 				if(manager!=null){
-					new CustomInputWindow(backgroundColor, manager);
+					new CustomInputWindow(BACKGROUND_COLOR, manager);
 				}
                 break;
             case "Quit":
@@ -235,7 +245,17 @@ public class GameWindow extends JFrame {
      * @param input the text to make the kazan display
      */
     public void setKazanRightText(String input) {
-        kazanRight.setText(input);
+        try {
+            int num = Integer.parseInt(input);
+            kazanRight.releaseKorgools().forEach(k -> k.getParent().remove(k));
+            kazanRight.createAndAdd(num);
+            kazanRight.repaint();
+        }
+        catch (NumberFormatException e) {
+            kazanRight.setText(input);
+            System.out.println(input);
+        }
+
     }
 
     /**
@@ -244,7 +264,24 @@ public class GameWindow extends JFrame {
      * @param input the text to make the kazan display
      */
     public void setKazanLeftText(String input) {
-        kazanLeft.setText(input);
+        try {
+            int num = Integer.parseInt(input);
+            kazanLeft.releaseKorgools().forEach(k -> k.getParent().remove(k));
+            kazanLeft.createAndAdd(num);
+            kazanLeft.repaint();
+        }
+        catch (NumberFormatException e) {
+            kazanLeft.setText(input);
+            System.out.println(input);
+        }
+    }
+	
+	public Hole getKazanLeft() {
+        return kazanLeft;
+    }
+	
+	public Hole getKazanRight() {
+        return kazanRight;
     }
 
     public void makeTuz(String buttonId) {
