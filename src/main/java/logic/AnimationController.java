@@ -9,7 +9,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AnimationController implements Runnable {
+public class AnimationController extends Thread {
     public static final int MOVE_ALL = 256;
     public static final int EMPTY_HOLE = 512;
     public static final int MOVE_KORGOOLS = 1024;
@@ -141,7 +141,14 @@ public class AnimationController implements Runnable {
 
     public void run() {
         while (!stop) {
-            System.out.println("NumOfEVents: " + events.size());
+            try {
+                synchronized (this) {
+                    wait(10);
+                }
+            }
+            catch (InterruptedException e) {
+                System.out.println("Interrupted wait.");
+            }
             if (currentEvent != events.size() - 1) {
                 currentEvent++;
                 AnimEvent e = events.get(currentEvent);

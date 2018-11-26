@@ -26,8 +26,7 @@ public class GameManager {
         populateInitialBoard();
         core = new Board();
         anim = new AnimationController(gameWindow);
-        animThread = new Thread(anim);
-        animThread.start();
+        anim.start();
     }
 
     /**
