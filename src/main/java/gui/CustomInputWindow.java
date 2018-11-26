@@ -105,7 +105,7 @@ public class CustomInputWindow extends JDialog {
         if (selectedTuzBlack == selectedTuzWhite && selectedTuzWhite != -1) {
             outputLog.setText("The Tuz cannot be the same hole on opposite sides");
         } else if (selectedTuzWhite == 9 || selectedTuzBlack == 9) {
-            outputLog.setText("gui.Hole 9 cannot be a Tuz");
+            outputLog.setText("Hole 9 cannot be a Tuz");
         } else if (numberOfKorgools != 162) {
             outputLog.setText("Please ensure the number of Korgools adds to 162");
         } else {

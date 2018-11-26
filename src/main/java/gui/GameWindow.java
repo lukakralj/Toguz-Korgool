@@ -190,7 +190,6 @@ public class GameWindow extends JFrame {
         buttonMap.get(buttonId).repaint();
         revalidate();
         if (buttonId.startsWith("W")) {
-            kazanLeft.setText(buttonId + " Clicked");
 			if(manager!=null){
 				manager.makeMove(buttonId.substring(1), true);
 			}
@@ -252,9 +251,10 @@ public class GameWindow extends JFrame {
             kazanRight.repaint();
         }
         catch (NumberFormatException e) {
-            kazanRight.setText(input);
+
             System.out.println(input);
         }
+        kazanRight.setText(input);
 
     }
 
@@ -271,9 +271,10 @@ public class GameWindow extends JFrame {
             kazanLeft.repaint();
         }
         catch (NumberFormatException e) {
-            kazanLeft.setText(input);
+
             System.out.println(input);
         }
+        kazanLeft.setText(input);
     }
 	
 	public Hole getKazanLeft() {

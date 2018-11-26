@@ -25,8 +25,6 @@ public class CustomInputTest {
      */
     @Before
     public void setUp() {
-        testWindow = null;
-        testFrame = null;
         testFrame = new JFrame("Test helper");
         JButton testButton = new JButton("Click me!");
         testButton.setName("openDialog");
@@ -37,25 +35,41 @@ public class CustomInputTest {
         testFrame.setPreferredSize(new Dimension(300, 200));
         testFrame.pack();
         testFrame.setVisible(true);
-        swinger = Swinger.forSwingWindow();
+        swinger = Swinger.getUserWith(testFrame);
     }
-
 
     /**
+     * Set test variables to null after executing test
+     */
+    @After
+    public void tearDown() {
+        swinger.pause(500);
+        testWindow = null;
+        testFrame = null;
+    }
+
+
+
+
+/**
      * Test that the  input dialog opens up correctly
      */
+
+
     @Test
     public void GUISetup() {
-        swinger.clickOn("name:openDialog").pause(200);
+        swinger.clickOn("name:openDialog").pause(1000);
         assertNotNull(testWindow);
     }
+
 
     /**
      * Test that all cells were created successfully
      */
+
     @Test
     public void testCellsCreated() {
-        swinger.clickOn("name:openDialog").pause(200).setRoot(testWindow);
+        swinger.clickOn("name:openDialog").pause(1000).setRoot(testWindow);
         for (int i = 1; i <= 9; ++i) {
             swinger.getAt("name:C_B" + i);
             swinger.getAt("name:C_W" + i);
@@ -64,12 +78,14 @@ public class CustomInputTest {
         swinger.getAt("name:C_WhiteKazan");
     }
 
+
     /**
      * Test that all spinners were created successfully
      */
+
     @Test
     public void testSpinnersCreated() {
-        swinger.clickOn("name:openDialog").pause(200).setRoot(testWindow);
+        swinger.clickOn("name:openDialog").pause(1000).setRoot(testWindow);
         for (int i = 1; i <= 9; ++i) {
             swinger.getAt("name:B" + i);
             swinger.getAt("name:W" + i);
@@ -78,12 +94,15 @@ public class CustomInputTest {
         swinger.getAt("name:WhiteKazan");
     }
 
+
     /**
      * Test that all radio buttons were created successfully
      */
+
     @Test
     public void testRadioButtonsCreated() {
-        swinger.clickOn("name:openDialog").pause(200).setRoot(testWindow);
+        swinger.clickOn("name:openDialog").pause(500).setRoot(testWindow);
+        swinger.pause(500);
         for (int i = 1; i <= 9; ++i) {
             swinger.getAt("name:R_B" + i);
             swinger.getAt("name:R_W" + i);
@@ -92,13 +111,14 @@ public class CustomInputTest {
         swinger.getAt("name:R_WhiteKazan");
     }
 
+
     /**
      * Test situation where not enough korgools are allocated
      */
     @Test
     public void testNotEnoughKorgools() {
-        swinger.clickOn("name:openDialog").pause(200).setRoot(testWindow);
-        swinger.clickOn("name:confirm").pause(50);
+        swinger.clickOn("name:openDialog").pause(1000).setRoot(testWindow);
+        swinger.clickOn("name:confirm").pause(200);
         Component textArea = swinger.getAt("name:outputLog");
         assertThat(textArea, hasText("Please ensure the number of Korgools adds to 162"));
     }
@@ -108,14 +128,14 @@ public class CustomInputTest {
      */
     @Test
     public void tooManyKorgools() {
-        swinger.clickOn("name:openDialog").pause(200).setRoot(testWindow);
+        swinger.clickOn("name:openDialog").pause(1000).setRoot(testWindow);
         for (int i = 1; i <= 9; ++i) {
             JSpinner blackSpinner = (JSpinner) swinger.getAt("name:B" + i);
             blackSpinner.setValue(10);
             JSpinner whiteSpinner = (JSpinner) swinger.getAt("name:W" + i);
             whiteSpinner.setValue(10);
         }
-        swinger.clickOn("name:confirm").pause(50);
+        swinger.clickOn("name:confirm").pause(200);
         Component textArea = swinger.getAt("name:outputLog");
         assertThat(textArea, hasText("Please ensure the number of Korgools adds to 162"));
     }
@@ -125,10 +145,10 @@ public class CustomInputTest {
      */
     @Test
     public void testTuzInSameHole() {
-        swinger.clickOn("name:openDialog").pause(200).setRoot(testWindow);
-        swinger.clickOn("name:R_B1").pause(50);
-        swinger.clickOn("name:R_W1").pause(50);
-        swinger.clickOn("name:confirm").pause(50);
+        swinger.clickOn("name:openDialog").pause(1000).setRoot(testWindow);
+        swinger.clickOn("name:R_B1").pause(200);
+        swinger.clickOn("name:R_W1").pause(200);
+        swinger.clickOn("name:confirm").pause(200);
         Component textArea = swinger.getAt("name:outputLog");
         assertThat(textArea, hasText("The Tuz cannot be the same hole on opposite sides"));
     }
@@ -138,14 +158,14 @@ public class CustomInputTest {
      */
     @Test
     public void testTuzAtHoleNine() {
-        swinger.clickOn("name:openDialog").pause(200).setRoot(testWindow);
+        swinger.clickOn("name:openDialog").pause(1000).setRoot(testWindow);
         Component textArea = swinger.getAt("name:outputLog");
-        swinger.clickOn("name:R_B9").pause(50);
-        swinger.clickOn("name:confirm").pause(50);
+        swinger.clickOn("name:R_B9").pause(200);
+        swinger.clickOn("name:confirm").pause(200);
         assertThat(textArea, hasText("Hole 9 cannot be a Tuz"));
-        swinger.clickOn("name:R_B8").pause(50);
-        swinger.clickOn("name:R_W9").pause(50);
-        swinger.clickOn("name:confirm").pause(50);
+        swinger.clickOn("name:R_B8").pause(200);
+        swinger.clickOn("name:R_W9").pause(200);
+        swinger.clickOn("name:confirm").pause(200);
         assertThat(textArea, hasText("Hole 9 cannot be a Tuz"));
     }
 
@@ -154,7 +174,7 @@ public class CustomInputTest {
      */
     @Test
     public void testDefaultConfiguration() {
-        swinger.clickOn("name:openDialog").pause(200).setRoot(testWindow);
+        swinger.clickOn("name:openDialog").pause(1000).setRoot(testWindow);
         for (int i = 1; i <= 9; ++i) {
             JSpinner blackSpinner = (JSpinner) swinger.getAt("name:B" + i);
             blackSpinner.setValue(9);

@@ -60,8 +60,8 @@ public class GUITest {
 	*/
 	@Test
 	public void testCorrectButtonInteraction() {
-		new GameManager();
-		Swinger swinger = Swinger.forSwingWindow();
+		GameManager m = new GameManager();
+		Swinger swinger = Swinger.getUserWith(m.getWindow());
 		swinger.pause(200).clickOn("name:W1")
 		.pause(200).clickOn("name:W2");
 		swinger.pause(100);
@@ -74,7 +74,7 @@ public class GUITest {
 	@Test
 	public void testLegitimateValsInKazans() {
 		GameManager m = new GameManager();
-		Swinger swinger = Swinger.forSwingWindow();
+		Swinger swinger = Swinger.getUserWith(m.getWindow());
 		swinger.pause(200).clickOn("name:W1")
 		.pause(200).clickOn("name:W2")
 		.pause(200).clickOn("name:W3");
@@ -91,7 +91,7 @@ public class GUITest {
 	@Test
 	public void testMenuInteraction() {
 		GameManager m = new GameManager();
-		Swinger swinger = Swinger.forSwingWindow();
+		Swinger swinger = Swinger.getUserWith(m.getWindow());
 		swinger.pause(200).clickOn("name:filemenu");
 		swinger.pause(150);
 	}
@@ -102,7 +102,7 @@ public class GUITest {
 	@Test
 	public void testButtonInteraction() {
 		GameManager m = new GameManager();
-		Swinger swinger = Swinger.forSwingWindow();
+		Swinger swinger = Swinger.getUserWith(m.getWindow());
 		swinger.pause(200).clickOn("name:NEXT");
 		swinger.pause(150);
 		OvalButton txt2 = m.getKazanRight();
@@ -118,7 +118,7 @@ public class GUITest {
 	@Test
 	public void TestW1Correct() {
 		GameManager m = new GameManager();
-		Swinger swinger = Swinger.forSwingWindow();
+		Swinger swinger = Swinger.getUserWith(m.getWindow());
 		swinger.pause(200).clickOn("name:W1")
 		.pause(800);
 		OvalButton txt2 = m.getKazanRight();
@@ -134,7 +134,7 @@ public class GUITest {
 	@Test
 	public void TestW2Correct() {
 		GameManager m = new GameManager();
-		Swinger swinger = Swinger.forSwingWindow();
+		Swinger swinger = Swinger.getUserWith(m.getWindow());
 		swinger.pause(200).clickOn("name:W2")
 		.pause(800);
 		OvalButton txt2 = m.getKazanRight();
@@ -150,7 +150,7 @@ public class GUITest {
 	@Test
 	public void TestW5Correct() {
 		GameManager m = new GameManager();
-		Swinger swinger = Swinger.forSwingWindow();
+		Swinger swinger = Swinger.getUserWith(m.getWindow());
 		swinger.pause(200).clickOn("name:W5")
 		.pause(800);
 		OvalButton txt2 = m.getKazanRight();
@@ -166,7 +166,7 @@ public class GUITest {
 	@Test
 	public void TestW8Correct() {
 		GameManager m = new GameManager();
-		Swinger swinger = Swinger.forSwingWindow();
+		Swinger swinger = Swinger.getUserWith(m.getWindow());
 		swinger.pause(200).clickOn("name:W8")
 		.pause(800);
 		OvalButton txt2 = m.getKazanRight();
@@ -183,7 +183,7 @@ public class GUITest {
 	@Test
 	public void TestW9Correct() {
 		GameManager m = new GameManager();
-		Swinger swinger = Swinger.forSwingWindow();
+		Swinger swinger = Swinger.getUserWith(m.getWindow());
 		swinger.pause(200).clickOn("name:W9")
 		.pause(800);
 		OvalButton txt2 = m.getKazanRight();
@@ -204,7 +204,7 @@ public class GUITest {
 	@Test
 	public void TestW2W3Sequence() {
 		GameManager m = new GameManager();
-		Swinger swinger = Swinger.forSwingWindow();
+		Swinger swinger = Swinger.getUserWith(m.getWindow());
 		swinger.pause(200).clickOn("name:W2")
 		.pause(200).clickOn("name:W3")
 		.pause(800);
@@ -226,7 +226,7 @@ public class GUITest {
 	@Test
 	public void TestFullSequence() {
 		GameManager m = new GameManager();
-		Swinger swinger = Swinger.forSwingWindow();
+		Swinger swinger = Swinger.getUserWith(m.getWindow());
 		swinger.pause(200).clickOn("name:W1")
 		.pause(200).clickOn("name:W2")
 		.pause(200).clickOn("name:W3")
