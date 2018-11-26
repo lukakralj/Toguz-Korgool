@@ -6,9 +6,8 @@ plugins {
     id 'jacoco'
 }
 
+version '1.0'
 mainClassName = 'GameManager'
-
-version '0.1'
 
 repositories {
     mavenCentral()
@@ -30,4 +29,15 @@ jacocoTestReport {
         csv.enabled false
         html.destination file("$buildDir/jacocoHtml")
     }
+}
+
+task fatJar(type: Jar) {
+    manifest {
+        attributes 'Implementation-Title': 'Toguz Korgool',
+                'Implementation-Version': version,
+                'Main-Class': mainClassName
+    }
+    baseName = 'Toguz_Korgool'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
 }
