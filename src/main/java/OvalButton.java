@@ -152,6 +152,10 @@ public class OvalButton extends JButton implements MouseListener {
     public void setHighlighted(boolean isHighlighted) {
         highlighted = isHighlighted;
     }
+	
+	public boolean isHighlighted() {
+        return highlighted;
+    }
 
     /**
      * This method is overridden because it adds additional checks before executing the

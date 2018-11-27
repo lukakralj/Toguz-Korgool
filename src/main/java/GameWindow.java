@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 import java.io.File;
 import java.util.*;
+import java.io.*;
 
 /*
  * Presents the main game window for the user
@@ -15,6 +16,7 @@ public class GameWindow extends JFrame {
 
     private static final Color BACKGROUND_COLOR = Color.LIGHT_GRAY, TOP_PANEL_COLOR = Color.GRAY;
     private HashMap<String, JButton> buttonMap;
+    private HashMap<String, JButton> kazans = new HashMap<String, JButton>();
     private OvalButton kazanRight, kazanLeft;
     private GameManager manager;
 
@@ -56,7 +58,7 @@ public class GameWindow extends JFrame {
      * ActionListener to each item in the menu.
      */
     private void setUpMenu() {
-        String[] FileMenuItems = {"CustomInput", "Quit"};
+        String[] FileMenuItems = {"CustomInput", "Save", "Load", "Quit"};
         JMenu FileMenu = new JMenu("File");
 		FileMenu.setName("filemenu");
         FileMenu.setFont(FileMenu.getFont().deriveFont(16F));
@@ -142,6 +144,14 @@ public class GameWindow extends JFrame {
     private void setTuz(JButton button) {
         ((OvalButton)button).setHighlighted(true);
     }
+	
+	private boolean isTuz(JButton button) {
+        return ((OvalButton)button).isHighlighted();
+    }
+
+    private void unsetTuz(JButton button) {
+        ((OvalButton)button).setHighlighted(false);
+    }
 
     /**
      * Unsets all the tuzes to being normal buttons by changing its color
@@ -194,6 +204,8 @@ public class GameWindow extends JFrame {
         kazanLeft.setColorBorderNormal(new Color(160,82,45));
 		kazanLeft.setName("leftKazan");
         kazanLeft.setPreferredSize(new Dimension(620, kazanPanel.getHeight() - 10));
+        kazans.put(kazanRight.getName(), kazanRight);
+        kazans.put(kazanLeft.getName(), kazanLeft);
         kazanPanel.add(kazanRight, BorderLayout.EAST);
         kazanPanel.add(kazanLeft, BorderLayout.WEST);
         return kazanPanel;
@@ -220,7 +232,6 @@ public class GameWindow extends JFrame {
      * @param buttonId the ID of the button clicked
      */
     private void genericOnClickAction(String buttonId) {
-        setKazanRightText("Make move button pressed");
     }
 
     /**
@@ -236,9 +247,75 @@ public class GameWindow extends JFrame {
 					new CustomInputWindow(BACKGROUND_COLOR, manager);
 				}
                 break;
+            case "Save":
+                JOptionPane.showConfirmDialog(null, "Are you sure you want to save the game?");
+                saveGame();
+                break;
+            case "Load":
+                JOptionPane.showConfirmDialog(null, "Are you sure you want to load the latest save state?");
+                loadGame();
+                break;
             case "Quit":
+                JOptionPane.showConfirmDialog(null, "Are you sure you want to quit?");
                 dispose();
         }
+    }
+
+    private void saveGame(){
+        System.out.println("Trying to save game");
+
+        try{
+            File saveFile=new File("src\\main\\java\\saveFile.csv");
+            FileOutputStream fos=new FileOutputStream(saveFile);
+            PrintWriter pw=new PrintWriter(fos);
+        
+            for(Map.Entry<String,JButton> entries :buttonMap.entrySet()){
+                pw.println(entries.getKey()+","+entries.getValue().getText()+","+isTuz(entries.getValue()));
+            }
+        
+            pw.flush();
+            pw.close();
+            fos.close();
+            System.out.println("Save Successful");
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    private void loadGame(){
+        System.out.println("Trying to load game");
+        try{
+            File toRead=new File("src\\main\\java\\saveFile.csv");
+            FileInputStream fis=new FileInputStream(toRead);
+    
+            Scanner sc=new Scanner(fis);
+    
+            String placeholder = "";
+            while(sc.hasNextLine()){
+                placeholder=sc.nextLine();
+                StringTokenizer st = new StringTokenizer(placeholder,",",false);
+                JButton button = buttonMap.get(st.nextToken());
+				button.setText(st.nextToken());
+				if(st.nextToken().equals(true)){
+					setTuz(button);
+				}else{
+					unsetTuz(button);
+				}
+            }
+            fis.close();
+            System.out.println("Load successful");
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        /*
+        for(JButton val:buttonMap.values()){
+            if(Integer.valueOf(val.getText())==0){
+                setTuz(val);
+            }else{
+                unsetTuz(val);
+            }
+        }
+        */
     }
 
     /**
