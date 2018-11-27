@@ -164,6 +164,7 @@ public class AnimationController extends Thread {
             if (currentEvent != events.size() - 1) {
                 boolean wasResizable = animateFor.isResizable();
                 animateFor.setResizable(false);
+                glassPane.setSize(animateFor.getContentPane().getSize());
                 currentEvent++;
                 AnimEvent e = events.get(currentEvent);
                 if (e.type == EMPTY_HOLE) {
