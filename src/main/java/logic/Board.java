@@ -62,7 +62,7 @@ public class Board {
             AnimationController.instance().addEvent(AnimationController.EMPTY_HOLE, "W" + (hole + 1));
         }
         else {
-            AnimationController.instance().addEvent(AnimationController.EMPTY_HOLE, "B" + (hole + 1));
+            AnimationController.instance().addEvent(AnimationController.EMPTY_HOLE, "B" + (9 - hole));
         }
         player.setHole(hole, 0);
 
@@ -82,7 +82,7 @@ public class Board {
                 AnimationController.instance().addEvent(AnimationController.MOVE_KORGOOLS, "W" + (hole + 1), 1);
             }
             else {
-                AnimationController.instance().addEvent(AnimationController.MOVE_KORGOOLS, "B" + (hole + 1), 1);
+                AnimationController.instance().addEvent(AnimationController.MOVE_KORGOOLS, "B" + (9 - hole), 1);
             }
         } else {
             for (int i = korgools; i > 0; --i) {
@@ -91,7 +91,7 @@ public class Board {
                     AnimationController.instance().addEvent(AnimationController.MOVE_KORGOOLS, "W" + (hole + 1), 1);
                 }
                 else {
-                    AnimationController.instance().addEvent(AnimationController.MOVE_KORGOOLS, "B" + (hole + 1), 1);
+                    AnimationController.instance().addEvent(AnimationController.MOVE_KORGOOLS, "B" + (9 - hole), 1);
                 }
                 if (i == 1) {
                     break;
@@ -130,7 +130,7 @@ public class Board {
                     AnimationController.instance().addEvent(AnimationController.EMPTY_HOLE, "W" + (lastHoleFilled + 1));
                 }
                 else {
-                    AnimationController.instance().addEvent(AnimationController.EMPTY_HOLE, "B" + (lastHoleFilled + 1));
+                    AnimationController.instance().addEvent(AnimationController.EMPTY_HOLE, "B" + (9 - lastHoleFilled));
                 }
                 player.setKazan(player.getKazan() + diff);
                 if (player == whitePlayer) {
@@ -150,7 +150,7 @@ public class Board {
                 AnimationController.instance().addEvent(AnimationController.EMPTY_HOLE, "W" + (player.getTuz() + 1));
             }
             else {
-                AnimationController.instance().addEvent(AnimationController.EMPTY_HOLE, "B" + (player.getTuz() + 1));
+                AnimationController.instance().addEvent(AnimationController.EMPTY_HOLE, "B" + (9 - player.getTuz()));
             }
             player.setKazan(player.getKazan() + diff);
             if (player == whitePlayer) {
@@ -168,7 +168,7 @@ public class Board {
                 AnimationController.instance().addEvent(AnimationController.EMPTY_HOLE, "W" + (opponent.getTuz() + 1));
             }
             else {
-                AnimationController.instance().addEvent(AnimationController.EMPTY_HOLE, "B" + (opponent.getTuz() + 1));
+                AnimationController.instance().addEvent(AnimationController.EMPTY_HOLE, "B" + (9 - opponent.getTuz()));
             }
             opponent.setKazan(opponent.getKazan() + diff);
             if (opponent == whitePlayer) {

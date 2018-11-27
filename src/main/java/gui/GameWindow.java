@@ -226,6 +226,17 @@ public class GameWindow extends JFrame {
      */
     private void genericOnClickAction(String buttonId) {
         setKazanRightText("Make move button pressed");
+        buttonMap.forEach((k, v) -> {
+            if (k.startsWith("B")) {
+                System.out.print(k + " = " + v.getLocationOnScreen().x + " ");
+            }
+        });
+        System.out.println();
+        buttonMap.forEach((k, v) -> {
+            if (k.startsWith("W")) {
+                System.out.print(k + " = " + v.getLocationOnScreen().x + " ");
+            }
+        });
     }
 
     /**

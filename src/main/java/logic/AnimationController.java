@@ -53,7 +53,6 @@ public class AnimationController extends Thread {
         glassPane.setSize(animateFor.getContentPane().getSize());
         glassPane.setLocation(0, 0);
         animateFor.getLayeredPane().add(glassPane, new Integer(1));
-        System.out.println("=======Glass pane added.");
         currentEvent = -1;
     }
 
@@ -66,7 +65,6 @@ public class AnimationController extends Thread {
      */
     public void addEvent(int eventType, String holeId, int numOfKorgools) {
         events.add(new AnimEvent(eventType, holeId, numOfKorgools));
-        System.out.println("=======Event added.");
     }
 
     /**
@@ -101,7 +99,6 @@ public class AnimationController extends Thread {
                 )
                 .collect(Collectors.toList());
         performMove(animKorgools, null);
-        //animKorgools.forEach(k -> performMove(k.korgool, k.start, k.target, null)); // This works so the targets are fine.
     }
 
     private void moveEvent(String id, int numOfKorgools) {
@@ -130,30 +127,6 @@ public class AnimationController extends Thread {
                 )
                 .collect(Collectors.toList());
         performMove(animKorgools, hole);
-        //animKorgools.forEach(k -> performMove(k.korgool, k.start, k.target, hole)); // This works so the targets are fine.
-    }
-
-    private void performMove(Korgool k, Point start, Point target, Hole newParent) {
-        startTime = System.currentTimeMillis();
-        boolean endMove = false;
-        while (!endMove) {
-            long duration = System.currentTimeMillis() - startTime;
-            double progress = (double)duration / (double)RUN_TIME;
-            if (progress > 1f) {
-                progress = 1f;
-                endMove = true;
-                if (newParent != null) {
-                    newParent.addKorgool(k);
-                }
-                glassPane.revalidate();
-                glassPane.repaint();
-            }
-            else {
-                Point newLocation = newPoint(start, target, progress);
-                k.setLocation(newLocation);
-                glassPane.repaint();
-            }
-        }
     }
 
     private void performMove(List<AnimKorgool> korgools, Hole newParent) {
@@ -167,8 +140,6 @@ public class AnimationController extends Thread {
                 if (newParent != null) {
                     korgools.forEach(k -> newParent.addKorgool(k.korgool));
                 }
-                glassPane.revalidate();
-                glassPane.repaint();
             }
             else {
                 korgools.forEach(k -> {
