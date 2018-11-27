@@ -8,6 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class AnimationController extends Thread {
     public static final int MOVE_ALL = 256;
@@ -16,26 +17,34 @@ public class AnimationController extends Thread {
     public static final String LEFT = "left";
     public static final String RIGHT = "right";
 
+    private static AnimationController instance;
+
     // Time in milliseconds, how long we want the animation to be.
-    private static final int RUN_TIME = 1000;
+    private static final int RUN_TIME = 500;
     private long startTime;
 
     private List<AnimEvent> events;
     private GameWindow animateFor;
     private JPanel glassPane;
-    private int numOfNotLocated;
-    private boolean wasResizable;
     private List<Korgool> toDistribute;
     private boolean stop;
     private int currentEvent;
 
-    public AnimationController(GameWindow animateFor) {
+    public static AnimationController instance() {
+        return instance;
+    }
+
+    public static AnimationController resetController(GameWindow animateFor) {
+        instance = new AnimationController(animateFor);
+        return instance;
+    }
+
+    private AnimationController(GameWindow animateFor) {
         if (animateFor == null) {
             throw new NullPointerException("Animation controller cannot work without a GameWindow.");
         }
         events = new ArrayList<>();
         toDistribute = new ArrayList<>();
-        numOfNotLocated = 0;
         this.animateFor = animateFor;
         stop = false;
         glassPane = new JPanel();
@@ -79,7 +88,6 @@ public class AnimationController extends Thread {
 
         Hole hole = animateFor.getButtonMap().get(id);
         List<Korgool> toMove = hole.releaseKorgools();
-        numOfNotLocated += toMove.size();
         Point paneLoc = animateFor.getContentPane().getLocationOnScreen();
         toMove.forEach(k -> {
             Point kLoc = k.getLocationOnScreen();
@@ -88,10 +96,12 @@ public class AnimationController extends Thread {
             k.setLocation(kLoc.x - paneLoc.x, kLoc.y - paneLoc.y);
         });
 
-        // Animate all korgools:
-        toMove.forEach(k -> {
-            performMove(k, k.getLocation(), new Point(animateFor.getContentPane().getSize().width/2, animateFor.getContentPane().getSize().height/2), null);
-        });
+        List<AnimKorgool> animKorgools = toMove.stream().map(k ->
+                new AnimKorgool(k, k.getLocation(), new Point(animateFor.getContentPane().getSize().width/2, animateFor.getContentPane().getSize().height/2))
+                )
+                .collect(Collectors.toList());
+        performMove(animKorgools, null);
+        //animKorgools.forEach(k -> performMove(k.korgool, k.start, k.target, null)); // This works so the targets are fine.
     }
 
     private void moveEvent(String id, int numOfKorgools) {
@@ -114,10 +124,13 @@ public class AnimationController extends Thread {
         }
 
         Point paneLoc = animateFor.getContentPane().getLocationOnScreen();
-        toMove.forEach(k -> {
-            Point hLoc = hole.getLocationOnScreen();
-            performMove(k, k.getLocation(), new Point(hLoc.x - paneLoc.x + hole.getSize().width/2, hLoc.y - paneLoc.y + hole.getSize().height/2) , hole);
-        });
+
+        List<AnimKorgool> animKorgools = toMove.stream().map(k ->
+                new AnimKorgool(k, k.getLocation(), new Point(hole.getLocationOnScreen().x - paneLoc.x + hole.getSize().width/2, hole.getLocationOnScreen().y - paneLoc.y + hole.getSize().height/2))
+                )
+                .collect(Collectors.toList());
+        performMove(animKorgools, hole);
+        //animKorgools.forEach(k -> performMove(k.korgool, k.start, k.target, hole)); // This works so the targets are fine.
     }
 
     private void performMove(Korgool k, Point start, Point target, Hole newParent) {
@@ -132,10 +145,38 @@ public class AnimationController extends Thread {
                 if (newParent != null) {
                     newParent.addKorgool(k);
                 }
+                glassPane.revalidate();
+                glassPane.repaint();
             }
-            Point newLocation = newPoint(start, target, progress);
-            k.setLocation(newLocation);
-            glassPane.repaint();
+            else {
+                Point newLocation = newPoint(start, target, progress);
+                k.setLocation(newLocation);
+                glassPane.repaint();
+            }
+        }
+    }
+
+    private void performMove(List<AnimKorgool> korgools, Hole newParent) {
+        startTime = System.currentTimeMillis();
+        boolean endMove = false;
+        while (!endMove) {
+            long duration = System.currentTimeMillis() - startTime;
+            double progress = (double)duration / (double)RUN_TIME;
+            if (progress > 1f) {
+                endMove = true;
+                if (newParent != null) {
+                    korgools.forEach(k -> newParent.addKorgool(k.korgool));
+                }
+                glassPane.revalidate();
+                glassPane.repaint();
+            }
+            else {
+                korgools.forEach(k -> {
+                    Point newLocation = newPoint(k.start, k.target, progress);
+                    k.korgool.setLocation(newLocation);
+                });
+                glassPane.repaint();
+            }
         }
     }
 
@@ -150,6 +191,8 @@ public class AnimationController extends Thread {
                 System.out.println("Interrupted wait.");
             }
             if (currentEvent != events.size() - 1) {
+                boolean wasResizable = animateFor.isResizable();
+                animateFor.setResizable(false);
                 currentEvent++;
                 AnimEvent e = events.get(currentEvent);
                 if (e.type == EMPTY_HOLE) {
@@ -161,6 +204,7 @@ public class AnimationController extends Thread {
                 else {
                     throw new RuntimeException("Invalid AnimEvent type: " + e.type);
                 }
+                animateFor.setResizable(wasResizable);
             }
         }
     }
@@ -168,6 +212,7 @@ public class AnimationController extends Thread {
     public void stopAnimator() {
         stop = true;
     }
+
     /**
      * Calculates new location for the korgool.
      *
@@ -200,20 +245,6 @@ public class AnimationController extends Thread {
         return value;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     private class AnimEvent {
         private int type;
         private String id;
@@ -225,6 +256,18 @@ public class AnimationController extends Thread {
             this.numOfKorgools = numOfKorgools;
         }
 
+    }
+
+    private class AnimKorgool {
+        private Korgool korgool;
+        private Point start;
+        private Point target;
+
+        private AnimKorgool(Korgool k, Point start, Point target) {
+            this.korgool = k;
+            this.start = start;
+            this.target = target;
+        }
     }
 
 }

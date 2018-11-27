@@ -25,7 +25,7 @@ public class GameManager {
         gameWindow = new GameWindow(this);
         populateInitialBoard();
         core = new Board();
-        anim = new AnimationController(gameWindow);
+        anim = AnimationController.resetController(gameWindow);
         anim.start();
     }
 
@@ -164,17 +164,11 @@ public class GameManager {
         if (isWhiteTurn) {
             hole = Integer.parseInt(buttonID) - 1;     //subtract 1 because logic goes from 0-8, while GUI goes from 1-9
             moveStatus = core.makeMove(hole, core.getWhitePlayer(), core.getBlackPlayer());
-            if (moveStatus == BoardStatus.SUCCESSFUL) {
-                anim.addEvent(AnimationController.EMPTY_HOLE, "W" + buttonID);
-            }
         }
         else {
             if (core.checkIfMovePossible(core.getBlackPlayer())) {
                 hole = machineChooseHole();
                 moveStatus = core.makeMove(hole, core.getBlackPlayer(), core.getWhitePlayer());
-                if (moveStatus == BoardStatus.SUCCESSFUL) {
-                    anim.addEvent(AnimationController.EMPTY_HOLE, "B" + hole);
-                }
             }
             else {
                 endImpossibleGame(false);

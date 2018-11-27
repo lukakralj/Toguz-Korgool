@@ -75,6 +75,8 @@ public class Hole extends OvalButton {
         k.setParentHole(this);
         k.setSize(korgoolSize);
         k.setLocation(calculateKorgoolLocation());
+        revalidate();
+        repaint();
     }
 
     /**
