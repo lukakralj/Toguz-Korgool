@@ -1,9 +1,16 @@
 # Main Repository for Agile Project
 
-## GUI prototype
-Currently, the GUI has 9 oval shaped button on the top and bottom to represents the 9 circles for the player and the AI. It also has an nearly complete menu with some basic options. The Text Area in the center represents the main play area and if you click on a button, it will append text to the Text Area in a new line. The front and back end have recently been merged and some basic integration tests have been implemented.
+## Game-Manager
+The game-manager class is responsible for initating all the other objects and contains the Main method. It is also responsible for merging the front end and back end functionlity.
+
+## Game-Window
+This class is responsible for managing all the GUI elements including the menu bar
+
+## Board.java and Player.java
+These classes are responsible for delivering the back-end functionality. Currently, the player chooses moves at random, but the game is fully functional and it is possible to complete a full game.
 
 ### TODO:
-- Complete the menu
-- Complete Custom Input Window
-- (other items listed in TODO comments)
+- Implement save game functionality
+- Animate the korgools
+- Use a seed for taking random values in the integration tests
+- Refactor the GUI classes
