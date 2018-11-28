@@ -280,6 +280,23 @@ public class GameWindow extends JFrame {
         }catch(Exception e){
             e.printStackTrace();
         }
+		
+		try{
+            File saveFile=new File("src\\main\\java\\saveFile2.csv");
+            FileOutputStream fos=new FileOutputStream(saveFile);
+            PrintWriter pw=new PrintWriter(fos);
+        
+            for(Map.Entry<String,JButton> entries :kazans.entrySet()){
+                pw.println(entries.getKey()+","+entries.getValue().getText());
+            }
+        
+            pw.flush();
+            pw.close();
+            fos.close();
+            System.out.println("Save Successful");
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }
 
     private void loadGame(){
@@ -301,6 +318,25 @@ public class GameWindow extends JFrame {
 				}else{
 					unsetTuz(button);
 				}
+            }
+            fis.close();
+            System.out.println("Load successful");
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+		
+		try{
+            File toRead=new File("src\\main\\java\\saveFile2.csv");
+            FileInputStream fis=new FileInputStream(toRead);
+    
+            Scanner sc=new Scanner(fis);
+    
+            String placeholder = "";
+            while(sc.hasNextLine()){
+                placeholder=sc.nextLine();
+                StringTokenizer st = new StringTokenizer(placeholder,",",false);
+                JButton button = kazans.get(st.nextToken());
+				button.setText(st.nextToken());
             }
             fis.close();
             System.out.println("Load successful");
