@@ -1,19 +1,21 @@
-/*
- * A Modal JDialog for the custom input window
- *
- */
-
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.util.HashMap;
 
+/*
+ * A Modal JDialog for the custom input window
+ *
+ */
 class CustomInputWindow extends JDialog {
 
     private Color bgColour;
-    private ButtonGroup radioOptionsTop, radioOptionsBottom;
+    private ButtonGroup radioOptionsBlack = new ButtonGroup(), radioOptionsWhite = new ButtonGroup();
     private HashMap<String, JSpinner> spinnerMap = new HashMap<>();
-    private int selectedTuzWhite, selectedTuzBlack, numberOfKorgools;
+    private HashMap<String, JRadioButton> radioButtonMap = new HashMap<>();
+    private int selectedTuzWhite, selectedTuzBlack, numberOfKorgools, blackKazan, whiteKazan;
+    private int blackHoles[] = new int[9];
+    private int whiteHoles[] = new int[9];
     private JTextArea outputLog;
     private JLabel infoLabel;
     private GameManager manager;
@@ -31,21 +33,15 @@ class CustomInputWindow extends JDialog {
     }
 
     CustomInputWindow() {
-        manager = null;
-        this.bgColour = Color.GRAY;
-        initialSetUp();
-        setModal(true);
+        this(Color.lightGray, null);
     }
 
-    public void initialSetUp() {
+    private void initialSetUp() {
         selectedTuzBlack = selectedTuzWhite = -1;
         numberOfKorgools = 0;
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        setLayout(new BorderLayout());
         setResizable(false);
-        setTitle("CustomInput");
-        radioOptionsTop = new ButtonGroup();
-        radioOptionsBottom = new ButtonGroup();
+        setTitle("Apply Custom Input");
         getContentPane().setBackground(bgColour);
         setPreferredSize(new Dimension(854, 480));
         setUpBottomBar();
@@ -59,23 +55,23 @@ class CustomInputWindow extends JDialog {
      */
     private void setUpInputArea() {
         JPanel inputArea = new JPanel(new GridLayout(0, 9));
+        inputArea.setBackground(bgColour);
         inputArea.setBorder(new EmptyBorder(10, 10, 10, 10));
-        for (int i = 9; i > 0; --i) {
-            inputArea.add(inputCell("B" + i));
-        }
-        inputArea.add(new JLabel());
+        for (int i = 9; i > 0; --i) inputArea.add(inputCell("B" + i));
+        inputArea.add(Box.createHorizontalGlue());
         inputArea.add(inputCell("BlackKazan"));
-        inputArea.add(new JLabel("<html>No white<br>Tuz</html>"));
-        for (int i = 0; i < 4; ++i) inputArea.add(new JLabel());
+        inputArea.add(new JLabel("<html>No white<br>Tuz</html>")); //TODO: Work on these labels, they dont look so great
+        for (int i = 0; i < 4; ++i) inputArea.add(Box.createHorizontalGlue());
         inputArea.add(inputCell("WhiteKazan"));
         inputArea.add(new JLabel("<html>No black<br>Tuz</html>"));
-        for (int i = 1; i < 10; ++i) {
-            inputArea.add(inputCell("W" + i));
-        }
+        for (int i = 1; i < 10; ++i) inputArea.add(inputCell("W" + i));
         getContentPane().add(inputArea, BorderLayout.CENTER);
         infoLabel = new JLabel("<html>Please enter in the number of Korgools per hole, and use the radio buttons to indicate which holes are Tuz.<br> Current number of Korgools: " + numberOfKorgools + "</html>");
         infoLabel.setName("infoLabel");
+        infoLabel.setBackground(bgColour);
         getContentPane().add(infoLabel, BorderLayout.NORTH);
+        radioButtonMap.get("R_BlackKazan").setSelected(true);
+        radioButtonMap.get("R_WhiteKazan").setSelected(true);
     }
 
     /**
@@ -105,14 +101,6 @@ class CustomInputWindow extends JDialog {
         } else if (numberOfKorgools != 162) {
             outputLog.setText("Please ensure the number of Korgools adds to 162");
         } else {
-            int blackHoles[] = new int[9];
-            int whiteHoles[] = new int[9];
-            int blackKazan = (int) spinnerMap.get("BlackKazan").getValue();
-            int whiteKazan = (int) spinnerMap.get("WhiteKazan").getValue();
-            for (int i = 1; i <= 9; ++i) {
-                blackHoles[i - 1] = (int) spinnerMap.get("B" + i).getValue();
-                whiteHoles[i - 1] = (int) spinnerMap.get("W" + i).getValue();
-            }
             if (manager != null) {
                 manager.resetTuzes();
                 manager.populateInitialBoard(whiteHoles, blackHoles, selectedTuzWhite, selectedTuzBlack, whiteKazan, blackKazan);
@@ -130,33 +118,40 @@ class CustomInputWindow extends JDialog {
     private JPanel inputCell(String componentId) {
         JPanel cell = new JPanel(new BorderLayout());
         cell.setName("C_" + componentId);
-        cell.setMaximumSize(new Dimension(getWidth() / 10, getHeight() / 4));
         cell.setBackground(bgColour);
         SpinnerNumberModel spinnerModel = new SpinnerNumberModel(0, 0, 162, 1);
         JSpinner spinner = new JSpinner(spinnerModel);
-        spinner.addChangeListener(e -> {
-            numberOfKorgools = 0;
-            for (JSpinner currentSpinner : spinnerMap.values()) numberOfKorgools += (int) currentSpinner.getValue();
-            infoLabel.setText("<html>Please enter in the number of Korgools per hole, and use the radio buttons to indicate which holes are Tuz.<br> Current number of Korgools: " + numberOfKorgools + "</html>");
-        });
-        spinner.setFont(spinner.getFont().deriveFont(20L));
         spinner.setName(componentId);
+        spinner.addChangeListener(e -> updateSpinners(spinner.getName()));
+        spinner.setFont(spinner.getFont().deriveFont(20L));
         spinnerMap.put(componentId, spinner);
         JRadioButton radio = new JRadioButton();
         radio.setName("R_" + componentId);
-        if (componentId.startsWith("B")) radioOptionsTop.add(radio);
-        else if (componentId.startsWith("W")) radioOptionsBottom.add(radio);
-        else if (componentId.equals("BlackKazan")) {
-            radioOptionsTop.add(radio);
-        } else if (componentId.equals("WhiteKazan")) {
-            radioOptionsBottom.add(radio);
-        }
+        radio.setBackground(bgColour);
+        if (componentId.startsWith("B")) radioOptionsBlack.add(radio);
+        else if (componentId.startsWith("W")) radioOptionsWhite.add(radio);
+        else if (componentId.equals("BlackKazan")) radioOptionsBlack.add(radio);
+        else if (componentId.equals("WhiteKazan")) radioOptionsWhite.add(radio);
         radio.setActionCommand(componentId);
         radio.addActionListener(e -> updateSelectedTuz(e.getActionCommand()));
+        radioButtonMap.put(radio.getName(), radio);
+        JLabel titleLabel = new JLabel(componentId, SwingConstants.CENTER);
+        titleLabel.setBackground(bgColour);
+        if (componentId.startsWith("W")) {
+            cell.setBackground(Color.WHITE);
+            radio.setBackground(Color.WHITE);
+            titleLabel.setBackground(Color.WHITE);
+        } else if (componentId.startsWith("B")) {
+            cell.setBackground(Color.BLACK);
+            radio.setBackground(Color.BLACK);
+            titleLabel.setBackground(Color.BLACK);
+            titleLabel.setForeground(Color.WHITE);
+        }
         cell.add(radio, BorderLayout.EAST);
-
         cell.add(spinner, BorderLayout.CENTER);
-        cell.add(new JLabel(componentId), BorderLayout.NORTH);
+        cell.add(titleLabel, BorderLayout.NORTH);
+        cell.add(Box.createHorizontalStrut(20), BorderLayout.WEST);
+        cell.add(new JLabel("<html></html>"), BorderLayout.SOUTH);
         return cell;
     }
 
@@ -172,4 +167,18 @@ class CustomInputWindow extends JDialog {
         else if (componentId.startsWith("B")) selectedTuzWhite = Integer.parseInt(componentId.substring(1));
     }
 
+    //TODO: javadocs , error messages?
+    private void updateSpinners(String componentId) {
+        numberOfKorgools = 0;
+        for (JSpinner currentSpinner : spinnerMap.values()) numberOfKorgools += (int) currentSpinner.getValue();
+        infoLabel.setText("<html>Please enter in the number of Korgools per hole, and use the radio buttons to indicate which holes are Tuz.<br> Current number of Korgools: " + numberOfKorgools + "</html>");
+        if (componentId.equals("BlackKazan")) blackKazan = (int) spinnerMap.get(componentId).getValue();
+        else if (componentId.equals("WhiteKazan")) whiteKazan = (int) spinnerMap.get(componentId).getValue();
+        else if (componentId.startsWith("W"))
+            whiteHoles[Integer.parseInt(componentId.substring(1)) - 1] = (int) spinnerMap.get(componentId).getValue();
+        else if (componentId.startsWith("B"))
+            blackHoles[Integer.parseInt(componentId.substring(1)) - 1] = (int) spinnerMap.get(componentId).getValue();
+    }
+
 }
+
