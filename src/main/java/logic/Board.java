@@ -1,8 +1,10 @@
+package logic;
+
 /**
  * Class representing a board of the game.
  *
  * @author Luka Kralj, Karolina Szafranek
- * @version 13 November 2018
+ * @version 26 November 2018
  */
 public class Board {
     private Player whitePlayer;
@@ -56,6 +58,12 @@ public class Board {
         otherBoard = opponent;
 
         int korgools = player.getHoleAt(hole);
+        if (currentBoard == whitePlayer) {
+            AnimationController.instance().addEvent(AnimationController.EMPTY_HOLE, "W" + (hole + 1));
+        }
+        else {
+            AnimationController.instance().addEvent(AnimationController.EMPTY_HOLE, "B" + (9 - hole));
+        }
         player.setHole(hole, 0);
 
         if (korgools == 0) {
@@ -70,9 +78,21 @@ public class Board {
                 hole++;
             }
             currentBoard.incrementHole(hole);
+            if (currentBoard == whitePlayer) {
+                AnimationController.instance().addEvent(AnimationController.MOVE_KORGOOLS, "W" + (hole + 1), 1);
+            }
+            else {
+                AnimationController.instance().addEvent(AnimationController.MOVE_KORGOOLS, "B" + (9 - hole), 1);
+            }
         } else {
             for (int i = korgools; i > 0; --i) {
                 currentBoard.incrementHole(hole);
+                if (currentBoard == whitePlayer) {
+                    AnimationController.instance().addEvent(AnimationController.MOVE_KORGOOLS, "W" + (hole + 1), 1);
+                }
+                else {
+                    AnimationController.instance().addEvent(AnimationController.MOVE_KORGOOLS, "B" + (9 - hole), 1);
+                }
                 if (i == 1) {
                     break;
                 }
@@ -103,20 +123,60 @@ public class Board {
             if (opponent.getHoleAt(lastHoleFilled) == 3 && player.getTuz() == -1 && opponent.getTuz() != lastHoleFilled && lastHoleFilled != 8) {
                 player.setTuz(lastHoleFilled);
             } else if (opponent.getHoleAt(lastHoleFilled) % 2 == 0){
-                player.setKazan(player.getKazan() + opponent.getHoleAt(lastHoleFilled));
+                int diff = opponent.getHoleAt(lastHoleFilled);
+
                 opponent.setHole(lastHoleFilled, 0);
+                if (opponent == whitePlayer) {
+                    AnimationController.instance().addEvent(AnimationController.EMPTY_HOLE, "W" + (lastHoleFilled + 1));
+                }
+                else {
+                    AnimationController.instance().addEvent(AnimationController.EMPTY_HOLE, "B" + (9 - lastHoleFilled));
+                }
+                player.setKazan(player.getKazan() + diff);
+                if (player == whitePlayer) {
+                    AnimationController.instance().addEvent(AnimationController.MOVE_KORGOOLS, AnimationController.RIGHT, diff);
+                }
+                else {
+                    AnimationController.instance().addEvent(AnimationController.MOVE_KORGOOLS, AnimationController.LEFT, diff);
+                }
             }
 
         }
 
         if (player.getTuz() > -1) {
-            player.setKazan(player.getKazan() + opponent.getHoleAt(player.getTuz()));
+            int diff = opponent.getHoleAt(player.getTuz());
             opponent.setHole(player.getTuz(), 0);
+            if (opponent == whitePlayer) {
+                AnimationController.instance().addEvent(AnimationController.EMPTY_HOLE, "W" + (player.getTuz() + 1));
+            }
+            else {
+                AnimationController.instance().addEvent(AnimationController.EMPTY_HOLE, "B" + (9 - player.getTuz()));
+            }
+            player.setKazan(player.getKazan() + diff);
+            if (player == whitePlayer) {
+                AnimationController.instance().addEvent(AnimationController.MOVE_KORGOOLS, AnimationController.RIGHT);
+            }
+            else {
+                AnimationController.instance().addEvent(AnimationController.MOVE_KORGOOLS, AnimationController.LEFT);
+            }
         }
 
         if (opponent.getTuz() > -1) {
-            opponent.setKazan(opponent.getKazan() + player.getHoleAt(opponent.getTuz()));
+            int diff = player.getHoleAt(opponent.getTuz());
             player.setHole(opponent.getTuz(), 0);
+            if (player == whitePlayer) {
+                AnimationController.instance().addEvent(AnimationController.EMPTY_HOLE, "W" + (opponent.getTuz() + 1));
+            }
+            else {
+                AnimationController.instance().addEvent(AnimationController.EMPTY_HOLE, "B" + (9 - opponent.getTuz()));
+            }
+            opponent.setKazan(opponent.getKazan() + diff);
+            if (opponent == whitePlayer) {
+                AnimationController.instance().addEvent(AnimationController.MOVE_KORGOOLS, AnimationController.RIGHT);
+            }
+            else {
+                AnimationController.instance().addEvent(AnimationController.MOVE_KORGOOLS, AnimationController.LEFT);
+            }
         }
 
         return checkResult();
@@ -197,7 +257,7 @@ public class Board {
     //   Used for testing private method
     // ===================================
 
-    BoardStatus testCheckResult() {
+    public BoardStatus testCheckResult() {
         return checkResult();
     }
     
@@ -205,25 +265,12 @@ public class Board {
         return checkResultOnImpossible();
     }
 
-    BoardStatus testEndMove(int lastHoleFilled, Player player, Player opponent, Player currentBoard) {
+    public BoardStatus testEndMove(int lastHoleFilled, Player player, Player opponent, Player currentBoard) {
         return endMove(lastHoleFilled, player, opponent, currentBoard);
     }
 
-    boolean testCheckIfMovePossible(Player currentPlayer) {
+    public boolean testCheckIfMovePossible(Player currentPlayer) {
         return checkIfMovePossible(currentPlayer);
     }
 
 }
-
-/**
- * Enum class representing statuses a board can have.
- */
-enum BoardStatus {
-    SUCCESSFUL, // Move went well but the game is not finished, next player should make a move.
-    MOVE_UNSUCCESSFUL, // The selected hole is empty.
-    MOVE_IMPOSSIBLE, // All holes on the player's side are empty.
-    B_WON,
-    W_WON,
-    DRAW
-}
-

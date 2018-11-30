@@ -6,8 +6,8 @@ plugins {
     id 'jacoco'
 }
 
+mainClassName = 'Main'
 version '1.0'
-mainClassName = 'GameManager'
 
 repositories {
     mavenCentral()

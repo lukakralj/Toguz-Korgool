@@ -1,14 +1,18 @@
+package gui;
 /*
  * A Modal JDialog for the custom input window
  *
  */
+
+
+import logic.GameManager;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.util.HashMap;
 
-class CustomInputWindow extends JDialog {
+public class CustomInputWindow extends JDialog {
 
     private Color bgColour;
     private ButtonGroup radioOptionsTop, radioOptionsBottom;
@@ -23,14 +27,14 @@ class CustomInputWindow extends JDialog {
      *
      * @param bgColour the background colour.
      */
-    CustomInputWindow(Color bgColour, GameManager managerIn) {
+    public CustomInputWindow(Color bgColour, GameManager managerIn) {
         manager = managerIn;
         this.bgColour = bgColour;
         initialSetUp();
         setModal(true);
     }
 
-    CustomInputWindow() {
+    public CustomInputWindow() {
         manager = null;
         this.bgColour = Color.GRAY;
         initialSetUp();
