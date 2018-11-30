@@ -154,10 +154,10 @@ public class Board {
             }
             player.setKazan(player.getKazan() + diff);
             if (player == whitePlayer) {
-                AnimationController.instance().addEvent(AnimationController.MOVE_KORGOOLS, AnimationController.RIGHT, diff);
+                AnimationController.instance().addEvent(AnimationController.MOVE_KORGOOLS, AnimationController.RIGHT);
             }
             else {
-                AnimationController.instance().addEvent(AnimationController.MOVE_KORGOOLS, AnimationController.LEFT, diff);
+                AnimationController.instance().addEvent(AnimationController.MOVE_KORGOOLS, AnimationController.LEFT);
             }
         }
 
@@ -172,10 +172,10 @@ public class Board {
             }
             opponent.setKazan(opponent.getKazan() + diff);
             if (opponent == whitePlayer) {
-                AnimationController.instance().addEvent(AnimationController.MOVE_KORGOOLS, AnimationController.RIGHT, diff);
+                AnimationController.instance().addEvent(AnimationController.MOVE_KORGOOLS, AnimationController.RIGHT);
             }
             else {
-                AnimationController.instance().addEvent(AnimationController.MOVE_KORGOOLS, AnimationController.LEFT, diff);
+                AnimationController.instance().addEvent(AnimationController.MOVE_KORGOOLS, AnimationController.LEFT);
             }
         }
 

@@ -158,7 +158,7 @@ public class Hole extends OvalButton {
      */
     private void updateKorgoolArea() {
         /*
-        The following formulas are derived from formulas for a linear function and ellipse.
+        The formulas below are derived from formulas for a linear function and ellipse.
 
         ellipse:  ((x - x')^2 / a^2) + ((y - y')^2 / b^2) = 1
 

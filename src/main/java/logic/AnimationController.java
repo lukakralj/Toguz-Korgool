@@ -10,11 +10,29 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * This class manages the animations of the korgools. To ensure that all classes are using the same instance of
+ * the controller, the instance of this class is accessed via a static instance() method.
+ *
+ * To schedule a new event use one of the addEvent methods.
+ * To start execution of the events call run() on the instance.
+ * The events are being executed in order as they were added. New events can be added to the queue even after the
+ * execution has started.
+ * The animations can be stopped with stopAnimator(). However, the instance needs to be reset after that.
+ *
+ * @author Luka Kralj
+ * @version 29 November 2018
+ */
 public class AnimationController extends Thread {
+    /** Marks that all available korgools need to be included in the event. */
     public static final int MOVE_ALL = 256;
+    /** Event type that specifies that one of the holes needs to be emptied. The korgools will be put in the centre. */
     public static final int EMPTY_HOLE = 512;
+    /** Event type that specifies that korgools need to be moved from the centre to one of the holes. */
     public static final int MOVE_KORGOOLS = 1024;
+    /** Use this constant as hole id to specify that the left kazan is involved in the event. */
     public static final String LEFT = "left";
+    /** Use this constant as hole id to specify that the right kazan is involved in the event. */
     public static final String RIGHT = "right";
 
     private static AnimationController instance;
@@ -28,17 +46,39 @@ public class AnimationController extends Thread {
     private JPanel glassPane;
     private List<Korgool> toDistribute;
     private boolean stop;
-    private int currentEvent;
+    private int currentEvent; // index of the event that is currently being executed
 
+    /**
+     *
+     * @return Currently active instance of this class.
+     */
     public static AnimationController instance() {
         return instance;
     }
 
+    /**
+     * Resets the instance of this class.
+     *
+     * @param animateFor The window that this animator will be used for.
+     * @return Currently active instance of this class.
+     */
     public static AnimationController resetController(GameWindow animateFor) {
+        if (instance != null) {
+            instance.stopAnimator();
+            if (instance.glassPane != null) {
+                instance.animateFor.getLayeredPane().remove(instance.glassPane);
+            }
+            instance = null;
+        }
         instance = new AnimationController(animateFor);
         return instance;
     }
 
+    /**
+     * Construct new controller.
+     *
+     * @param animateFor The window that this animator will be used for.
+     */
     private AnimationController(GameWindow animateFor) {
         if (animateFor == null) {
             throw new NullPointerException("Animation controller cannot work without a GameWindow.");
@@ -78,6 +118,11 @@ public class AnimationController extends Thread {
         addEvent(eventType, holeId, MOVE_ALL);
     }
 
+    /**
+     * Prepares the korgools for an empty event (remove from hole, calculate targets).
+     *
+     * @param id Id of the hole we are removing from.
+     */
     private void emptyEvent(String id) {
         if (id == LEFT || id == RIGHT) {
             System.out.println("Tried to animate emptying of the kazans - not defined.");
@@ -101,6 +146,12 @@ public class AnimationController extends Thread {
         performMove(animKorgools, null);
     }
 
+    /**
+     * Prepares the korools for a move event (calculate targets, add to the correct hole).
+     *
+     * @param id Id of the hole we are moving to.
+     * @param numOfKorgools Number of korgools we want to move.
+     */
     private void moveEvent(String id, int numOfKorgools) {
         Hole hole;
         if (id == LEFT) {
@@ -113,6 +164,7 @@ public class AnimationController extends Thread {
             hole = animateFor.getButtonMap().get(id);
         }
         List<Korgool> toMove = new ArrayList<>();
+        numOfKorgools = (numOfKorgools == MOVE_ALL) ? toDistribute.size() : numOfKorgools;
         for (int i = 0; i < numOfKorgools; i++) {
             if (toDistribute.isEmpty()) {
                 break;
@@ -129,6 +181,12 @@ public class AnimationController extends Thread {
         performMove(animKorgools, hole);
     }
 
+    /**
+     * Executes the moving of korgools in the list.
+     *
+     * @param korgools List of korgools to move.
+     * @param newParent The hole we are moving the korgools to. Null if we are moving them in the centre.
+     */
     private void performMove(List<AnimKorgool> korgools, Hole newParent) {
         startTime = System.currentTimeMillis();
         boolean endMove = false;
@@ -151,6 +209,9 @@ public class AnimationController extends Thread {
         }
     }
 
+    /**
+     * Start executing the events.
+     */
     public void run() {
         while (!stop) {
             try {
@@ -181,6 +242,9 @@ public class AnimationController extends Thread {
         }
     }
 
+    /**
+     * Stop animator.
+     */
     public void stopAnimator() {
         stop = true;
     }
@@ -217,6 +281,9 @@ public class AnimationController extends Thread {
         return value;
     }
 
+    /**
+     * Convenience class for keeping all the relevant information about the event together.
+     */
     private class AnimEvent {
         private int type;
         private String id;
@@ -230,6 +297,9 @@ public class AnimationController extends Thread {
 
     }
 
+    /**
+     * Convenience class to keep all relevant information about the movement of the specific korgool together.
+     */
     private class AnimKorgool {
         private Korgool korgool;
         private Point start;
@@ -241,5 +311,4 @@ public class AnimationController extends Thread {
             this.target = target;
         }
     }
-
 }

@@ -2,8 +2,6 @@ package logic;
 
 import gui.GameWindow;
 import gui.OvalButton;
-import javafx.scene.layout.BorderPane;
-import logic.Player;
 import java.util.Random;
 import java.util.Set;
 
