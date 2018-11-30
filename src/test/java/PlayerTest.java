@@ -3,7 +3,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- * Class that contains tests for logic.Player.java.
+ * Class that contains tests for Player.java.
  *
  * @author Karolina Szafranek
  * @version 17 November 2018
@@ -18,7 +18,7 @@ public class PlayerTest {
         Player player = new Player();
         assertEquals("Kazan initialised as: " + player.getKazan() + " - incorrect.", 0, player.getKazan());
         assertEquals("Tuz initialised as: " + player.getTuz() + " - incorrect.", -1, player.getTuz());
-        assertEquals("logic.Player has " + player.getHoles().length + "holes but should have 9", 9, player.getHoles().length);
+        assertEquals("Player has " + player.getHoles().length + "holes but should have 9", 9, player.getHoles().length);
 
         for (int i : player.getHoles()) {
             assertEquals("Holes initialised incorrectly.", 9, i);

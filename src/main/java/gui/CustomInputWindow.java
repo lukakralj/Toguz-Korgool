@@ -23,7 +23,7 @@ public class CustomInputWindow extends JDialog {
     private GameManager manager;
 
     /**
-     * Construct an object of type gui.CustomInputWindow
+     * Construct an object of type CustomInputWindow
      *
      * @param bgColour the background colour.
      */

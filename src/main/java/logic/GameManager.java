@@ -119,7 +119,7 @@ public class GameManager {
 
     /**
      * Update the GUI to correctly display the changes that have occurred in the player's kazan.
-     * @param player logic.Player whose kazan is to be updated
+     * @param player Player whose kazan is to be updated
      */
     private void updateKazan(Player player) {
         String text = player.getKazan() + "";
