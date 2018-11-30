@@ -6,8 +6,7 @@ import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.util.*;
-
-import logic.AnimationController;
+import java.io.*;
 import logic.GameManager;
 
 /*
@@ -22,6 +21,7 @@ public class GameWindow extends JFrame {
     private Hole kazanRight, kazanLeft;
     private JPanel root;
     private JLayeredPane layeredPane;
+    private HashMap<String, Hole> kazans;
     private GameManager manager;
 
     /**
@@ -32,6 +32,7 @@ public class GameWindow extends JFrame {
         manager = managerIn;
         setFrameProperties();
         buttonMap = new HashMap<>();
+        kazans = new HashMap<>();
         setUpMenu();
         setUpTopPanel();
         setUpBottomBar();
@@ -41,7 +42,7 @@ public class GameWindow extends JFrame {
         root.setSize(new Dimension(1280, 720));
         root.setLocation(0, 0);
         layeredPane.add(root, new Integer(0));
-        //layeredPane.setLayer(root, 0);
+
         getContentPane().add(layeredPane);
 
         addComponentListener(new ComponentAdapter() {
@@ -81,7 +82,7 @@ public class GameWindow extends JFrame {
      * ActionListener to each item in the menu.
      */
     private void setUpMenu() {
-        String[] FileMenuItems = {"CustomInput", "Quit"};
+        String[] FileMenuItems = {"CustomInput", "Save", "Load", "Quit"};
         JMenu FileMenu = new JMenu("File");
 		FileMenu.setName("filemenu");
         FileMenu.setFont(FileMenu.getFont().deriveFont(16F));
@@ -199,6 +200,8 @@ public class GameWindow extends JFrame {
         kazanLeft.setColorBorderNormal(new Color(160,82,45));
 		kazanLeft.setName("leftKazan");
         kazanLeft.setPreferredSize(new Dimension(620, kazanPanel.getHeight() - 10));
+        kazans.put(kazanRight.getName(), kazanRight);
+        kazans.put(kazanLeft.getName(), kazanLeft);
         kazanPanel.add(kazanRight, BorderLayout.EAST);
         kazanPanel.add(kazanLeft, BorderLayout.WEST);
         return kazanPanel;
@@ -225,7 +228,7 @@ public class GameWindow extends JFrame {
      * @param buttonId the ID of the button clicked
      */
     private void genericOnClickAction(String buttonId) {
-        setKazanRightText("Make move button pressed");
+        // TODO: used for debugging buttons ids
         buttonMap.forEach((k, v) -> {
             if (k.startsWith("B")) {
                 System.out.print(k + " = " + v.getLocationOnScreen().x + " ");
@@ -252,9 +255,111 @@ public class GameWindow extends JFrame {
 					new CustomInputWindow(BACKGROUND_COLOR, manager);
 				}
                 break;
+            case "Save":
+                JOptionPane.showConfirmDialog(null, "Are you sure you want to save the game?");
+                saveGame();
+                break;
+            case "Load":
+                JOptionPane.showConfirmDialog(null, "Are you sure you want to load the latest save state?");
+                loadGame();
+                break;
             case "Quit":
+                JOptionPane.showConfirmDialog(null, "Are you sure you want to quit?");
                 dispose();
         }
+    }
+
+    private void saveGame(){
+        System.out.println("Trying to save game");
+
+        try{
+            File saveFile=new File("src\\main\\java\\saveFile.csv");
+            FileOutputStream fos=new FileOutputStream(saveFile);
+            PrintWriter pw=new PrintWriter(fos);
+        
+            for(Map.Entry<String,Hole> entries :buttonMap.entrySet()){
+                pw.println(entries.getKey()+","+entries.getValue().getText()+","+entries.getValue().isTuz());
+            }
+        
+            pw.flush();
+            pw.close();
+            fos.close();
+            System.out.println("Save Successful");
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+		
+		try{
+            File saveFile=new File("src\\main\\java\\saveFile2.csv");
+            FileOutputStream fos=new FileOutputStream(saveFile);
+            PrintWriter pw=new PrintWriter(fos);
+        
+            for(Map.Entry<String,Hole> entries :kazans.entrySet()){
+                pw.println(entries.getKey()+","+entries.getValue().getText());
+            }
+        
+            pw.flush();
+            pw.close();
+            fos.close();
+            System.out.println("Save Successful");
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    private void loadGame(){
+        System.out.println("Trying to load game");
+        try{
+            File toRead=new File("src\\main\\java\\saveFile.csv");
+            FileInputStream fis=new FileInputStream(toRead);
+    
+            Scanner sc=new Scanner(fis);
+    
+            String placeholder = "";
+            while(sc.hasNextLine()){
+                placeholder=sc.nextLine();
+                StringTokenizer st = new StringTokenizer(placeholder,",",false);
+                Hole button = buttonMap.get(st.nextToken());
+				button.setText(st.nextToken());
+				if(st.nextToken().equals(true)){
+					button.setTuz(true);
+				}else{
+                    button.setTuz(false);
+				}
+            }
+            fis.close();
+            System.out.println("Load successful");
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+		
+		try{
+            File toRead=new File("src\\main\\java\\saveFile2.csv");
+            FileInputStream fis=new FileInputStream(toRead);
+    
+            Scanner sc=new Scanner(fis);
+    
+            String placeholder = "";
+            while(sc.hasNextLine()){
+                placeholder=sc.nextLine();
+                StringTokenizer st = new StringTokenizer(placeholder,",",false);
+                JButton button = kazans.get(st.nextToken());
+				button.setText(st.nextToken());
+            }
+            fis.close();
+            System.out.println("Load successful");
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        /*
+        for(JButton val:buttonMap.values()){
+            if(Integer.valueOf(val.getText())==0){
+                setTuz(val);
+            }else{
+                unsetTuz(val);
+            }
+        }
+        */
     }
 
     /**
