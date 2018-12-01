@@ -108,7 +108,7 @@ public class GUITest {
 		OvalButton txt2 = m.getKazanRight();
 		String actual = txt2.getText();
 		System.out.println(actual);
-		assertTrue(actual.contains("Make move button pressed"));
+		assertTrue(actual.contains("Make move button pressed")); // TODO: this test is outdated
 		swinger.pause(150);
 	}
 
