@@ -3,8 +3,7 @@ package gui;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
+import java.awt.event.*;
 import java.util.*;
 import java.io.*;
 import logic.GameManager;
@@ -50,6 +49,12 @@ public class GameWindow extends JFrame {
             public void componentResized(ComponentEvent e) {
                 root.setSize(getContentPane().getSize());
             }
+        });
+
+        addWindowStateListener(e -> {
+            revalidate();
+            root.setSize(getContentPane().getSize());
+            repaint();
         });
         pack();
         setVisible(true);

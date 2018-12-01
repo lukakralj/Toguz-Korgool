@@ -38,7 +38,7 @@ public class AnimationController extends Thread {
     private static AnimationController instance;
 
     // Time in milliseconds, how long we want the animation to be.
-    private static final int RUN_TIME = 500;
+    private static final int RUN_TIME = 1500;
     private long startTime;
 
     private List<AnimEvent> events;
@@ -223,8 +223,6 @@ public class AnimationController extends Thread {
                 System.out.println("Interrupted wait.");
             }
             if (currentEvent != events.size() - 1) {
-                boolean wasResizable = animateFor.isResizable();
-                animateFor.setResizable(false);
                 glassPane.setSize(animateFor.getContentPane().getSize());
                 currentEvent++;
                 AnimEvent e = events.get(currentEvent);
@@ -237,7 +235,6 @@ public class AnimationController extends Thread {
                 else {
                     throw new RuntimeException("Invalid AnimEvent type: " + e.type);
                 }
-                animateFor.setResizable(wasResizable);
             }
         }
     }
