@@ -1,6 +1,9 @@
+package logic;
+
+import gui.GameWindow;
+import gui.OvalButton;
 import java.util.Random;
 import java.util.Set;
-import javax.swing.*;
 
 /**
  * Main class for the Team Platypus Agile Project
@@ -10,10 +13,8 @@ public class GameManager {
 
     private GameWindow gameWindow;
     private Board core;
-
-    public static void main(String[] args) {
-        new GameManager();
-    }
+    private AnimationController anim;
+    private Thread animThread;
 
     /**
      * Construct the game manager
@@ -22,6 +23,8 @@ public class GameManager {
         gameWindow = new GameWindow(this);
         populateInitialBoard();
         core = new Board();
+        anim = AnimationController.resetController(gameWindow);
+        anim.start();
     }
 
     /**
@@ -30,7 +33,7 @@ public class GameManager {
     private void populateInitialBoard() {
         Set<String> setOfButtonsIDs = gameWindow.getButtonMap().keySet();
         for (String buttonId : setOfButtonsIDs) {
-            gameWindow.setHoleText(buttonId, "9");
+            gameWindow.setHoleText(buttonId, 9);
         }
     }
 
@@ -92,7 +95,7 @@ public class GameManager {
     private void updateWhiteDisplay() {
         Player player = core.getWhitePlayer();
         for (int i = 1; i <= 9; i++) {
-            gameWindow.setHoleText("W" + i, player.getHoleAt(i - 1) + "");
+            gameWindow.setHoleText("W" + i, player.getHoleAt(i - 1));
         }
 
         updateKazan(player);
@@ -106,7 +109,7 @@ public class GameManager {
         Player player = core.getBlackPlayer();
         int holeIndex = 0;
         for (int i = 9; i >= 1; i--) {
-            gameWindow.setHoleText("B" + i, player.getHoleAt(holeIndex) + "");
+            gameWindow.setHoleText("B" + i, player.getHoleAt(i - 1));
             holeIndex++;
         }
 
@@ -179,6 +182,7 @@ public class GameManager {
     /**
      * Returns a randomly chosen hole number. Makes sure it does not equal the white Tuz, and also makes sure that the chosen
      *  whole has at least 1 korgool in it.
+     *
      *  @return the hole chosen by the machine
      */
     private int machineChooseHole() {
@@ -201,7 +205,8 @@ public class GameManager {
     /**
      * If a move is impossible, the opponent collects all of their own korgools and puts them into
      * their kazan. The kazans of the two players are then compared to determine the winner (more korgools wins)
-     *  @param isWhiteTurn boolean indicating whether it is the white player's turn
+     *
+     * @param isWhiteTurn boolean indicating whether it is the white player's turn
      */
     private void endImpossibleGame(boolean isWhiteTurn) {
         if (isWhiteTurn) {
@@ -218,6 +223,7 @@ public class GameManager {
 
     /**
      *  Checks whether the game has ended, either because of a win, loss, or tie.
+     *
      *  @param endStatus the endStatus of the board at this point
      */
     private void checkEndStatus(BoardStatus endStatus) {
@@ -268,5 +274,8 @@ public class GameManager {
         return gameWindow.getKazanRight();
     }
 
+    public AnimationController getAnimationController() {
+        return anim;
+    }
 }
 

@@ -1,5 +1,6 @@
-import org.junit.After;
-import org.junit.Before;
+import gui.GameWindow;
+import gui.OvalButton;
+import logic.GameManager;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import com.athaydes.automaton.Swinger;
@@ -12,6 +13,7 @@ import java.io.File;
 import java.util.*;
 import javax.swing.ImageIcon;
 import static com.athaydes.automaton.assertion.AutomatonMatcher.hasText;
+
 
 /**
  * Class that contains tests for the GUI.
@@ -106,7 +108,7 @@ public class GUITest {
 		OvalButton txt2 = m.getKazanRight();
 		String actual = txt2.getText();
 		System.out.println(actual);
-		assertTrue(actual.contains("Make move button pressed"));
+		assertTrue(actual.contains("Make move button pressed")); // TODO: this test is outdated
 		swinger.pause(150);
 	}
 
@@ -182,8 +184,8 @@ public class GUITest {
 	public void TestW9Correct() {
 		GameManager m = new GameManager();
 		Swinger swinger = Swinger.getUserWith(m.getWindow());
-		swinger.pause(200).clickOn("name:W9")
-		.pause(800);
+		swinger.pause(400).clickOn("name:W9")
+		.pause(900);
 		OvalButton txt2 = m.getKazanRight();
 		int actual = Integer.parseInt(txt2.getText());
 		System.out.println(actual);
@@ -203,9 +205,9 @@ public class GUITest {
 	public void TestW2W3Sequence() {
 		GameManager m = new GameManager();
 		Swinger swinger = Swinger.getUserWith(m.getWindow());
-		swinger.pause(200).clickOn("name:W2")
-		.pause(200).clickOn("name:W3")
-		.pause(800);
+		swinger.pause(400).clickOn("name:W2")
+		.pause(400).clickOn("name:W3")
+		.pause(900);
 		OvalButton txt2 = m.getKazanRight();
 		int actual = Integer.parseInt(txt2.getText());
 		System.out.println(actual);
@@ -225,16 +227,16 @@ public class GUITest {
 	public void TestFullSequence() {
 		GameManager m = new GameManager();
 		Swinger swinger = Swinger.getUserWith(m.getWindow());
-		swinger.pause(200).clickOn("name:W1")
-		.pause(200).clickOn("name:W2")
-		.pause(200).clickOn("name:W3")
-		.pause(200).clickOn("name:W4")
-		.pause(200).clickOn("name:W5")
-		.pause(200).clickOn("name:W6")
-		.pause(200).clickOn("name:W7")
-		.pause(200).clickOn("name:W8")
-		.pause(200).clickOn("name:W9")
-		.pause(800);
+		swinger.pause(400).clickOn("name:W1")
+		.pause(400).clickOn("name:W2")
+		.pause(400).clickOn("name:W3")
+		.pause(400).clickOn("name:W4")
+		.pause(400).clickOn("name:W5")
+		.pause(400).clickOn("name:W6")
+		.pause(400).clickOn("name:W7")
+		.pause(400).clickOn("name:W8")
+		.pause(400).clickOn("name:W9")
+		.pause(900);
 		OvalButton txt2 = m.getKazanRight();
 		int actual = Integer.parseInt(txt2.getText());
 		System.out.println(actual);

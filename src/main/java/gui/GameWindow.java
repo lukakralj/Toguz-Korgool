@@ -1,11 +1,12 @@
+package gui;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import javax.imageio.ImageIO;
-import java.io.File;
+import java.awt.event.*;
 import java.util.*;
 import java.io.*;
+import logic.GameManager;
 
 /*
  * Presents the main game window for the user
@@ -15,28 +16,56 @@ import java.io.*;
 public class GameWindow extends JFrame {
 
     private static final Color BACKGROUND_COLOR = Color.LIGHT_GRAY, TOP_PANEL_COLOR = Color.GRAY;
-    private HashMap<String, JButton> buttonMap;
-    private HashMap<String, JButton> kazans = new HashMap<String, JButton>();
-    private OvalButton kazanRight, kazanLeft;
+    private HashMap<String, Hole> buttonMap;
+    private Hole kazanRight, kazanLeft;
+    private JPanel root;
+    private JLayeredPane layeredPane;
+    private HashMap<String, Hole> kazans;
     private GameManager manager;
 
     /**
      * Construct the game window
      */
-    GameWindow(GameManager managerIn) {
+    public GameWindow(GameManager managerIn) {
+        root = new JPanel();
         manager = managerIn;
         setFrameProperties();
         buttonMap = new HashMap<>();
+        kazans = new HashMap<>();
         setUpMenu();
         setUpTopPanel();
         setUpBottomBar();
         setUpLowerPanel();
+
+        layeredPane = new JLayeredPane();
+        root.setSize(new Dimension(1280, 720));
+        root.setLocation(0, 0);
+        layeredPane.add(root, new Integer(0));
+
+        getContentPane().add(layeredPane);
+
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                root.setSize(getContentPane().getSize());
+            }
+        });
+
+        addWindowStateListener(e -> {
+            revalidate();
+            root.setSize(getContentPane().getSize());
+            repaint();
+        });
         pack();
         setVisible(true);
     }
-	
-	GameWindow() {
+
+	public GameWindow() {
         this(null);
+    }
+
+    public JLayeredPane getLayeredPane() {
+        return layeredPane;
     }
 
     /**
@@ -44,11 +73,11 @@ public class GameWindow extends JFrame {
      */
     private void setFrameProperties() {
         setTitle("Toguz Korgol");
-        setResizable(false);
+        setResizable(true);
         setPreferredSize(new Dimension(1280, 720));
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        getContentPane().setBackground(BACKGROUND_COLOR);
-        getContentPane().setLayout(new BorderLayout());
+        root.setBackground(BACKGROUND_COLOR);
+        root.setLayout(new BorderLayout());
     }
 
     /**
@@ -78,7 +107,7 @@ public class GameWindow extends JFrame {
     /**
      * @return The map containing all the ButtonIds
      */
-    public HashMap<String, JButton> getButtonMap() {
+    public HashMap<String, Hole> getButtonMap() {
         return buttonMap;
     }
 
@@ -93,7 +122,7 @@ public class GameWindow extends JFrame {
         GridLayout topButtons = new GridLayout(0, 9, 10, 10);//Set padding around invidual buttons
         topPanel.setLayout(topButtons);
         fillPanelWithButtons(topPanel, "B");
-        getContentPane().add(topPanel, BorderLayout.NORTH);
+        root.add(topPanel, BorderLayout.NORTH);
     }
 
     /**
@@ -104,9 +133,9 @@ public class GameWindow extends JFrame {
         JPanel lowerPanel = new JPanel(new BorderLayout());
         lowerPanel.setBorder(new EmptyBorder(0, 10, 10, 10));//Set Padding around the Bottom Panel
         lowerPanel.setBackground(BACKGROUND_COLOR);
-        getContentPane().add(lowerPanel, BorderLayout.CENTER);
+        root.add(lowerPanel, BorderLayout.CENTER);
         JPanel lowerButtonPanel = new JPanel();
-        GridLayout botButtons = new GridLayout(0, 9, 10, 10);//Set padding around invidual buttons
+        GridLayout botButtons = new GridLayout(0, 9, 10, 10);//Set padding around individual buttons
         lowerButtonPanel.setLayout(botButtons);
         lowerButtonPanel.setBackground(BACKGROUND_COLOR);
         lowerPanel.add(lowerButtonPanel, BorderLayout.SOUTH);
@@ -122,12 +151,7 @@ public class GameWindow extends JFrame {
      */
     private void fillPanelWithButtons(JPanel panel, String color) {
         for (int i = 1; i < 10; ++i) {
-            JButton button = new OvalButton(Integer.toString(i));
-            button.setHorizontalTextPosition(JButton.CENTER);
-            button.setVerticalTextPosition(JButton.CENTER);
-            button.setBorderPainted(false);
-            button.setFocusPainted(false);
-            button.setContentAreaFilled(false);
+            Hole button = new Hole();
             button.setName(color + i);
             buttonMap.put(button.getName(), button);
             button.setPreferredSize(new Dimension(30, 160));
@@ -137,29 +161,12 @@ public class GameWindow extends JFrame {
     }
 
     /**
-     * Sets a button to be tuz by changing its color
-     *
-     * @param button The button to be set to a Tuz
-     */
-    private void setTuz(JButton button) {
-        ((OvalButton)button).setHighlighted(true);
-    }
-	
-	private boolean isTuz(JButton button) {
-        return ((OvalButton)button).isHighlighted();
-    }
-
-    private void unsetTuz(JButton button) {
-        ((OvalButton)button).setHighlighted(false);
-    }
-
-    /**
      * Unsets all the tuzes to being normal buttons by changing its color
      *
      */
     public void unsetTuzes() {
-        for (JButton button : buttonMap.values()) {
-            ((OvalButton) button).setHighlighted(false);
+        for (Hole hole : buttonMap.values()) {
+            hole.setTuz(false);
         }
     }
 
@@ -170,7 +177,7 @@ public class GameWindow extends JFrame {
         JPanel bottomPanel = new JPanel();
         bottomPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
         bottomPanel.setBackground(BACKGROUND_COLOR);
-        getContentPane().add(bottomPanel, BorderLayout.SOUTH);
+        root.add(bottomPanel, BorderLayout.SOUTH);
         BorderLayout bl = new BorderLayout();
         bottomPanel.setLayout(bl);
         JButton makeMove = new JButton("Make this move");
@@ -188,18 +195,12 @@ public class GameWindow extends JFrame {
         JPanel kazanPanel = new JPanel(new BorderLayout());
         kazanPanel.setBackground(BACKGROUND_COLOR);
         kazanPanel.setBorder(new EmptyBorder(0, 0, 20, 0));
-        kazanRight = new OvalButton();
-        kazanRight.setBorderPainted(false);
-        kazanRight.setFocusPainted(false);
-        kazanRight.setContentAreaFilled(false);
+        kazanRight = new Hole();
         kazanRight.setColorHighlighted(kazanRight.getColorNormal()); // TODO: this is only a temporary "fix"
         kazanRight.setColorBorderNormal(new Color(160,82,45));
 		kazanRight.setName("rightKazan");
         kazanRight.setPreferredSize(new Dimension(620, kazanPanel.getHeight() - 10));
-        kazanLeft = new OvalButton();
-        kazanLeft.setBorderPainted(false);
-        kazanLeft.setFocusPainted(false);
-        kazanLeft.setContentAreaFilled(false);
+        kazanLeft = new Hole();
         kazanLeft.setColorHighlighted(kazanLeft.getColorNormal()); // TODO: this is only a temporary "fix"
         kazanLeft.setColorBorderNormal(new Color(160,82,45));
 		kazanLeft.setName("leftKazan");
@@ -232,6 +233,18 @@ public class GameWindow extends JFrame {
      * @param buttonId the ID of the button clicked
      */
     private void genericOnClickAction(String buttonId) {
+        // TODO: used for debugging buttons ids
+        buttonMap.forEach((k, v) -> {
+            if (k.startsWith("B")) {
+                System.out.print(k + " = " + v.getLocationOnScreen().x + " ");
+            }
+        });
+        System.out.println();
+        buttonMap.forEach((k, v) -> {
+            if (k.startsWith("W")) {
+                System.out.print(k + " = " + v.getLocationOnScreen().x + " ");
+            }
+        });
     }
 
     /**
@@ -269,8 +282,8 @@ public class GameWindow extends JFrame {
             FileOutputStream fos=new FileOutputStream(saveFile);
             PrintWriter pw=new PrintWriter(fos);
         
-            for(Map.Entry<String,JButton> entries :buttonMap.entrySet()){
-                pw.println(entries.getKey()+","+entries.getValue().getText()+","+isTuz(entries.getValue()));
+            for(Map.Entry<String,Hole> entries :buttonMap.entrySet()){
+                pw.println(entries.getKey()+","+entries.getValue().getText()+","+entries.getValue().isTuz());
             }
         
             pw.flush();
@@ -286,7 +299,7 @@ public class GameWindow extends JFrame {
             FileOutputStream fos=new FileOutputStream(saveFile);
             PrintWriter pw=new PrintWriter(fos);
         
-            for(Map.Entry<String,JButton> entries :kazans.entrySet()){
+            for(Map.Entry<String,Hole> entries :kazans.entrySet()){
                 pw.println(entries.getKey()+","+entries.getValue().getText());
             }
         
@@ -311,12 +324,12 @@ public class GameWindow extends JFrame {
             while(sc.hasNextLine()){
                 placeholder=sc.nextLine();
                 StringTokenizer st = new StringTokenizer(placeholder,",",false);
-                JButton button = buttonMap.get(st.nextToken());
+                Hole button = buttonMap.get(st.nextToken());
 				button.setText(st.nextToken());
 				if(st.nextToken().equals(true)){
-					setTuz(button);
+					button.setTuz(true);
 				}else{
-					unsetTuz(button);
+                    button.setTuz(false);
 				}
             }
             fis.close();
@@ -358,13 +371,14 @@ public class GameWindow extends JFrame {
      * Function to set the text of a specific hole by ID.
      *
      * @param buttonId the ID of the button to set
-     * @param input    the text to make the button display
+     * @param numOfKorgools number of korgools that we want to have in this hole
      */
-    public void setHoleText(String buttonId, String input) {
-        JButton button = buttonMap.get(buttonId);
-        if (button != null) {
-            button.setText(input);
+    public void setHoleText(String buttonId, int numOfKorgools) {
+        if (manager.getAnimationController() == null) {
+            // Game only just started. TODO: refactor. this is ugly! :(
+            buttonMap.get(buttonId).createAndAdd(numOfKorgools);
         }
+
     }
 
     /**
@@ -385,16 +399,16 @@ public class GameWindow extends JFrame {
         kazanLeft.setText(input);
     }
 	
-	public OvalButton getKazanLeft() {
+	public Hole getKazanLeft() {
         return kazanLeft;
     }
 	
-	public OvalButton getKazanRight() {
+	public Hole getKazanRight() {
         return kazanRight;
     }
 
     public void makeTuz(String buttonId) {
-        setTuz(buttonMap.get(buttonId));
+        buttonMap.get(buttonId).setTuz(true);
     }
 
 }
