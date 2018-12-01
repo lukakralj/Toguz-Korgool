@@ -277,5 +277,13 @@ public class GameManager {
     public AnimationController getAnimationController() {
         return anim;
     }
+
+    /**
+     * Getter only used for testing
+     * @return board of the game
+     */
+    public Board getCore() {
+        return core;
+    }
 }
 
