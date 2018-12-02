@@ -135,8 +135,8 @@ public class GameWindow extends JFrame {
         lowerPanel.setBackground(BACKGROUND_COLOR);
         root.add(lowerPanel, BorderLayout.CENTER);
         JPanel lowerButtonPanel = new JPanel();
-        GridLayout botButtons = new GridLayout(0, 9, 10, 10);//Set padding around individual buttons
-        lowerButtonPanel.setLayout(botButtons);
+        GridLayout bottomButtons = new GridLayout(0, 9, 10, 10);//Set padding around individual buttons
+        lowerButtonPanel.setLayout(bottomButtons);
         lowerButtonPanel.setBackground(BACKGROUND_COLOR);
         lowerPanel.add(lowerButtonPanel, BorderLayout.SOUTH);
         lowerPanel.add(setUpKazans(), BorderLayout.CENTER);
@@ -274,35 +274,35 @@ public class GameWindow extends JFrame {
         }
     }
 
+    private PrintWriter getPrintWriter(String filetoOpen) throws FileNotFoundException{
+        File saveFile=new File(filetoOpen);
+        FileOutputStream fos=new FileOutputStream(saveFile);
+        PrintWriter pw=new PrintWriter(fos);
+        return pw;
+    }
+
+    private void closePrintWriter(PrintWriter pw){
+        pw.flush();
+        pw.close();
+    }
+
     private void saveGame(){
         try{
-            File saveFile=new File("src\\main\\java\\saveFile.csv");
-            FileOutputStream fos=new FileOutputStream(saveFile);
-            PrintWriter pw=new PrintWriter(fos);
-        
+            PrintWriter pw = getPrintWriter("src\\main\\java\\saveFile.csv");
             for(Map.Entry<String,Hole> entries :buttonMap.entrySet()){
                 pw.println(entries.getKey()+","+entries.getValue().getNumberOfKorgools()+","+entries.getValue().isTuz());
             }
-        
-            pw.flush();
-            pw.close();
-            fos.close();
+            closePrintWriter(pw);
         }catch(Exception e){
             e.printStackTrace();
         }
 		
 		try{
-            File saveFile=new File("src\\main\\java\\saveFile2.csv");
-            FileOutputStream fos=new FileOutputStream(saveFile);
-            PrintWriter pw=new PrintWriter(fos);
-        
+            PrintWriter pw = getPrintWriter("src\\main\\java\\saveFile2.csv");
             for(Map.Entry<String,Hole> entries :kazans.entrySet()){
                 pw.println(entries.getKey()+","+entries.getValue().getNumberOfKorgools());
             }
-        
-            pw.flush();
-            pw.close();
-            fos.close();
+            closePrintWriter(pw);
         }catch(Exception e){
             e.printStackTrace();
         }
