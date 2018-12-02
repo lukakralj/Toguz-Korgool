@@ -38,7 +38,7 @@ public class AnimationController extends Thread {
     private static AnimationController instance;
 
     // Time in milliseconds, how long we want the animation to be.
-    private static final int RUN_TIME = 1500;
+    private static int RUN_TIME = 500;
     private long startTime;
 
     private List<AnimEvent> events;
@@ -307,5 +307,14 @@ public class AnimationController extends Thread {
             this.start = start;
             this.target = target;
         }
+    }
+
+    /**
+     * Set new run time for all animations. The higher the value the slower the animations will be.
+     *
+     * @param timeInMillis
+     */
+    public static void setRunTime(int timeInMillis) {
+
     }
 }

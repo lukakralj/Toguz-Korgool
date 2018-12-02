@@ -1,6 +1,7 @@
 package logic;
 
 import gui.GameWindow;
+import gui.Hole;
 import gui.OvalButton;
 import java.util.Random;
 import java.util.Set;
@@ -276,11 +277,11 @@ public class GameManager {
         gameWindow.unsetTuzes();
     }
 
-    public OvalButton getKazanLeft() {
+    public Hole getKazanLeft() {
         return gameWindow.getKazanLeft();
     }
 
-    public OvalButton getKazanRight() {
+    public Hole getKazanRight() {
         return gameWindow.getKazanRight();
     }
 }
