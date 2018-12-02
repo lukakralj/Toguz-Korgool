@@ -275,21 +275,18 @@ public class GameWindow extends JFrame {
     }
 
     private void saveGame(){
-        System.out.println("Trying to save game");
-
         try{
             File saveFile=new File("src\\main\\java\\saveFile.csv");
             FileOutputStream fos=new FileOutputStream(saveFile);
             PrintWriter pw=new PrintWriter(fos);
         
             for(Map.Entry<String,Hole> entries :buttonMap.entrySet()){
-                pw.println(entries.getKey()+","+entries.getValue().getText()+","+entries.getValue().isTuz());
+                pw.println(entries.getKey()+","+entries.getValue().getNumberOfKorgools()+","+entries.getValue().isTuz());
             }
         
             pw.flush();
             pw.close();
             fos.close();
-            System.out.println("Save Successful");
         }catch(Exception e){
             e.printStackTrace();
         }
@@ -300,20 +297,18 @@ public class GameWindow extends JFrame {
             PrintWriter pw=new PrintWriter(fos);
         
             for(Map.Entry<String,Hole> entries :kazans.entrySet()){
-                pw.println(entries.getKey()+","+entries.getValue().getText());
+                pw.println(entries.getKey()+","+entries.getValue().getNumberOfKorgools());
             }
         
             pw.flush();
             pw.close();
             fos.close();
-            System.out.println("Save Successful");
         }catch(Exception e){
             e.printStackTrace();
         }
     }
 
     private void loadGame(){
-        System.out.println("Trying to load game");
         try{
             File toRead=new File("src\\main\\java\\saveFile.csv");
             FileInputStream fis=new FileInputStream(toRead);
@@ -325,7 +320,8 @@ public class GameWindow extends JFrame {
                 placeholder=sc.nextLine();
                 StringTokenizer st = new StringTokenizer(placeholder,",",false);
                 Hole button = buttonMap.get(st.nextToken());
-				button.setText(st.nextToken());
+				button.emptyHole();
+				button.createAndAdd(Integer.valueOf(st.nextToken()));
 				if(st.nextToken().equals(true)){
 					button.setTuz(true);
 				}else{
@@ -333,7 +329,6 @@ public class GameWindow extends JFrame {
 				}
             }
             fis.close();
-            System.out.println("Load successful");
         }catch(Exception e){
             e.printStackTrace();
         }
@@ -348,23 +343,14 @@ public class GameWindow extends JFrame {
             while(sc.hasNextLine()){
                 placeholder=sc.nextLine();
                 StringTokenizer st = new StringTokenizer(placeholder,",",false);
-                JButton button = kazans.get(st.nextToken());
-				button.setText(st.nextToken());
+                Hole button = kazans.get(st.nextToken());
+				button.emptyHole();
+				button.createAndAdd(Integer.valueOf(st.nextToken()));
             }
             fis.close();
-            System.out.println("Load successful");
         }catch(Exception e){
             e.printStackTrace();
         }
-        /*
-        for(JButton val:buttonMap.values()){
-            if(Integer.valueOf(val.getText())==0){
-                setTuz(val);
-            }else{
-                unsetTuz(val);
-            }
-        }
-        */
     }
 
     /**
