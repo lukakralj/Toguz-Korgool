@@ -119,6 +119,14 @@ public class Hole extends OvalButton {
     }
 
     /**
+     * Removes and destroys all korgools in this hole.
+     */
+    public void emptyHole() {
+        korgools.forEach(this::remove);
+        korgools = new ArrayList<>(32);
+    }
+
+    /**
      * Removes and returns all korgools in this hole.
      *
      * @return List of korgools that were in this hole.

@@ -368,18 +368,29 @@ public class GameWindow extends JFrame {
     }
 
     /**
-     * Function to set the text of a specific hole by ID.
+     * Set the number of korgools in this hole. The method will remove all korgools currently in this hole
+     * and create new ones.
      *
-     * @param buttonId the ID of the button to set
-     * @param numOfKorgools number of korgools that we want to have in this hole
+     * @param holeId Id of the hole.
+     * @param numOfKorgools Number of korgools that we want to have in this hole.
      */
-    public void setHoleText(String buttonId, int numOfKorgools) {
-        if (manager.getAnimationController() == null) {
-            // Game only just started. TODO: refactor. this is ugly! :(
-            buttonMap.get(buttonId).createAndAdd(numOfKorgools);
+    public void populateWithKorgools(String holeId, int numOfKorgools) {
+        Hole hole;
+        if (holeId.equals("left")) {
+            hole = kazanLeft;
         }
-
+        else if (holeId.equals("right")) {
+            hole = kazanRight;
+        }
+        else {
+            hole = buttonMap.get(holeId);
+        }
+        // TODO: would it be faster to only create the new once/delete the excess???
+        hole.emptyHole();
+        hole.createAndAdd(numOfKorgools);
     }
+
+
 
     /**
      * Function to set the text of the right kazan
