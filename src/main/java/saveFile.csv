@@ -5,8 +5,8 @@ B1,10,false
 B2,10,false
 B3,1,false
 B4,9,false
-B5,0,false
-B6,10,false
+B5,9,false
+B6,0,false
 B7,10,false
 B8,10,false
 B9,10,false
@@ -14,5 +14,5 @@ W1,10,false
 W2,10,false
 W3,10,false
 W4,10,false
-W5,10,false
-W6,0,false
+W5,2,false
+W6,11,false
