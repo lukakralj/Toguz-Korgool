@@ -2,7 +2,6 @@ package logic;
 
 import gui.GameWindow;
 import gui.Hole;
-import gui.OvalButton;
 import java.util.Random;
 import java.util.Set;
 
@@ -15,11 +14,13 @@ public class GameManager {
     private GameWindow gameWindow;
     private Board core;
     private AnimationController anim;
+    private Random random;
 
     /**
      * Construct the game manager
      */
     public GameManager() {
+        random = new Random();
         gameWindow = new GameWindow(this);
         anim = AnimationController.resetController(gameWindow);
         anim.start();
@@ -93,53 +94,13 @@ public class GameManager {
     }
 
     /**
-     * Combines all previous update methods into one general function meant to update the GUI after any changes.
+     * Updates tuzes on the board
      */
     private void updateDisplay() {
-        updateWhiteDisplay();
-        updateBlackDisplay();
+        updateTuz(core.getBlackPlayer());
+        updateTuz(core.getWhitePlayer());
     }
 
-    /**
-     * Update the GUI to correctly display the changes that have occurred in the white player's board
-     */
-    private void updateWhiteDisplay() {
-        Player player = core.getWhitePlayer();
-        /*for (int i = 1; i <= 9; i++) {
-            gameWindow.setHoleText("W" + i, player.getHoleAt(i - 1));
-        }*/
-
-        //updateKazan(player);
-        updateTuz(player);
-    }
-
-    /**
-     * Update the GUI to correctly display the changes that have occurred in the black player's board
-     */
-    private void updateBlackDisplay() {
-        Player player = core.getBlackPlayer();
-        /*int holeIndex = 0;
-        for (int i = 9; i >= 1; i--) {
-            gameWindow.setHoleText("B" + i, player.getHoleAt(i - 1));
-            holeIndex++;
-        }*/
-
-        //updateKazan(player);
-        updateTuz(player);
-    }
-
-    /**
-     * Update the GUI to correctly display the changes that have occurred in the player's kazan.
-     * @param player Player whose kazan is to be updated
-     */
-    private void updateKazan(Player player) {
-        String text = player.getKazan() + "";
-        if (player == core.getWhitePlayer()) {
-            gameWindow.setKazanRightText(text);
-        } else {
-            gameWindow.setKazanLeftText(text);
-        }
-    }
 
     /**
      * Update GUI to correctly display player's tuz
@@ -197,7 +158,6 @@ public class GameManager {
      *  @return the hole chosen by the machine
      */
     private int machineChooseHole() {
-        Random random = new Random();
         boolean foundNumber = false;
         int hole = -1;
         while (!foundNumber) {
@@ -205,6 +165,7 @@ public class GameManager {
             if (hole >= core.getWhitePlayer().getTuz()) {         // if random number >= white Tuz
                 hole += 1;                        // we increase by 1 to cover the full range 0-8 (except the tuz)
             }
+            System.out.println("Bot chose hole of index " + hole);
             if (core.getBlackPlayer().getHoleAt(hole) != 0) {
                 foundNumber = true;
             }
@@ -285,8 +246,13 @@ public class GameManager {
         return gameWindow.getKazanRight();
     }
 
-    public AnimationController getAnimationController() {
-        return anim;
+
+    /**
+     * Sets random seed to make bot's behaviour predictable.
+     * Used for testing
+     */
+    public void setRandomSeed() {
+        random.setSeed(3);
     }
 
     /**
