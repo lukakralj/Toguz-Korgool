@@ -315,6 +315,6 @@ public class AnimationController extends Thread {
      * @param timeInMillis
      */
     public static void setRunTime(int timeInMillis) {
-
+        RUN_TIME = timeInMillis;
     }
 }

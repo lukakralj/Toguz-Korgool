@@ -36,7 +36,7 @@ public class GameWindow extends JFrame {
         setUpTopPanel();
         setUpBottomBar();
         setUpLowerPanel();
-
+        setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
         layeredPane = new JLayeredPane();
         root.setSize(new Dimension(1280, 720));
         root.setLocation(0, 0);
@@ -320,9 +320,8 @@ public class GameWindow extends JFrame {
                 placeholder=sc.nextLine();
                 StringTokenizer st = new StringTokenizer(placeholder,",",false);
                 Hole button = buttonMap.get(st.nextToken());
-				button.emptyHole();
-				button.createAndAdd(Integer.valueOf(st.nextToken()));
-				if(st.nextToken().equals(true)){
+                populateWithKorgools(button.getName(), Integer.valueOf(st.nextToken()));
+				if(st.nextToken().equals("true")){
 					button.setTuz(true);
 				}else{
                     button.setTuz(false);
@@ -343,9 +342,7 @@ public class GameWindow extends JFrame {
             while(sc.hasNextLine()){
                 placeholder=sc.nextLine();
                 StringTokenizer st = new StringTokenizer(placeholder,",",false);
-                Hole button = kazans.get(st.nextToken());
-				button.emptyHole();
-				button.createAndAdd(Integer.valueOf(st.nextToken()));
+                populateWithKorgools(st.nextToken(), Integer.valueOf(st.nextToken()));
             }
             fis.close();
         }catch(Exception e){
@@ -362,10 +359,10 @@ public class GameWindow extends JFrame {
      */
     public void populateWithKorgools(String holeId, int numOfKorgools) {
         Hole hole;
-        if (holeId.equals("left")) {
+        if (holeId.equals("left") || holeId.equals("leftKazan")) {
             hole = kazanLeft;
         }
-        else if (holeId.equals("right")) {
+        else if (holeId.equals("right") || holeId.equals("rightKazan")) {
             hole = kazanRight;
         }
         else {
@@ -374,6 +371,7 @@ public class GameWindow extends JFrame {
         // TODO: would it be faster to only create the new once/delete the excess???
         hole.emptyHole();
         hole.createAndAdd(numOfKorgools);
+        hole.repaint();
     }
 
 
