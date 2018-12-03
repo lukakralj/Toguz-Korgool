@@ -20,7 +20,7 @@ public class GUITest {
     @Before
     public void start() {
         // Speed up animations.
-        AnimationController.setRunTime(10);
+        AnimationController.setRunTime(5);
     }
 
     /**
@@ -63,8 +63,8 @@ public class GUITest {
 	public void testCorrectButtonInteraction() {
 		GameManager m = new GameManager();
 		Swinger swinger = Swinger.getUserWith(m.getWindow());
-		swinger.pause(500).clickOn("name:W1")
-		.pause(500).clickOn("name:W2");
+		swinger.pause(1000).clickOn("name:W1")
+		.pause(1000).clickOn("name:W2");
 		swinger.pause(100);
 	}
 	
@@ -76,9 +76,9 @@ public class GUITest {
 	public void testLegitimateValsInKazans() {
 		GameManager m = new GameManager();
 		Swinger swinger = Swinger.getUserWith(m.getWindow());
-		swinger.pause(500).clickOn("name:W1")
-		.pause(500).clickOn("name:W2")
-		.pause(500).clickOn("name:W3");
+		swinger.pause(1000).clickOn("name:W1")
+		.pause(1000).clickOn("name:W2")
+		.pause(1000).clickOn("name:W3");
 		Hole kazan = m.getKazanLeft();
 		int actual = kazan.getNumberOfKorgools();
 		assertEquals(0, actual);
@@ -92,7 +92,7 @@ public class GUITest {
 	public void testMenuInteraction() {
 		GameManager m = new GameManager();
 		Swinger swinger = Swinger.getUserWith(m.getWindow());
-		swinger.pause(500).clickOn("name:filemenu");
+		swinger.pause(1000).clickOn("name:filemenu");
 		swinger.pause(150);
 	}
 	
@@ -103,7 +103,7 @@ public class GUITest {
 	public void testButtonInteraction() {
 		GameManager m = new GameManager();
 		Swinger swinger = Swinger.getUserWith(m.getWindow());
-		swinger.pause(500).clickOn("name:NEXT");
+		swinger.pause(1000).clickOn("name:NEXT");
 		swinger.pause(150);
 		Hole txt2 = m.getKazanRight();
 		String actual = txt2.getText();
@@ -119,7 +119,7 @@ public class GUITest {
 	public void TestW1Correct() {
 		GameManager m = new GameManager();
 		Swinger swinger = Swinger.getUserWith(m.getWindow());
-		swinger.pause(500).clickOn("name:W1")
+		swinger.pause(1000).clickOn("name:W1")
 		.pause(1000);
 		Hole kazan = m.getKazanRight();
         int actual = kazan.getNumberOfKorgools();
@@ -134,7 +134,7 @@ public class GUITest {
 	public void TestW2Correct() {
 		GameManager m = new GameManager();
 		Swinger swinger = Swinger.getUserWith(m.getWindow());
-		swinger.pause(500).clickOn("name:W2")
+		swinger.pause(1000).clickOn("name:W2")
 		.pause(1000);
 		Hole kazan = m.getKazanRight();
         int actual = kazan.getNumberOfKorgools();
@@ -149,7 +149,7 @@ public class GUITest {
 	public void TestW5Correct() {
 		GameManager m = new GameManager();
 		Swinger swinger = Swinger.getUserWith(m.getWindow());
-		swinger.pause(500).clickOn("name:W5")
+		swinger.pause(1000).clickOn("name:W5")
 		.pause(1000);
 		Hole kazan = m.getKazanRight();
         int actual = kazan.getNumberOfKorgools();
@@ -164,7 +164,7 @@ public class GUITest {
 	public void TestW8Correct() {
 		GameManager m = new GameManager();
 		Swinger swinger = Swinger.getUserWith(m.getWindow());
-		swinger.pause(500).clickOn("name:W8")
+		swinger.pause(1000).clickOn("name:W8")
 		.pause(1000);
 		Hole kazan = m.getKazanRight();
         int actual = kazan.getNumberOfKorgools();
@@ -180,7 +180,7 @@ public class GUITest {
 	public void TestW9Correct() {
 		GameManager m = new GameManager();
 		Swinger swinger = Swinger.getUserWith(m.getWindow());
-		swinger.pause(500).clickOn("name:W9")
+		swinger.pause(1000).clickOn("name:W9")
 		.pause(1000);
 		Hole kazan = m.getKazanRight();
         int actual = kazan.getNumberOfKorgools();
@@ -200,9 +200,9 @@ public class GUITest {
 	public void TestW2W3Sequence() {
 		GameManager m = new GameManager();
 		Swinger swinger = Swinger.getUserWith(m.getWindow());
-		swinger.pause(400).clickOn("name:W2")
-		.pause(400).clickOn("name:W3")
-		.pause(900);
+		swinger.pause(1000).clickOn("name:W2")
+		.pause(1000).clickOn("name:W3")
+		.pause(1000);
 		Hole kazan = m.getKazanRight();
 		int actual = kazan.getNumberOfKorgools();
 		assertTrue(actual >= 10);
@@ -221,16 +221,16 @@ public class GUITest {
 	public void TestFullSequence() {
 		GameManager m = new GameManager();
 		Swinger swinger = Swinger.getUserWith(m.getWindow());
-		swinger.pause(400).clickOn("name:W1")
-		.pause(400).clickOn("name:W2")
-		.pause(400).clickOn("name:W3")
-		.pause(400).clickOn("name:W4")
-		.pause(400).clickOn("name:W5")
-		.pause(400).clickOn("name:W6")
-		.pause(400).clickOn("name:W7")
-		.pause(400).clickOn("name:W8")
-		.pause(400).clickOn("name:W9")
-		.pause(900);
+		swinger.pause(1000).clickOn("name:W1")
+		.pause(1000).clickOn("name:W2")
+		.pause(1000).clickOn("name:W3")
+		.pause(1000).clickOn("name:W4")
+		.pause(1000).clickOn("name:W5")
+		.pause(1000).clickOn("name:W6")
+		.pause(1000).clickOn("name:W7")
+		.pause(1000).clickOn("name:W8")
+		.pause(1000).clickOn("name:W9")
+		.pause(1000);
 		Hole kazan = m.getKazanRight();
 		int actual = kazan.getNumberOfKorgools();
 		assertTrue(actual >= 10);

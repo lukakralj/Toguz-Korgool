@@ -58,7 +58,7 @@ public class CustomInputTest {
 
     @Test
     public void GUISetup() {
-        swinger.clickOn("name:openDialog").pause(1000);
+        swinger.clickOn("name:openDialog").pause(2000);
         assertNotNull(testWindow);
     }
 
@@ -69,7 +69,7 @@ public class CustomInputTest {
 
     @Test
     public void testCellsCreated() {
-        swinger.clickOn("name:openDialog").pause(1000).setRoot(testWindow);
+        swinger.clickOn("name:openDialog").pause(2000).setRoot(testWindow);
         for (int i = 1; i <= 9; ++i) {
             swinger.getAt("name:C_B" + i);
             swinger.getAt("name:C_W" + i);
@@ -85,7 +85,7 @@ public class CustomInputTest {
 
     @Test
     public void testSpinnersCreated() {
-        swinger.clickOn("name:openDialog").pause(1000).setRoot(testWindow);
+        swinger.clickOn("name:openDialog").pause(2000).setRoot(testWindow);
         for (int i = 1; i <= 9; ++i) {
             swinger.getAt("name:B" + i);
             swinger.getAt("name:W" + i);
@@ -102,7 +102,7 @@ public class CustomInputTest {
     @Test
     public void testRadioButtonsCreated() {
         swinger.clickOn("name:openDialog").pause(500).setRoot(testWindow);
-        swinger.pause(500);
+        swinger.pause(1000);
         for (int i = 1; i <= 9; ++i) {
             swinger.getAt("name:R_B" + i);
             swinger.getAt("name:R_W" + i);
@@ -117,8 +117,8 @@ public class CustomInputTest {
      */
     @Test
     public void testNotEnoughKorgools() {
-        swinger.clickOn("name:openDialog").pause(1000).setRoot(testWindow);
-        swinger.clickOn("name:confirm").pause(200);
+        swinger.clickOn("name:openDialog").pause(2000).setRoot(testWindow);
+        swinger.clickOn("name:confirm").pause(1000);
         Component textArea = swinger.getAt("name:outputLog");
         assertThat(textArea, hasText("Please ensure the number of Korgools adds to 162"));
     }
@@ -128,7 +128,7 @@ public class CustomInputTest {
      */
     @Test
     public void tooManyKorgools() {
-        swinger.clickOn("name:openDialog").pause(1000).setRoot(testWindow);
+        swinger.clickOn("name:openDialog").pause(2000).setRoot(testWindow);
         for (int i = 1; i <= 9; ++i) {
             JSpinner blackSpinner = (JSpinner) swinger.getAt("name:B" + i);
             blackSpinner.setValue(10);
@@ -145,10 +145,10 @@ public class CustomInputTest {
      */
     @Test
     public void testTuzInSameHole() {
-        swinger.clickOn("name:openDialog").pause(1000).setRoot(testWindow);
-        swinger.clickOn("name:R_B1").pause(200);
-        swinger.clickOn("name:R_W1").pause(200);
-        swinger.clickOn("name:confirm").pause(200);
+        swinger.clickOn("name:openDialog").pause(2000).setRoot(testWindow);
+        swinger.clickOn("name:R_B1").pause(1000);
+        swinger.clickOn("name:R_W1").pause(1000);
+        swinger.clickOn("name:confirm").pause(1000);
         Component textArea = swinger.getAt("name:outputLog");
         assertThat(textArea, hasText("The Tuz cannot be the same hole on opposite sides"));
     }
@@ -158,14 +158,14 @@ public class CustomInputTest {
      */
     @Test
     public void testTuzAtHoleNine() {
-        swinger.clickOn("name:openDialog").pause(1000).setRoot(testWindow);
+        swinger.clickOn("name:openDialog").pause(2000).setRoot(testWindow);
         Component textArea = swinger.getAt("name:outputLog");
-        swinger.clickOn("name:R_B9").pause(200);
-        swinger.clickOn("name:confirm").pause(200);
+        swinger.clickOn("name:R_B9").pause(1000);
+        swinger.clickOn("name:confirm").pause(1000);
         assertThat(textArea, hasText("Hole 9 cannot be a Tuz"));
-        swinger.clickOn("name:R_B8").pause(200);
-        swinger.clickOn("name:R_W9").pause(200);
-        swinger.clickOn("name:confirm").pause(200);
+        swinger.clickOn("name:R_B8").pause(1000);
+        swinger.clickOn("name:R_W9").pause(1000);
+        swinger.clickOn("name:confirm").pause(1000);
         assertThat(textArea, hasText("Hole 9 cannot be a Tuz"));
     }
 
@@ -174,7 +174,7 @@ public class CustomInputTest {
      */
     @Test
     public void testDefaultConfiguration() {
-        swinger.clickOn("name:openDialog").pause(1000).setRoot(testWindow);
+        swinger.clickOn("name:openDialog").pause(2000).setRoot(testWindow);
         for (int i = 1; i <= 9; ++i) {
             JSpinner blackSpinner = (JSpinner) swinger.getAt("name:B" + i);
             blackSpinner.setValue(9);
