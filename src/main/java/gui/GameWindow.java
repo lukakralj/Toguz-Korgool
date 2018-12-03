@@ -3,8 +3,7 @@ package gui;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
+import java.awt.event.*;
 import java.util.*;
 import java.io.*;
 import logic.GameManager;
@@ -37,9 +36,10 @@ public class GameWindow extends JFrame {
         setUpTopPanel();
         setUpBottomBar();
         setUpLowerPanel();
-
+        setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
         layeredPane = new JLayeredPane();
         root.setSize(new Dimension(1280, 720));
+        root.setMinimumSize(new Dimension(1000, 600));
         root.setLocation(0, 0);
         layeredPane.add(root, new Integer(0));
 
@@ -48,8 +48,18 @@ public class GameWindow extends JFrame {
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
-                root.setSize(getContentPane().getSize());
+                int newW = getContentPane().getSize().width < 1000 ? 1000 : getContentPane().getSize().width;
+                int newH = getContentPane().getSize().height < 600 ? 600 : getContentPane().getSize().height;
+                root.setSize(newW, newH);
             }
+        });
+
+        addWindowStateListener(e -> {
+            revalidate();
+            int newW = getContentPane().getSize().width < 1000 ? 1000 : getContentPane().getSize().width;
+            int newH = getContentPane().getSize().height < 600 ? 600 : getContentPane().getSize().height;
+            root.setSize(newW, newH);
+            repaint();
         });
         pack();
         setVisible(true);
@@ -130,8 +140,8 @@ public class GameWindow extends JFrame {
         lowerPanel.setBackground(BACKGROUND_COLOR);
         root.add(lowerPanel, BorderLayout.CENTER);
         JPanel lowerButtonPanel = new JPanel();
-        GridLayout botButtons = new GridLayout(0, 9, 10, 10);//Set padding around individual buttons
-        lowerButtonPanel.setLayout(botButtons);
+        GridLayout bottomButtons = new GridLayout(0, 9, 10, 10);//Set padding around individual buttons
+        lowerButtonPanel.setLayout(bottomButtons);
         lowerButtonPanel.setBackground(BACKGROUND_COLOR);
         lowerPanel.add(lowerButtonPanel, BorderLayout.SOUTH);
         lowerPanel.add(setUpKazans(), BorderLayout.CENTER);
@@ -269,46 +279,41 @@ public class GameWindow extends JFrame {
         }
     }
 
-    private void saveGame(){
-        System.out.println("Trying to save game");
+    private PrintWriter getPrintWriter(String filetoOpen) throws FileNotFoundException{
+        File saveFile=new File(filetoOpen);
+        FileOutputStream fos=new FileOutputStream(saveFile);
+        PrintWriter pw=new PrintWriter(fos);
+        return pw;
+    }
 
+    private void closePrintWriter(PrintWriter pw){
+        pw.flush();
+        pw.close();
+    }
+
+    private void saveGame(){
         try{
-            File saveFile=new File("src\\main\\java\\saveFile.csv");
-            FileOutputStream fos=new FileOutputStream(saveFile);
-            PrintWriter pw=new PrintWriter(fos);
-        
+            PrintWriter pw = getPrintWriter("src\\main\\java\\saveFile.csv");
             for(Map.Entry<String,Hole> entries :buttonMap.entrySet()){
-                pw.println(entries.getKey()+","+entries.getValue().getText()+","+entries.getValue().isTuz());
+                pw.println(entries.getKey()+","+entries.getValue().getNumberOfKorgools()+","+entries.getValue().isTuz());
             }
-        
-            pw.flush();
-            pw.close();
-            fos.close();
-            System.out.println("Save Successful");
+            closePrintWriter(pw);
         }catch(Exception e){
             e.printStackTrace();
         }
 		
 		try{
-            File saveFile=new File("src\\main\\java\\saveFile2.csv");
-            FileOutputStream fos=new FileOutputStream(saveFile);
-            PrintWriter pw=new PrintWriter(fos);
-        
+            PrintWriter pw = getPrintWriter("src\\main\\java\\saveFile2.csv");
             for(Map.Entry<String,Hole> entries :kazans.entrySet()){
-                pw.println(entries.getKey()+","+entries.getValue().getText());
+                pw.println(entries.getKey()+","+entries.getValue().getNumberOfKorgools());
             }
-        
-            pw.flush();
-            pw.close();
-            fos.close();
-            System.out.println("Save Successful");
+            closePrintWriter(pw);
         }catch(Exception e){
             e.printStackTrace();
         }
     }
 
     private void loadGame(){
-        System.out.println("Trying to load game");
         try{
             File toRead=new File("src\\main\\java\\saveFile.csv");
             FileInputStream fis=new FileInputStream(toRead);
@@ -320,15 +325,14 @@ public class GameWindow extends JFrame {
                 placeholder=sc.nextLine();
                 StringTokenizer st = new StringTokenizer(placeholder,",",false);
                 Hole button = buttonMap.get(st.nextToken());
-				button.setText(st.nextToken());
-				if(st.nextToken().equals(true)){
+                populateWithKorgools(button.getName(), Integer.valueOf(st.nextToken()));
+				if(st.nextToken().equals("true")){
 					button.setTuz(true);
 				}else{
                     button.setTuz(false);
 				}
             }
             fis.close();
-            System.out.println("Load successful");
         }catch(Exception e){
             e.printStackTrace();
         }
@@ -343,38 +347,39 @@ public class GameWindow extends JFrame {
             while(sc.hasNextLine()){
                 placeholder=sc.nextLine();
                 StringTokenizer st = new StringTokenizer(placeholder,",",false);
-                JButton button = kazans.get(st.nextToken());
-				button.setText(st.nextToken());
+                populateWithKorgools(st.nextToken(), Integer.valueOf(st.nextToken()));
             }
             fis.close();
-            System.out.println("Load successful");
         }catch(Exception e){
             e.printStackTrace();
         }
-        /*
-        for(JButton val:buttonMap.values()){
-            if(Integer.valueOf(val.getText())==0){
-                setTuz(val);
-            }else{
-                unsetTuz(val);
-            }
-        }
-        */
     }
 
     /**
-     * Function to set the text of a specific hole by ID.
+     * Set the number of korgools in this hole. The method will remove all korgools currently in this hole
+     * and create new ones.
      *
-     * @param buttonId the ID of the button to set
-     * @param numOfKorgools number of korgools that we want to have in this hole
+     * @param holeId Id of the hole.
+     * @param numOfKorgools Number of korgools that we want to have in this hole.
      */
-    public void setHoleText(String buttonId, int numOfKorgools) {
-        if (manager.getAnimationController() == null) {
-            // Game only just started. TODO: refactor. this is ugly! :(
-            buttonMap.get(buttonId).createAndAdd(numOfKorgools);
+    public void populateWithKorgools(String holeId, int numOfKorgools) {
+        Hole hole;
+        if (holeId.equals("left") || holeId.equals("leftKazan")) {
+            hole = kazanLeft;
         }
-
+        else if (holeId.equals("right") || holeId.equals("rightKazan")) {
+            hole = kazanRight;
+        }
+        else {
+            hole = buttonMap.get(holeId);
+        }
+        // TODO: would it be faster to only create the new once/delete the excess???
+        hole.emptyHole();
+        hole.createAndAdd(numOfKorgools);
+        hole.repaint();
     }
+
+
 
     /**
      * Function to set the text of the right kazan

@@ -1,6 +1,7 @@
 package logic;
 
 import gui.GameWindow;
+import gui.Hole;
 import gui.OvalButton;
 import java.util.Random;
 import java.util.Set;
@@ -14,17 +15,16 @@ public class GameManager {
     private GameWindow gameWindow;
     private Board core;
     private AnimationController anim;
-    private Thread animThread;
 
     /**
      * Construct the game manager
      */
     public GameManager() {
         gameWindow = new GameWindow(this);
-        populateInitialBoard();
-        core = new Board();
         anim = AnimationController.resetController(gameWindow);
         anim.start();
+        populateInitialBoard();
+        core = new Board();
     }
 
     /**
@@ -33,7 +33,7 @@ public class GameManager {
     private void populateInitialBoard() {
         Set<String> setOfButtonsIDs = gameWindow.getButtonMap().keySet();
         for (String buttonId : setOfButtonsIDs) {
-            gameWindow.setHoleText(buttonId, 9);
+            gameWindow.populateWithKorgools(buttonId, 9);
         }
     }
 
@@ -61,6 +61,17 @@ public class GameManager {
         //updates game logic
         populatePlayerBoard(core.getWhitePlayer(), wHoles, wTuz, wKazan);
         populatePlayerBoard(core.getBlackPlayer(), bHoles, bTuz, bKazan);
+
+        gameWindow.populateWithKorgools("left", bKazan);
+        gameWindow.populateWithKorgools("right", wKazan);
+
+        for (int i = 0; i < 9; i++) {
+            gameWindow.populateWithKorgools("W" + (i + 1), wHoles[i]);
+        }
+
+        for (int i = 0; i < 9; i++) {
+            gameWindow.populateWithKorgools("B" + (9 - i), bHoles[i]);
+        }
 
         //updates display
         updateDisplay();
@@ -94,11 +105,11 @@ public class GameManager {
      */
     private void updateWhiteDisplay() {
         Player player = core.getWhitePlayer();
-        for (int i = 1; i <= 9; i++) {
+        /*for (int i = 1; i <= 9; i++) {
             gameWindow.setHoleText("W" + i, player.getHoleAt(i - 1));
-        }
+        }*/
 
-        updateKazan(player);
+        //updateKazan(player);
         updateTuz(player);
     }
 
@@ -107,13 +118,13 @@ public class GameManager {
      */
     private void updateBlackDisplay() {
         Player player = core.getBlackPlayer();
-        int holeIndex = 0;
+        /*int holeIndex = 0;
         for (int i = 9; i >= 1; i--) {
             gameWindow.setHoleText("B" + i, player.getHoleAt(i - 1));
             holeIndex++;
-        }
+        }*/
 
-        updateKazan(player);
+        //updateKazan(player);
         updateTuz(player);
     }
 
@@ -266,11 +277,11 @@ public class GameManager {
         gameWindow.unsetTuzes();
     }
 
-    public OvalButton getKazanLeft() {
+    public Hole getKazanLeft() {
         return gameWindow.getKazanLeft();
     }
 
-    public OvalButton getKazanRight() {
+    public Hole getKazanRight() {
         return gameWindow.getKazanRight();
     }
 

@@ -1,17 +1,11 @@
 import gui.GameWindow;
-import gui.OvalButton;
+import gui.Hole;
+import logic.AnimationController;
 import logic.GameManager;
+import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import com.athaydes.automaton.Swinger;
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import javax.imageio.ImageIO;
-import java.io.File;
-import java.util.*;
-import javax.swing.ImageIcon;
 import static com.athaydes.automaton.assertion.AutomatonMatcher.hasText;
 
 
@@ -21,6 +15,13 @@ import static com.athaydes.automaton.assertion.AutomatonMatcher.hasText;
  * @version 1.1
  */
 public class GUITest {
+
+
+    @Before
+    public void start() {
+        // Speed up animations.
+        AnimationController.setRunTime(5);
+    }
 
     /**
      * Test that the GUI sets up correctly without crashing
@@ -62,8 +63,8 @@ public class GUITest {
 	public void testCorrectButtonInteraction() {
 		GameManager m = new GameManager();
 		Swinger swinger = Swinger.getUserWith(m.getWindow());
-		swinger.pause(200).clickOn("name:W1")
-		.pause(200).clickOn("name:W2");
+		swinger.pause(1000).clickOn("name:W1")
+		.pause(1000).clickOn("name:W2");
 		swinger.pause(100);
 	}
 	
@@ -75,42 +76,41 @@ public class GUITest {
 	public void testLegitimateValsInKazans() {
 		GameManager m = new GameManager();
 		Swinger swinger = Swinger.getUserWith(m.getWindow());
-		swinger.pause(200).clickOn("name:W1")
-		.pause(200).clickOn("name:W2")
-		.pause(200).clickOn("name:W3");
-		OvalButton txt = m.getKazanLeft();
-		int actual = Integer.parseInt(txt.getText());
-		System.out.println(actual);
-		assertTrue(actual>=0);
+		swinger.pause(1000).clickOn("name:W1")
+		.pause(1000).clickOn("name:W2")
+		.pause(1000).clickOn("name:W3");
+		Hole kazan = m.getKazanLeft();
+		int actual = kazan.getNumberOfKorgools();
+		assertEquals(0, actual);
 		swinger.pause(150);
 	}
 	
 	/**
-	 * Test that the menu can be clicked on without the appliacation crashing
+	 * Test that the menu can be clicked on without the application crashing
 	 */
 	@Test
 	public void testMenuInteraction() {
 		GameManager m = new GameManager();
 		Swinger swinger = Swinger.getUserWith(m.getWindow());
-		swinger.pause(200).clickOn("name:filemenu");
+		swinger.pause(1000).clickOn("name:filemenu");
 		swinger.pause(150);
 	}
 	
-	/**
-	 * Test that the "Make this move" button works as expected
-	 */
-	@Test
+	//**
+    //* Test that the "Make this move" button works as expected
+	 //*/
+	/*@Test
 	public void testButtonInteraction() {
 		GameManager m = new GameManager();
 		Swinger swinger = Swinger.getUserWith(m.getWindow());
-		swinger.pause(200).clickOn("name:NEXT");
+		swinger.pause(1000).clickOn("name:NEXT");
 		swinger.pause(150);
-		OvalButton txt2 = m.getKazanRight();
+		Hole txt2 = m.getKazanRight();
 		String actual = txt2.getText();
 		System.out.println(actual);
-		assertTrue(actual.contains("Make move button pressed"));
+		assertTrue(actual.contains("Make move button pressed")); // TODO: this test is outdated
 		swinger.pause(150);
-	}
+	}*/
 
 	/**
 	 * Test that the 1st button works as intended and gives the correct value in the right kazan
@@ -119,12 +119,11 @@ public class GUITest {
 	public void TestW1Correct() {
 		GameManager m = new GameManager();
 		Swinger swinger = Swinger.getUserWith(m.getWindow());
-		swinger.pause(200).clickOn("name:W1")
-		.pause(800);
-		OvalButton txt2 = m.getKazanRight();
-		int actual = Integer.parseInt(txt2.getText());
-		System.out.println(actual);
-		assertTrue(actual==0);
+		swinger.pause(1000).clickOn("name:W1")
+		.pause(1000);
+		Hole kazan = m.getKazanRight();
+        int actual = kazan.getNumberOfKorgools();
+        assertEquals(0, actual);
 		swinger.pause(150);
 	}
 	
@@ -135,12 +134,11 @@ public class GUITest {
 	public void TestW2Correct() {
 		GameManager m = new GameManager();
 		Swinger swinger = Swinger.getUserWith(m.getWindow());
-		swinger.pause(200).clickOn("name:W2")
-		.pause(800);
-		OvalButton txt2 = m.getKazanRight();
-		int actual = Integer.parseInt(txt2.getText());
-		System.out.println(actual);
-		assertTrue(actual==10);
+		swinger.pause(1000).clickOn("name:W2")
+		.pause(1000);
+		Hole kazan = m.getKazanRight();
+        int actual = kazan.getNumberOfKorgools();
+        assertEquals(10, actual);
 		swinger.pause(150);
 	}
 	
@@ -151,12 +149,11 @@ public class GUITest {
 	public void TestW5Correct() {
 		GameManager m = new GameManager();
 		Swinger swinger = Swinger.getUserWith(m.getWindow());
-		swinger.pause(200).clickOn("name:W5")
-		.pause(800);
-		OvalButton txt2 = m.getKazanRight();
-		int actual = Integer.parseInt(txt2.getText());
-		System.out.println(actual);
-		assertTrue(actual==10);
+		swinger.pause(1000).clickOn("name:W5")
+		.pause(1000);
+		Hole kazan = m.getKazanRight();
+        int actual = kazan.getNumberOfKorgools();
+        assertEquals(10, actual);
 		swinger.pause(150);
 	}
 	
@@ -167,12 +164,11 @@ public class GUITest {
 	public void TestW8Correct() {
 		GameManager m = new GameManager();
 		Swinger swinger = Swinger.getUserWith(m.getWindow());
-		swinger.pause(200).clickOn("name:W8")
-		.pause(800);
-		OvalButton txt2 = m.getKazanRight();
-		int actual = Integer.parseInt(txt2.getText());
-		System.out.println(actual);
-		assertTrue(actual==10);
+		swinger.pause(1000).clickOn("name:W8")
+		.pause(1000);
+		Hole kazan = m.getKazanRight();
+        int actual = kazan.getNumberOfKorgools();
+        assertEquals(10, actual);
 		swinger.pause(100);
 		swinger.pause(100);
 	}
@@ -184,18 +180,17 @@ public class GUITest {
 	public void TestW9Correct() {
 		GameManager m = new GameManager();
 		Swinger swinger = Swinger.getUserWith(m.getWindow());
-		swinger.pause(400).clickOn("name:W9")
-		.pause(900);
-		OvalButton txt2 = m.getKazanRight();
-		int actual = Integer.parseInt(txt2.getText());
-		System.out.println(actual);
-		assertTrue(actual==10);
+		swinger.pause(1000).clickOn("name:W9")
+		.pause(1000);
+		Hole kazan = m.getKazanRight();
+        int actual = kazan.getNumberOfKorgools();
+        assertEquals(10, actual);
 		swinger.pause(100);
 		swinger.pause(100);
 	}
 	
 	/**
-	 * Test that clicking on the 2nd and then the thirs button works as intended.
+	 * Test that clicking on the 2nd and then the third button works as intended.
 	 * 
 	 * Note that since the AI behaviour is random, we cannot assume anything about
 	 * the precise value in the right kazan other than it is greater than or equal
@@ -205,13 +200,12 @@ public class GUITest {
 	public void TestW2W3Sequence() {
 		GameManager m = new GameManager();
 		Swinger swinger = Swinger.getUserWith(m.getWindow());
-		swinger.pause(400).clickOn("name:W2")
-		.pause(400).clickOn("name:W3")
-		.pause(900);
-		OvalButton txt2 = m.getKazanRight();
-		int actual = Integer.parseInt(txt2.getText());
-		System.out.println(actual);
-		assertTrue(actual>=10);
+		swinger.pause(1000).clickOn("name:W2")
+		.pause(1000).clickOn("name:W3")
+		.pause(1000);
+		Hole kazan = m.getKazanRight();
+		int actual = kazan.getNumberOfKorgools();
+		assertTrue(actual >= 10);
 		swinger.pause(100);
 	}
 	
@@ -227,20 +221,19 @@ public class GUITest {
 	public void TestFullSequence() {
 		GameManager m = new GameManager();
 		Swinger swinger = Swinger.getUserWith(m.getWindow());
-		swinger.pause(400).clickOn("name:W1")
-		.pause(400).clickOn("name:W2")
-		.pause(400).clickOn("name:W3")
-		.pause(400).clickOn("name:W4")
-		.pause(400).clickOn("name:W5")
-		.pause(400).clickOn("name:W6")
-		.pause(400).clickOn("name:W7")
-		.pause(400).clickOn("name:W8")
-		.pause(400).clickOn("name:W9")
-		.pause(900);
-		OvalButton txt2 = m.getKazanRight();
-		int actual = Integer.parseInt(txt2.getText());
-		System.out.println(actual);
-		assertTrue(actual>=10);
+		swinger.pause(1000).clickOn("name:W1")
+		.pause(1000).clickOn("name:W2")
+		.pause(1000).clickOn("name:W3")
+		.pause(1000).clickOn("name:W4")
+		.pause(1000).clickOn("name:W5")
+		.pause(1000).clickOn("name:W6")
+		.pause(1000).clickOn("name:W7")
+		.pause(1000).clickOn("name:W8")
+		.pause(1000).clickOn("name:W9")
+		.pause(1000);
+		Hole kazan = m.getKazanRight();
+		int actual = kazan.getNumberOfKorgools();
+		assertTrue(actual >= 10);
 		swinger.pause(100);
 	}
 }

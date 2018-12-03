@@ -33,32 +33,39 @@ public class Hole extends OvalButton {
         korgoolSize = new Dimension(10, 10);
         setLayout(null);
         isTuz = false;
-        setBorderPainted(false);
-        setFocusPainted(false);
-        setContentAreaFilled(false);
 
         // Update korgools size and location only when the hole is moved/resized.
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
+                double oldW = korgoolArea.width;
+                double oldH = korgoolArea.height;
                 updateKorgoolArea();
-                for (Korgool k : korgools) {
+                double newW = korgoolArea.width;
+                double newH = korgoolArea.height;
+                double coefW = newW / oldW;
+                double coefH = newH / oldH;
+
+                korgools.forEach(k -> {
                     k.setSize(korgoolSize);
-                    //TODO: the korgools should stay in the same place once they are in the hole. For now the
-                    //TODO: for now they are always randomly placed.
-                    k.setLocation(calculateKorgoolLocation());
-                }
+                    k.setLocation((int)Math.round((k.getLocation().x * coefW)), (int)Math.round((k.getLocation().y * coefH)));
+                });
             }
 
             @Override
             public void componentMoved(ComponentEvent e) {
+                double oldW = korgoolArea.width;
+                double oldH = korgoolArea.height;
                 updateKorgoolArea();
-                for (Korgool k : korgools) {
+                double newW = korgoolArea.width;
+                double newH = korgoolArea.height;
+                double coefW = newW / oldW;
+                double coefH = newH / oldH;
+
+                korgools.forEach(k -> {
                     k.setSize(korgoolSize);
-                    //TODO: the korgools should stay in the same place once they are in the hole. For now the
-                    //TODO: for now they are always randomly placed.
-                    k.setLocation(calculateKorgoolLocation());
-                }
+                    k.setLocation((int)Math.round((k.getLocation().x * coefW)), (int)Math.round((k.getLocation().y * coefH)));
+                });
             }
         });
     }
@@ -116,6 +123,14 @@ public class Hole extends OvalButton {
      */
     public List<Korgool> getKorgools() {
         return korgools;
+    }
+
+    /**
+     * Removes and destroys all korgools in this hole.
+     */
+    public void emptyHole() {
+        korgools.forEach(this::remove);
+        korgools = new ArrayList<>(32);
     }
 
     /**

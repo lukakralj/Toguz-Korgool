@@ -58,12 +58,9 @@ public class Board {
         otherBoard = opponent;
 
         int korgools = player.getHoleAt(hole);
-        if (currentBoard == whitePlayer) {
-            AnimationController.instance().addEvent(AnimationController.EMPTY_HOLE, "W" + (hole + 1));
-        }
-        else {
-            AnimationController.instance().addEvent(AnimationController.EMPTY_HOLE, "B" + (9 - hole));
-        }
+
+        animateEmptyFor(currentBoard, hole);
+
         player.setHole(hole, 0);
 
         if (korgools == 0) {
@@ -78,21 +75,15 @@ public class Board {
                 hole++;
             }
             currentBoard.incrementHole(hole);
-            if (currentBoard == whitePlayer) {
-                AnimationController.instance().addEvent(AnimationController.MOVE_KORGOOLS, "W" + (hole + 1), 1);
-            }
-            else {
-                AnimationController.instance().addEvent(AnimationController.MOVE_KORGOOLS, "B" + (9 - hole), 1);
-            }
+
+            animateMoveFor(currentBoard, hole);
+
         } else {
             for (int i = korgools; i > 0; --i) {
                 currentBoard.incrementHole(hole);
-                if (currentBoard == whitePlayer) {
-                    AnimationController.instance().addEvent(AnimationController.MOVE_KORGOOLS, "W" + (hole + 1), 1);
-                }
-                else {
-                    AnimationController.instance().addEvent(AnimationController.MOVE_KORGOOLS, "B" + (9 - hole), 1);
-                }
+
+                animateMoveFor(currentBoard, hole);
+
                 if (i == 1) {
                     break;
                 }
@@ -126,60 +117,74 @@ public class Board {
                 int diff = opponent.getHoleAt(lastHoleFilled);
 
                 opponent.setHole(lastHoleFilled, 0);
-                if (opponent == whitePlayer) {
-                    AnimationController.instance().addEvent(AnimationController.EMPTY_HOLE, "W" + (lastHoleFilled + 1));
-                }
-                else {
-                    AnimationController.instance().addEvent(AnimationController.EMPTY_HOLE, "B" + (9 - lastHoleFilled));
-                }
+
+                animateEmptyFor(opponent, lastHoleFilled);
+
                 player.setKazan(player.getKazan() + diff);
-                if (player == whitePlayer) {
-                    AnimationController.instance().addEvent(AnimationController.MOVE_KORGOOLS, AnimationController.RIGHT, diff);
-                }
-                else {
-                    AnimationController.instance().addEvent(AnimationController.MOVE_KORGOOLS, AnimationController.LEFT, diff);
-                }
+
+                animateKazanFor(player);
+
             }
 
         }
 
+        emptyTuz(player, opponent);
+        emptyTuz(opponent, player);
+
+        return checkResult();
+    }
+
+    /**
+     * Helper method to avoid code duplication.
+     *
+     * @param player Player for which we want to empty the tuz for, if the tuz is set.
+     */
+    private void emptyTuz(Player player, Player opponent) {
         if (player.getTuz() > -1) {
             int diff = opponent.getHoleAt(player.getTuz());
             opponent.setHole(player.getTuz(), 0);
-            if (opponent == whitePlayer) {
-                AnimationController.instance().addEvent(AnimationController.EMPTY_HOLE, "W" + (player.getTuz() + 1));
-            }
-            else {
-                AnimationController.instance().addEvent(AnimationController.EMPTY_HOLE, "B" + (9 - player.getTuz()));
-            }
+
+            animateEmptyFor(opponent, player.getTuz());
+
             player.setKazan(player.getKazan() + diff);
-            if (player == whitePlayer) {
-                AnimationController.instance().addEvent(AnimationController.MOVE_KORGOOLS, AnimationController.RIGHT);
-            }
-            else {
-                AnimationController.instance().addEvent(AnimationController.MOVE_KORGOOLS, AnimationController.LEFT);
-            }
+            animateKazanFor(player);
         }
+    }
 
-        if (opponent.getTuz() > -1) {
-            int diff = player.getHoleAt(opponent.getTuz());
-            player.setHole(opponent.getTuz(), 0);
-            if (player == whitePlayer) {
-                AnimationController.instance().addEvent(AnimationController.EMPTY_HOLE, "W" + (opponent.getTuz() + 1));
-            }
-            else {
-                AnimationController.instance().addEvent(AnimationController.EMPTY_HOLE, "B" + (9 - opponent.getTuz()));
-            }
-            opponent.setKazan(opponent.getKazan() + diff);
-            if (opponent == whitePlayer) {
-                AnimationController.instance().addEvent(AnimationController.MOVE_KORGOOLS, AnimationController.RIGHT);
-            }
-            else {
-                AnimationController.instance().addEvent(AnimationController.MOVE_KORGOOLS, AnimationController.LEFT);
-            }
+    private void animateEmptyFor(Player player, int hole) {
+        if (AnimationController.instance() == null) {
+            return;
         }
+        if (player == whitePlayer) {
+            AnimationController.instance().addEvent(AnimationController.EMPTY_HOLE, "W" + (hole + 1));
+        }
+        else {
+            AnimationController.instance().addEvent(AnimationController.EMPTY_HOLE, "B" + (9 - hole));
+        }
+    }
 
-        return checkResult();
+    private void animateMoveFor(Player player, int hole) {
+        if (AnimationController.instance() == null) {
+            return;
+        }
+        if (player == whitePlayer) {
+            AnimationController.instance().addEvent(AnimationController.MOVE_KORGOOLS, "W" + (hole + 1), 1);
+        }
+        else {
+            AnimationController.instance().addEvent(AnimationController.MOVE_KORGOOLS, "B" + (9 - hole), 1);
+        }
+    }
+
+    private void animateKazanFor(Player player) {
+        if (AnimationController.instance() == null) {
+            return;
+        }
+        if (player == whitePlayer) {
+            AnimationController.instance().addEvent(AnimationController.MOVE_KORGOOLS, AnimationController.RIGHT);
+        }
+        else {
+            AnimationController.instance().addEvent(AnimationController.MOVE_KORGOOLS, AnimationController.LEFT);
+        }
     }
 
     /**
