@@ -15,7 +15,7 @@ import logic.GameManager;
  * @author Yasir Soleja
  * @version 01/12/2018
  */
-class CustomInputWindow extends JDialog {
+public class CustomInputWindow extends JDialog {
 
     private Color backgroundColour;
     private ButtonGroup radioOptionsBlack = new ButtonGroup(), radioOptionsWhite = new ButtonGroup();
@@ -34,7 +34,7 @@ class CustomInputWindow extends JDialog {
      * @param backgroundColourIn the background colour inherited from the parent window.
      * @param managerIn          the game manager associated with the parent window.
      */
-    CustomInputWindow(Color backgroundColourIn, GameManager managerIn) {
+    public CustomInputWindow(Color backgroundColourIn, GameManager managerIn) {
         selectedTuzBlack = selectedTuzWhite = -1;
         numberOfKorgools = 0;
         manager = managerIn;
@@ -47,7 +47,7 @@ class CustomInputWindow extends JDialog {
      * Constructs an object of type CustomInputWindow.
      * Default constructor (No game manager, default colour.)
      */
-    CustomInputWindow() {
+    public CustomInputWindow() {
         this(Color.lightGray, null);
     }
 
