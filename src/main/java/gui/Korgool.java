@@ -54,9 +54,6 @@ public class Korgool extends OvalButton {
         super("", color, Color.yellow, Color.BLACK, Color.yellow); // if we see yellow color something went wrong
         this.parentHole = parentHole;
         setBorderThickness(borderThickness);
-        setBorderPainted(false);
-        setFocusPainted(false);
-        setContentAreaFilled(false);
         updateActionListener();
     }
 

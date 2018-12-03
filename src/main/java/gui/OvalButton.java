@@ -59,7 +59,9 @@ public class OvalButton extends JButton implements MouseListener, MouseMotionLis
         borderThickness = 5;
         borderHighlighted = false;
         backgroundHighlighted = false;
-
+        setBorderPainted(false);
+        setFocusPainted(false);
+        setContentAreaFilled(false);
         // TODO: buttons get highlighted also when the click is outside the oval
         addMouseListener(this);
         addMouseMotionListener(this);

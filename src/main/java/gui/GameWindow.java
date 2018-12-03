@@ -39,6 +39,7 @@ public class GameWindow extends JFrame {
         setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
         layeredPane = new JLayeredPane();
         root.setSize(new Dimension(1280, 720));
+        root.setMinimumSize(new Dimension(1000, 600));
         root.setLocation(0, 0);
         layeredPane.add(root, new Integer(0));
 
@@ -47,13 +48,17 @@ public class GameWindow extends JFrame {
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
-                root.setSize(getContentPane().getSize());
+                int newW = getContentPane().getSize().width < 1000 ? 1000 : getContentPane().getSize().width;
+                int newH = getContentPane().getSize().height < 600 ? 600 : getContentPane().getSize().height;
+                root.setSize(newW, newH);
             }
         });
 
         addWindowStateListener(e -> {
             revalidate();
-            root.setSize(getContentPane().getSize());
+            int newW = getContentPane().getSize().width < 1000 ? 1000 : getContentPane().getSize().width;
+            int newH = getContentPane().getSize().height < 600 ? 600 : getContentPane().getSize().height;
+            root.setSize(newW, newH);
             repaint();
         });
         pack();
