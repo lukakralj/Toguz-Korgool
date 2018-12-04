@@ -151,6 +151,7 @@ public class Board {
         }
     }
 
+
     private void animateEmptyFor(Player player, int hole) {
         if (AnimationController.instance() == null) {
             return;
@@ -180,10 +181,22 @@ public class Board {
             return;
         }
         if (player == whitePlayer) {
-            AnimationController.instance().addEvent(AnimationController.MOVE_KORGOOLS, AnimationController.RIGHT);
+            AnimationController.instance().addEvent(AnimationController.MOVE_KORGOOLS, AnimationController.RIGHT_KAZAN);
         }
         else {
-            AnimationController.instance().addEvent(AnimationController.MOVE_KORGOOLS, AnimationController.LEFT);
+            AnimationController.instance().addEvent(AnimationController.MOVE_KORGOOLS, AnimationController.LEFT_KAZAN);
+        }
+    }
+
+    private void animateTuzFor(Player player) {
+        if (AnimationController.instance() == null) {
+            return;
+        }
+        if (player == whitePlayer) {
+            AnimationController.instance().addEvent(AnimationController.EMPTY_HOLE, AnimationController.RIGHT_TUZ);
+        }
+        else {
+            AnimationController.instance().addEvent(AnimationController.EMPTY_HOLE, AnimationController.LEFT_TUZ);
         }
     }
 

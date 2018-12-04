@@ -6,6 +6,8 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 import java.io.*;
+
+import logic.AnimationController;
 import logic.GameManager;
 
 /*
@@ -18,6 +20,7 @@ public class GameWindow extends JFrame {
     private static final Color BACKGROUND_COLOR = Color.LIGHT_GRAY, TOP_PANEL_COLOR = Color.GRAY;
     private HashMap<String, Hole> buttonMap;
     private Hole kazanRight, kazanLeft;
+    private Hole rightTuz, leftTuz;
     private JPanel root;
     private JLayeredPane layeredPane;
     private HashMap<String, Hole> kazans;
@@ -34,7 +37,7 @@ public class GameWindow extends JFrame {
         kazans = new HashMap<>();
         setUpMenu();
         setUpTopPanel();
-        setUpBottomBar();
+        setUpKazans();
         setUpLowerPanel();
         setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
         layeredPane = new JLayeredPane();
@@ -122,7 +125,7 @@ public class GameWindow extends JFrame {
      */
     private void setUpTopPanel() {
         JPanel topPanel = new JPanel();
-        topPanel.setBorder(new EmptyBorder(10, 10, 20, 10));//Set Padding around the Top Panel
+        topPanel.setBorder(new EmptyBorder(10, 10, 10, 10));//Set Padding around the Top Panel
         topPanel.setBackground(TOP_PANEL_COLOR);
         GridLayout topButtons = new GridLayout(0, 9, 10, 10);//Set padding around invidual buttons
         topPanel.setLayout(topButtons);
@@ -135,17 +138,13 @@ public class GameWindow extends JFrame {
      * and then add an ActionListner to each individual button.
      */
     private void setUpLowerPanel() {
-        JPanel lowerPanel = new JPanel(new BorderLayout());
-        lowerPanel.setBorder(new EmptyBorder(0, 10, 10, 10));//Set Padding around the Bottom Panel
+        JPanel lowerPanel = new JPanel();
+        lowerPanel.setBorder(new EmptyBorder(10, 10, 10, 10));//Set Padding around the Bottom Panel
         lowerPanel.setBackground(BACKGROUND_COLOR);
-        root.add(lowerPanel, BorderLayout.CENTER);
-        JPanel lowerButtonPanel = new JPanel();
         GridLayout bottomButtons = new GridLayout(0, 9, 10, 10);//Set padding around individual buttons
-        lowerButtonPanel.setLayout(bottomButtons);
-        lowerButtonPanel.setBackground(BACKGROUND_COLOR);
-        lowerPanel.add(lowerButtonPanel, BorderLayout.SOUTH);
-        lowerPanel.add(setUpKazans(), BorderLayout.CENTER);
-        fillPanelWithButtons(lowerButtonPanel, "W");
+        lowerPanel.setLayout(bottomButtons);
+        fillPanelWithButtons(lowerPanel, "W");
+        root.add(lowerPanel, BorderLayout.SOUTH);
     }
 
     /**
@@ -159,8 +158,11 @@ public class GameWindow extends JFrame {
             Hole button = new Hole(false);
             button.setName(color + i);
             buttonMap.put(button.getName(), button);
-            button.setPreferredSize(new Dimension(30, 160));
+            button.setPreferredSize(new Dimension(30, 200));
             button.addActionListener(e -> holeOnClickAction(button.getName()));
+            if (color.equals("B")) {
+                button.setEnabled(false);
+            }
             panel.add(button);
         }
     }
@@ -176,45 +178,71 @@ public class GameWindow extends JFrame {
     }
 
     /**
-     * Function to construct the bottom bar of the GUI.
-     */
-    private void setUpBottomBar() {
-        JPanel bottomPanel = new JPanel();
-        bottomPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
-        bottomPanel.setBackground(BACKGROUND_COLOR);
-        root.add(bottomPanel, BorderLayout.SOUTH);
-        BorderLayout bl = new BorderLayout();
-        bottomPanel.setLayout(bl);
-        JButton makeMove = new JButton("Make this move");
-        makeMove.setName("NEXT");
-        makeMove.addActionListener(e -> genericOnClickAction(makeMove.getName()));
-        bottomPanel.add(makeMove, BorderLayout.CENTER);
-    }
-
-    /**
      * Helper function to create a JPanel containing both Kazans
      *
-     * @return JPanel containing both Kazans
      */
-    private JPanel setUpKazans() {
+    private void setUpKazans() {
         JPanel kazanPanel = new JPanel(new BorderLayout());
         kazanPanel.setBackground(BACKGROUND_COLOR);
         kazanPanel.setBorder(new EmptyBorder(0, 0, 20, 0));
-        kazanRight = new Hole(true);
-        kazanRight.setColorHighlighted(kazanRight.getColorNormal()); // TODO: this is only a temporary "fix"
-        kazanRight.setColorBorderNormal(new Color(160,82,45));
-		kazanRight.setName("rightKazan");
-        kazanRight.setPreferredSize(new Dimension(620, kazanPanel.getHeight() - 10));
+
+        JPanel leftPanel = new JPanel();
+        leftPanel.setLayout(new BorderLayout());
+
+         leftTuz = new Hole(true);
+        leftTuz.setName("leftTuz");
+        Korgool leftTuzKorgool = new Korgool(leftTuz, Color.RED);
+        leftTuzKorgool.setName("leftTuzKorgool");
+        leftTuz.addKorgool(leftTuzKorgool); // Korgool doesn't go in the right location because the frame is not set up yet at this point.
+        leftTuz.setEnabled(false);
+        leftTuz.setMaximumSize(new Dimension(200, 200));
+        JPanel leftTuzPanel = new JPanel();
+        leftTuzPanel.setLayout(new BorderLayout());
+        leftTuzPanel.add(leftTuz, BorderLayout.CENTER);
+        leftTuzPanel.setPreferredSize(new Dimension(200, 200));
+        leftPanel.add(leftTuzPanel, BorderLayout.WEST);
+
+
         kazanLeft = new Hole(true);
         kazanLeft.setColorHighlighted(kazanLeft.getColorNormal()); // TODO: this is only a temporary "fix"
         kazanLeft.setColorBorderNormal(new Color(160,82,45));
-		kazanLeft.setName("leftKazan");
-        kazanLeft.setPreferredSize(new Dimension(620, kazanPanel.getHeight() - 10));
+        kazanLeft.setName("leftKazan");
+        kazanLeft.setEnabled(false);
+        kazanLeft.setPreferredSize(new Dimension(400,400));
+        leftPanel.add(kazanLeft, BorderLayout.CENTER);
+
+
+        JPanel rightPanel = new JPanel();
+        rightPanel.setLayout(new BorderLayout());
+
+         rightTuz = new Hole(true);
+        rightTuz.setName("leftTuz");
+        Korgool rightTuzKorgool = new Korgool(rightTuz, Color.RED);
+        rightTuzKorgool.setName("rightTuzKorgool");
+        rightTuz.addKorgool(rightTuzKorgool); // Korgool doesn't go in the right location because the frame is not set up yet at this point.
+        rightTuz.setEnabled(false);
+        rightTuz.setMaximumSize(new Dimension(200, 200));
+        JPanel rightTuzPanel = new JPanel();
+        rightTuzPanel.setLayout(new BorderLayout());
+        rightTuzPanel.add(rightTuz, BorderLayout.CENTER);
+        rightTuzPanel.setPreferredSize(new Dimension(200, 200));
+        rightPanel.add(rightTuzPanel, BorderLayout.EAST);
+
+        kazanRight = new Hole(true);
+        kazanRight.setColorHighlighted(kazanRight.getColorNormal()); // TODO: this is only a temporary "fix"
+        kazanRight.setColorBorderNormal(new Color(160,82,45));
+        kazanRight.setName("rightKazan");
+        kazanRight.setEnabled(false);
+        kazanRight.setPreferredSize(new Dimension(400,400));
+        rightPanel.add(kazanRight, BorderLayout.CENTER);
+
+
         kazans.put(kazanRight.getName(), kazanRight);
         kazans.put(kazanLeft.getName(), kazanLeft);
-        kazanPanel.add(kazanRight, BorderLayout.EAST);
-        kazanPanel.add(kazanLeft, BorderLayout.WEST);
-        return kazanPanel;
+
+        kazanPanel.add(leftPanel, BorderLayout.WEST);
+        kazanPanel.add(rightPanel, BorderLayout.EAST);
+        root.add(kazanPanel, BorderLayout.CENTER);
     }
 
     /**
@@ -229,27 +257,6 @@ public class GameWindow extends JFrame {
 				manager.makeMove(buttonId.substring(1), true);
 			}
         }
-    }
-
-    /**
-     * onClick action for clicking any non-hole button. Inclusion of buttonId allows for identification of
-     * the button that was clicked
-     *
-     * @param buttonId the ID of the button clicked
-     */
-    private void genericOnClickAction(String buttonId) {
-        // TODO: used for debugging buttons ids
-        buttonMap.forEach((k, v) -> {
-            if (k.startsWith("B")) {
-                System.out.print(k + " = " + v.getLocationOnScreen().x + " ");
-            }
-        });
-        System.out.println();
-        buttonMap.forEach((k, v) -> {
-            if (k.startsWith("W")) {
-                System.out.print(k + " = " + v.getLocationOnScreen().x + " ");
-            }
-        });
     }
 
     /**
@@ -407,8 +414,26 @@ public class GameWindow extends JFrame {
         return kazanRight;
     }
 
+    public Hole getLeftTuz() {
+        return leftTuz;
+    }
+
+    public Hole getRightTuz() {
+        return rightTuz;
+    }
+
     public void makeTuz(String buttonId) {
         buttonMap.get(buttonId).setTuz(true);
+        if (buttonId.startsWith("W")) {
+            // making tuz for black player
+            AnimationController.instance().addEvent(AnimationController.EMPTY_HOLE, AnimationController.LEFT_TUZ);
+            AnimationController.instance().addEvent(AnimationController.MOVE_KORGOOLS, buttonId, 1);
+        }
+        else {
+            //making tuz for white player
+            AnimationController.instance().addEvent(AnimationController.EMPTY_HOLE, AnimationController.RIGHT_TUZ);
+            AnimationController.instance().addEvent(AnimationController.MOVE_KORGOOLS, buttonId, 1);
+        }
     }
 
 }

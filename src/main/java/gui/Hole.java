@@ -20,7 +20,7 @@ public class Hole extends OvalButton {
     private boolean isTuz;
     private boolean isKazan;
     private List<Location> korgoolLocations;
-
+    private Korgool tuzKorgool;
     private Random rand;
     private Rectangle korgoolArea;
     private static Dimension korgoolSize;
@@ -41,36 +41,34 @@ public class Hole extends OvalButton {
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
-                double oldW = korgoolArea.width;
-                double oldH = korgoolArea.height;
-                updateKorgoolArea();
-                double newW = korgoolArea.width;
-                double newH = korgoolArea.height;
-                double coefW = newW / oldW;
-                double coefH = newH / oldH;
-
-                korgools.forEach(k -> {
-                    k.setSize(korgoolSize);
-                    k.setLocation((int)Math.round((k.getLocation().x * coefW)), (int)Math.round((k.getLocation().y * coefH)));
-                });
+                resizeKorgools();
             }
 
             @Override
             public void componentMoved(ComponentEvent e) {
-                double oldW = korgoolArea.width;
-                double oldH = korgoolArea.height;
-                updateKorgoolArea();
-                double newW = korgoolArea.width;
-                double newH = korgoolArea.height;
-                double coefW = newW / oldW;
-                double coefH = newH / oldH;
-
-                korgools.forEach(k -> {
-                    k.setSize(korgoolSize);
-                    k.setLocation((int)Math.round((k.getLocation().x * coefW)), (int)Math.round((k.getLocation().y * coefH)));
-                });
+                resizeKorgools();
             }
         });
+    }
+
+    private void resizeKorgools() {
+        double oldW = korgoolArea.width;
+        double oldH = korgoolArea.height;
+        updateKorgoolArea();
+        double newW = korgoolArea.width;
+        double newH = korgoolArea.height;
+        double coefW = newW / oldW;
+        double coefH = newH / oldH;
+
+        korgools.forEach(k -> {
+            k.setSize(korgoolSize);
+            k.setLocation((int)Math.round((k.getLocation().x * coefW)), (int)Math.round((k.getLocation().y * coefH)));
+        });
+
+        if (tuzKorgool != null) {
+            tuzKorgool.setSize(korgoolSize);
+            tuzKorgool.setLocation((int)Math.round((tuzKorgool.getLocation().x * coefW)), (int)Math.round((tuzKorgool.getLocation().y * coefH)));
+        }
     }
 
     /**
@@ -81,7 +79,12 @@ public class Hole extends OvalButton {
     public void addKorgool(Korgool k) {
         add(k);
         Point next = getNextLocation(0);
-        korgools.add(k);
+        if (k.getName() != null && (k.getName().equals("rightTuzKorgool") || k.getName().equals("leftTuzKorgool"))) {
+            tuzKorgool = k;
+        }
+        else {
+            korgools.add(k);
+        }
         k.setParentHole(this);
         k.setSize(korgoolSize);
         k.setLocation(next);
@@ -153,6 +156,10 @@ public class Hole extends OvalButton {
      */
     public boolean isTuz() {
         return isTuz;
+    }
+
+    public Korgool getTuzKorgool() {
+        return tuzKorgool;
     }
 
     /**
