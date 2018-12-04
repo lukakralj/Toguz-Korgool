@@ -38,7 +38,7 @@ public class AnimationController extends Thread {
     private static AnimationController instance;
 
     // Time in milliseconds, how long we want the animation to be.
-    private static int RUN_TIME = 1000;
+    private static int RUN_TIME = 250;
     private long startTime;
 
     private List<AnimEvent> events;
@@ -119,6 +119,43 @@ public class AnimationController extends Thread {
     }
 
     /**
+     * Start executing the events.
+     */
+    public void run() {
+        while (!stop) {
+            try {
+                synchronized (this) {
+                    wait(10);
+                }
+            }
+            catch (InterruptedException e) {
+                System.out.println("Interrupted wait.");
+            }
+            if (currentEvent != events.size() - 1) {
+                glassPane.setSize(animateFor.getContentPane().getSize());
+                currentEvent++;
+                AnimEvent e = events.get(currentEvent);
+                if (e.type == EMPTY_HOLE) {
+                    emptyEvent(e.id);
+                }
+                else if (e.type == MOVE_KORGOOLS) {
+                    moveEvent(e.id, e.numOfKorgools);
+                }
+                else {
+                    throw new RuntimeException("Invalid AnimEvent type: " + e.type);
+                }
+            }
+        }
+    }
+
+    /**
+     * Stop animator.
+     */
+    public void stopAnimator() {
+        stop = true;
+    }
+
+    /**
      * Prepares the korgools for an empty event (remove from hole, calculate targets).
      *
      * @param id Id of the hole we are removing from.
@@ -139,11 +176,35 @@ public class AnimationController extends Thread {
             k.setLocation(kLoc.x - paneLoc.x, kLoc.y - paneLoc.y);
         });
 
+        Location avgLoc = calculateAvgLocation(toMove);
+        Location centre = new Location(((double)animateFor.getContentPane().getSize().width)/2.0,
+                                        ((double)animateFor.getContentPane().getSize().height)/2.0);
+        double diffX = avgLoc.x - centre.x;
+        double diffY = avgLoc.y - centre.y;
         List<AnimKorgool> animKorgools = toMove.stream().map(k ->
-                new AnimKorgool(k, k.getLocation(), new Point(animateFor.getContentPane().getSize().width/2, animateFor.getContentPane().getSize().height/2))
+                new AnimKorgool(k, k.getLocation(),
+                        new Point((int)(k.getLocation().x - diffX),
+                                (int)(k.getLocation().y - diffY)))
                 )
                 .collect(Collectors.toList());
         performMove(animKorgools, null);
+    }
+
+    /**
+     * Calculates the average location of korgools in the list.
+     *
+     * @param korgools List of korgools to get average for.
+     * @return Average location of these korgools.
+     */
+    private Location calculateAvgLocation(List<Korgool> korgools) {
+        Location avgLoc = new Location(0, 0);
+        korgools.forEach(k -> {
+            avgLoc.x += k.getLocation().x;
+            avgLoc.y += k.getLocation().y;
+        });
+        avgLoc.x /= korgools.size();
+        avgLoc.y /= korgools.size();
+        return avgLoc;
     }
 
     /**
@@ -216,43 +277,6 @@ public class AnimationController extends Thread {
     }
 
     /**
-     * Start executing the events.
-     */
-    public void run() {
-        while (!stop) {
-            try {
-                synchronized (this) {
-                    wait(10);
-                }
-            }
-            catch (InterruptedException e) {
-                System.out.println("Interrupted wait.");
-            }
-            if (currentEvent != events.size() - 1) {
-                glassPane.setSize(animateFor.getContentPane().getSize());
-                currentEvent++;
-                AnimEvent e = events.get(currentEvent);
-                if (e.type == EMPTY_HOLE) {
-                    emptyEvent(e.id);
-                }
-                else if (e.type == MOVE_KORGOOLS) {
-                    moveEvent(e.id, e.numOfKorgools);
-                }
-                else {
-                    throw new RuntimeException("Invalid AnimEvent type: " + e.type);
-                }
-            }
-        }
-    }
-
-    /**
-     * Stop animator.
-     */
-    public void stopAnimator() {
-        stop = true;
-    }
-
-    /**
      * Calculates new location for the korgool.
      *
      * @param startPoint Starting location.
@@ -315,10 +339,20 @@ public class AnimationController extends Thread {
         }
     }
 
+    private class Location {
+        double x;
+        double y;
+
+        private Location(double x, double y) {
+            this.x = x;
+            this.y = y;
+        }
+    }
+
     /**
-     * Set new run time for all animations. The higher the value the slower the animations will be.
+     * ONLY USE FOR TESTING - TO SPEED UP ANIMATIONS!
      *
-     * @param timeInMillis
+     * @param timeInMillis Duration of each animation in milliseconds.
      */
     public static void setRunTime(int timeInMillis) {
         RUN_TIME = timeInMillis;
