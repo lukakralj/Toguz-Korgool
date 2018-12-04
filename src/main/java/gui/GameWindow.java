@@ -156,7 +156,7 @@ public class GameWindow extends JFrame {
      */
     private void fillPanelWithButtons(JPanel panel, String color) {
         for (int i = 1; i < 10; ++i) {
-            Hole button = new Hole();
+            Hole button = new Hole(false);
             button.setName(color + i);
             buttonMap.put(button.getName(), button);
             button.setPreferredSize(new Dimension(30, 160));
@@ -200,12 +200,12 @@ public class GameWindow extends JFrame {
         JPanel kazanPanel = new JPanel(new BorderLayout());
         kazanPanel.setBackground(BACKGROUND_COLOR);
         kazanPanel.setBorder(new EmptyBorder(0, 0, 20, 0));
-        kazanRight = new Hole();
+        kazanRight = new Hole(true);
         kazanRight.setColorHighlighted(kazanRight.getColorNormal()); // TODO: this is only a temporary "fix"
         kazanRight.setColorBorderNormal(new Color(160,82,45));
 		kazanRight.setName("rightKazan");
         kazanRight.setPreferredSize(new Dimension(620, kazanPanel.getHeight() - 10));
-        kazanLeft = new Hole();
+        kazanLeft = new Hole(true);
         kazanLeft.setColorHighlighted(kazanLeft.getColorNormal()); // TODO: this is only a temporary "fix"
         kazanLeft.setColorBorderNormal(new Color(160,82,45));
 		kazanLeft.setName("leftKazan");

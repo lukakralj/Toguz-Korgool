@@ -12,22 +12,23 @@ import java.util.Random;
  * or for their kazans.
  *
  * @author Luka Kralj
- * @version 21 November 2018
+ * @version 04 December 2018
  */
 public class Hole extends OvalButton {
 
     private List<Korgool> korgools;
     private boolean isTuz;
+    private boolean isKazan;
     private List<Location> korgoolLocations;
 
     private Random rand;
     private Rectangle korgoolArea;
-    private Dimension korgoolSize;
+    private static Dimension korgoolSize;
 
     /**
      * Construct an empty hole. To add korgools to it, use one of the functions.
      */
-    public Hole() {
+    public Hole(boolean isKazan) {
         korgools = new ArrayList<>(32);
         rand = new Random();
         korgoolLocations = generateLocations();
@@ -35,7 +36,7 @@ public class Hole extends OvalButton {
         korgoolSize = new Dimension(10, 10);
         setLayout(null);
         isTuz = false;
-
+        this.isKazan = isKazan;
         // Update korgools size and location only when the hole is moved/resized.
         addComponentListener(new ComponentAdapter() {
             @Override
@@ -79,12 +80,11 @@ public class Hole extends OvalButton {
      */
     public void addKorgool(Korgool k) {
         add(k);
-        Point next = getNextLocation();
+        Point next = getNextLocation(0);
         korgools.add(k);
         k.setParentHole(this);
         k.setSize(korgoolSize);
         k.setLocation(next);
-        //System.out.println("==== Korgool added: (" + k.getLocation().x + ", " + k.getLocation().y + ")");
         revalidate();
         repaint();
     }
@@ -208,7 +208,12 @@ public class Hole extends OvalButton {
         double newH = (double)getSize().height - 2*y;
 
         double diameter = (newW < newH) ? (newW / 4) : (newH / 4);
-        korgoolSize = new Dimension((int)diameter, (int)diameter);
+        if (!isKazan) {
+            korgoolSize = new Dimension((int)diameter, (int)diameter);
+        }
+        else if (korgoolSize != null){
+            diameter = korgoolSize.width;
+        }
 
         korgoolArea = new Rectangle((int)x, (int)y, (int)(newW - diameter), (int)(newH - diameter));
     }
@@ -235,9 +240,14 @@ public class Hole extends OvalButton {
         return locations;
     }
 
-    public Point getNextLocation() {
+    /**
+     *
+     * @param offset Numbers of korgools that need to be added before this position will be valid.
+     * @return Location of the korgool that would be added after 'offset' korgools.
+     */
+    public Point getNextLocation(int offset) {
         updateKorgoolArea();
-        Location next = korgoolLocations.get(getNumberOfKorgools());
+        Location next = korgoolLocations.get(getNumberOfKorgools() + offset);
         double x = korgoolArea.x + next.x * korgoolArea.width;
         double y = korgoolArea.y + next.y * korgoolArea.height;
 

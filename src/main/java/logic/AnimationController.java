@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
  * The animations can be stopped with stopAnimator(). However, the instance needs to be reset after that.
  *
  * @author Luka Kralj
- * @version 29 November 2018
+ * @version 04 December 2018
  */
 public class AnimationController extends Thread {
     /** Marks that all available korgools need to be included in the event. */
@@ -174,15 +174,14 @@ public class AnimationController extends Thread {
 
         Point paneLoc = animateFor.getContentPane().getLocationOnScreen();
 
-        List<AnimKorgool> animKorgools = toMove.stream().map(k ->
-                new AnimKorgool(k, k.getLocation(),
-                        new Point((hole.getLocationOnScreen().x - animateFor.getContentPane().getLocationOnScreen().x) + hole.getNextLocation().x,
-                                  (hole.getLocationOnScreen().y - animateFor.getContentPane().getLocationOnScreen().y) + hole.getNextLocation().y))
-                )
-                .collect(Collectors.toList());
-        //System.out.println("==== Korgool target: (" + animKorgools.get(0).target.x + ", " + animKorgools.get(0).target.y + ")");
-        //System.out.println("==== Target hole: (" + (hole.getLocationOnScreen().x - animateFor.getContentPane().getLocationOnScreen().x) + ", " + (hole.getLocationOnScreen().y - animateFor.getContentPane().getLocationOnScreen().y) + ")");
-        //System.out.println("==== Hole next loc: (" + hole.getNextLocation().x + ", " + hole.getNextLocation().y + ")");
+        List<AnimKorgool> animKorgools = new ArrayList<>();
+        for (int i = 0; i < toMove.size(); i++) {
+            animKorgools.add(
+                    new AnimKorgool(toMove.get(i), toMove.get(i).getLocation(),
+                            new Point((hole.getLocationOnScreen().x - animateFor.getContentPane().getLocationOnScreen().x) + hole.getNextLocation(i).x,
+                                    (hole.getLocationOnScreen().y - animateFor.getContentPane().getLocationOnScreen().y) + hole.getNextLocation(i).y))
+            );
+        }
         performMove(animKorgools, hole);
     }
 
@@ -201,7 +200,9 @@ public class AnimationController extends Thread {
             if (progress > 1f) {
                 endMove = true;
                 if (newParent != null) {
-                    korgools.forEach(k -> newParent.addKorgool(k.korgool));
+                    for (AnimKorgool k : korgools) {
+                        newParent.addKorgool(k.korgool);
+                    }
                 }
             }
             else {
