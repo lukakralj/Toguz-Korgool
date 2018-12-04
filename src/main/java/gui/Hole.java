@@ -18,6 +18,7 @@ public class Hole extends OvalButton {
 
     private List<Korgool> korgools;
     private boolean isTuz;
+    private List<Location> korgoolLocations;
 
     private Random rand;
     private Rectangle korgoolArea;
@@ -29,6 +30,7 @@ public class Hole extends OvalButton {
     public Hole() {
         korgools = new ArrayList<>(32);
         rand = new Random();
+        korgoolLocations = generateLocations();
         korgoolArea = new Rectangle(0,0,10,10);
         korgoolSize = new Dimension(10, 10);
         setLayout(null);
@@ -76,12 +78,13 @@ public class Hole extends OvalButton {
      * @param k Korgool to add.
      */
     public void addKorgool(Korgool k) {
-        updateKorgoolArea();
         add(k);
+        Point next = getNextLocation();
         korgools.add(k);
         k.setParentHole(this);
         k.setSize(korgoolSize);
-        k.setLocation(calculateKorgoolLocation());
+        k.setLocation(next);
+        //System.out.println("==== Korgool added: (" + k.getLocation().x + ", " + k.getLocation().y + ")");
         revalidate();
         repaint();
     }
@@ -222,6 +225,25 @@ public class Hole extends OvalButton {
         return new Point((int)x, (int)y);
     }
 
+    private List<Location> generateLocations() {
+        List<Location> locations = new ArrayList<>(170);
+        for (int i = 0; i < 170; i++) {
+            double x = rand.nextDouble();
+            double y = rand.nextDouble();
+            locations.add(new Location(x, y));
+        }
+        return locations;
+    }
+
+    public Point getNextLocation() {
+        updateKorgoolArea();
+        Location next = korgoolLocations.get(getNumberOfKorgools());
+        double x = korgoolArea.x + next.x * korgoolArea.width;
+        double y = korgoolArea.y + next.y * korgoolArea.height;
+
+        return new Point((int)x, (int)y);
+    }
+
     /**
      * Takes care of rendering the oval button correctly.
      *
@@ -233,6 +255,16 @@ public class Hole extends OvalButton {
 
         g.setColor(Color.BLACK);
         g.drawString("" + korgools.size(), (int)(getSize().width * 0.08), (int)(getSize().height * 0.95));
+    }
+
+    private class Location {
+        double x;
+        double y;
+
+        private Location(double x, double y) {
+            this.x = x;
+            this.y = y;
+        }
     }
 
 }

@@ -38,7 +38,7 @@ public class AnimationController extends Thread {
     private static AnimationController instance;
 
     // Time in milliseconds, how long we want the animation to be.
-    private static int RUN_TIME = 500;
+    private static int RUN_TIME = 1000;
     private long startTime;
 
     private List<AnimEvent> events;
@@ -175,9 +175,14 @@ public class AnimationController extends Thread {
         Point paneLoc = animateFor.getContentPane().getLocationOnScreen();
 
         List<AnimKorgool> animKorgools = toMove.stream().map(k ->
-                new AnimKorgool(k, k.getLocation(), new Point(hole.getLocationOnScreen().x - paneLoc.x + hole.getSize().width/2, hole.getLocationOnScreen().y - paneLoc.y + hole.getSize().height/2))
+                new AnimKorgool(k, k.getLocation(),
+                        new Point((hole.getLocationOnScreen().x - animateFor.getContentPane().getLocationOnScreen().x) + hole.getNextLocation().x,
+                                  (hole.getLocationOnScreen().y - animateFor.getContentPane().getLocationOnScreen().y) + hole.getNextLocation().y))
                 )
                 .collect(Collectors.toList());
+        //System.out.println("==== Korgool target: (" + animKorgools.get(0).target.x + ", " + animKorgools.get(0).target.y + ")");
+        //System.out.println("==== Target hole: (" + (hole.getLocationOnScreen().x - animateFor.getContentPane().getLocationOnScreen().x) + ", " + (hole.getLocationOnScreen().y - animateFor.getContentPane().getLocationOnScreen().y) + ")");
+        //System.out.println("==== Hole next loc: (" + hole.getNextLocation().x + ", " + hole.getNextLocation().y + ")");
         performMove(animKorgools, hole);
     }
 
