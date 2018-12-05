@@ -424,16 +424,6 @@ public class GameWindow extends JFrame {
 
     public void makeTuz(String buttonId) {
         buttonMap.get(buttonId).setTuz(true);
-        if (buttonId.startsWith("W")) {
-            // making tuz for black player
-            AnimationController.instance().addEvent(AnimationController.EMPTY_HOLE, AnimationController.LEFT_TUZ);
-            AnimationController.instance().addEvent(AnimationController.MOVE_KORGOOLS, buttonId, 1);
-        }
-        else {
-            //making tuz for white player
-            AnimationController.instance().addEvent(AnimationController.EMPTY_HOLE, AnimationController.RIGHT_TUZ);
-            AnimationController.instance().addEvent(AnimationController.MOVE_KORGOOLS, buttonId, 1);
-        }
     }
 
 }

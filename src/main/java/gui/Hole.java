@@ -81,6 +81,7 @@ public class Hole extends OvalButton {
         Point next = getNextLocation(0);
         if (k.getName() != null && (k.getName().equals("rightTuzKorgool") || k.getName().equals("leftTuzKorgool"))) {
             tuzKorgool = k;
+            next = getNextLocation(165 - getNumberOfKorgools());
         }
         else {
             korgools.add(k);
@@ -158,8 +159,10 @@ public class Hole extends OvalButton {
         return isTuz;
     }
 
-    public Korgool getTuzKorgool() {
-        return tuzKorgool;
+    public Korgool releaseTuzKorgool() {
+        Korgool toReturn = tuzKorgool;
+        tuzKorgool = null;
+        return toReturn;
     }
 
     /**

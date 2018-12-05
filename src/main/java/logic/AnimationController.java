@@ -173,12 +173,12 @@ public class AnimationController extends Thread {
         if (id == LEFT_TUZ) {
             hole = animateFor.getLeftTuz();
             toMove = new ArrayList<>();
-            toMove.add(hole.getTuzKorgool());
+            toMove.add(hole.releaseTuzKorgool());
         }
         else if (id == RIGHT_TUZ) {
             hole = animateFor.getRightTuz();
             toMove = new ArrayList<>();
-            toMove.add(hole.getTuzKorgool());
+            toMove.add(hole.releaseTuzKorgool());
         }
         else {
             hole = animateFor.getButtonMap().get(id);
