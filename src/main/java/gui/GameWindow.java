@@ -92,7 +92,7 @@ public class GameWindow extends JFrame {
      * ActionListener to each item in the menu.
      */
     private void setUpMenu() {
-        String[] FileMenuItems = {"CustomInput", "Save", "Load", "Quit"};
+        String[] FileMenuItems = {"CustomInput", "NewGame", "Save", "Load", "Quit"};
         JMenu FileMenu = new JMenu("File");
 		FileMenu.setName("filemenu");
         FileMenu.setFont(FileMenu.getFont().deriveFont(16F));
@@ -260,6 +260,10 @@ public class GameWindow extends JFrame {
      */
     private void menuOnClickAction(String menuItemId) {
         switch (menuItemId) {
+			case "NewGame":
+				JOptionPane.showConfirmDialog(null, "Are you sure you want to start a new game?");
+				loadNewGame();
+                break;
             case "CustomInput":
 				if(manager!=null){
 					new CustomInputWindow(BACKGROUND_COLOR, manager);
@@ -339,6 +343,48 @@ public class GameWindow extends JFrame {
 		
 		try{
             File toRead=new File("src\\main\\java\\saveFile2.csv");
+            FileInputStream fis=new FileInputStream(toRead);
+    
+            Scanner sc=new Scanner(fis);
+    
+            String placeholder = "";
+            while(sc.hasNextLine()){
+                placeholder=sc.nextLine();
+                StringTokenizer st = new StringTokenizer(placeholder,",",false);
+                populateWithKorgools(st.nextToken(), Integer.valueOf(st.nextToken()));
+            }
+            fis.close();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+	
+	private void loadNewGame(){
+        try{
+            File toRead=new File("src\\main\\java\\newGameFile1.csv");
+            FileInputStream fis=new FileInputStream(toRead);
+    
+            Scanner sc=new Scanner(fis);
+    
+            String placeholder = "";
+            while(sc.hasNextLine()){
+                placeholder=sc.nextLine();
+                StringTokenizer st = new StringTokenizer(placeholder,",",false);
+                Hole button = buttonMap.get(st.nextToken());
+                populateWithKorgools(button.getName(), Integer.valueOf(st.nextToken()));
+				if(st.nextToken().equals("true")){
+					button.setTuz(true);
+				}else{
+                    button.setTuz(false);
+				}
+            }
+            fis.close();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+		
+		try{
+            File toRead=new File("src\\main\\java\\newGameFile2.csv");
             FileInputStream fis=new FileInputStream(toRead);
     
             Scanner sc=new Scanner(fis);
