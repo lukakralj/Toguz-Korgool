@@ -10,7 +10,7 @@ import java.awt.geom.*;
  * an acton if it is clicked within the oval shape drawn on it.
  *
  * @author Luka Kralj
- * @version 18 November 2018
+ * @version 07 December 2018
  */
 public class OvalButton extends JButton implements MouseListener, MouseMotionListener {
 

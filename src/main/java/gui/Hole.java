@@ -12,12 +12,11 @@ import java.util.Random;
  * or for their kazans.
  *
  * @author Luka Kralj
- * @version 04 December 2018
+ * @version 07 December 2018
  */
 public class Hole extends OvalButton {
 
     private List<Korgool> korgools;
-    private boolean isTuz;
     private boolean isKazan;
     private List<Location> korgoolLocations;
     private Korgool tuzKorgool;
@@ -35,7 +34,6 @@ public class Hole extends OvalButton {
         korgoolArea = new Rectangle(0,0,10,10);
         korgoolSize = new Dimension(10, 10);
         setLayout(null);
-        isTuz = false;
         this.isKazan = isKazan;
         // Update korgools size and location only when the hole is moved/resized.
         addComponentListener(new ComponentAdapter() {
@@ -160,28 +158,13 @@ public class Hole extends OvalButton {
      * @return True if hole is set as tuz, false if not.
      */
     public boolean isTuz() {
-        return isTuz;
+        return tuzKorgool != null;
     }
 
     public Korgool releaseTuzKorgool() {
         Korgool toReturn = tuzKorgool;
         tuzKorgool = null;
         return toReturn;
-    }
-
-    /**
-     * Decide if this hole is a tuz or not. The hole border will be highlighted accordingly.
-     *
-     * @param isTuz True if you want to make this hole a tuz, false otherwise.
-     */
-    public void setTuz(boolean isTuz) {
-        this.isTuz = isTuz;
-        if (isTuz) {
-            setHighlightedBorder(true);
-        }
-        else {
-            setHighlightedBorder(false);
-        }
     }
 
     /**

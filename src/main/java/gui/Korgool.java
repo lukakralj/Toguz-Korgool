@@ -9,7 +9,7 @@ import java.awt.event.MouseEvent;
  * This class represents korgools in the game.
  *
  * @author Luka Kralj
- * @version 21 November 2018
+ * @version 07 December 2018
  */
 public class Korgool extends OvalButton {
 

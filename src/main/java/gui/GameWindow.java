@@ -6,6 +6,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 import java.io.*;
+import java.util.List;
 
 import logic.AnimationController;
 import logic.GameManager;
@@ -318,6 +319,8 @@ public class GameWindow extends JFrame {
     }
 
     private void loadGame(String file1, String file2){
+        AnimationController.resetController(this);
+        AnimationController.instance().start();
         try{
             File toRead=new File(file1);
             FileInputStream fis=new FileInputStream(toRead);
@@ -325,16 +328,20 @@ public class GameWindow extends JFrame {
             Scanner sc=new Scanner(fis);
     
             String placeholder = "";
+            resetTuzes();
+            List<String> tuzes = new ArrayList<>();
             while(sc.hasNextLine()){
                 placeholder=sc.nextLine();
                 StringTokenizer st = new StringTokenizer(placeholder,",",false);
-                Hole button = buttonMap.get(st.nextToken());
+                String holeId = st.nextToken();
+                Hole button = buttonMap.get(holeId);
                 populateWithKorgools(button.getName(), Integer.valueOf(st.nextToken()));
 				if(st.nextToken().equals("true")){
-					button.setTuz(true);
-				}else{
-                    button.setTuz(false);
+					tuzes.add(holeId);
 				}
+            }
+            for (String id : tuzes) {
+                setTuz(id);
             }
             fis.close();
         }catch(Exception e){
@@ -380,6 +387,7 @@ public class GameWindow extends JFrame {
         // TODO: would it be faster to only create the new once/delete the excess???
         hole.emptyHole();
         hole.createAndAdd(numOfKorgools);
+        hole.repaint();
     }
 
     public void resetTuzes() {
