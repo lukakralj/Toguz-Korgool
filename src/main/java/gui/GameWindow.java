@@ -25,6 +25,7 @@ public class GameWindow extends JFrame {
     private JLayeredPane layeredPane;
     private HashMap<String, Hole> kazans;
     private GameManager manager;
+    private JLabel infoLabel;
 
     /**
      * Construct the game window
@@ -37,12 +38,10 @@ public class GameWindow extends JFrame {
         kazans = new HashMap<>();
         setUpMenu();
         setUpTopPanel();
+        setUpTuzMarkers();
         setUpKazans();
         setUpLowerPanel();
-        setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
         layeredPane = new JLayeredPane();
-        root.setSize(new Dimension(1280, 720));
-        root.setMinimumSize(new Dimension(1000, 600));
         root.setLocation(0, 0);
         layeredPane.add(root, new Integer(0));
 
@@ -51,17 +50,13 @@ public class GameWindow extends JFrame {
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
-                int newW = getContentPane().getSize().width < 1000 ? 1000 : getContentPane().getSize().width;
-                int newH = getContentPane().getSize().height < 600 ? 600 : getContentPane().getSize().height;
-                root.setSize(newW, newH);
+                resizeWindow();
             }
         });
 
         addWindowStateListener(e -> {
             revalidate();
-            int newW = getContentPane().getSize().width < 1000 ? 1000 : getContentPane().getSize().width;
-            int newH = getContentPane().getSize().height < 600 ? 600 : getContentPane().getSize().height;
-            root.setSize(newW, newH);
+            resizeWindow();
             repaint();
         });
         pack();
@@ -70,6 +65,12 @@ public class GameWindow extends JFrame {
 
 	public GameWindow() {
         this(null);
+    }
+
+    private void resizeWindow() {
+        int newW = getContentPane().getSize().width < 1401 ? 1401 : getContentPane().getSize().width;
+        int newH = getContentPane().getSize().height < 677 ? 677 : getContentPane().getSize().height;
+        root.setSize(newW, newH);
     }
 
     public JLayeredPane getLayeredPane() {
@@ -82,7 +83,7 @@ public class GameWindow extends JFrame {
     private void setFrameProperties() {
         setTitle("Toguz Korgol");
         setResizable(true);
-        setPreferredSize(new Dimension(1280, 720));
+        setPreferredSize(new Dimension(1501, 790));
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         root.setBackground(BACKGROUND_COLOR);
         root.setLayout(new BorderLayout());
@@ -177,6 +178,41 @@ public class GameWindow extends JFrame {
         }
     }
 
+    private void setUpTuzMarkers() {
+        JPanel left = createSingleMarker("left");
+        JPanel right = createSingleMarker("right");
+
+        root.add(left, BorderLayout.WEST);
+        root.add(right, BorderLayout.EAST);
+    }
+
+    private JPanel createSingleMarker(String side) {
+        Hole tuz;
+        if (side.equals("left")) {
+            leftTuz = new Hole(true);
+            tuz = leftTuz;
+        }
+        else {
+            rightTuz = new Hole(true);
+            tuz = rightTuz;
+        }
+
+        tuz.setName(side + "Tuz");
+        Korgool tuzKorgool = new Korgool(tuz, Color.RED);
+        tuzKorgool.setName(side + "TuzKorgool");
+        tuz.addKorgool(tuzKorgool); // Korgool doesn't go in the right location because the frame is not set up yet at this point.
+        tuz.setEnabled(false);
+        tuz.setBorder(new EmptyBorder(10, 10, 10, 10));
+        tuz.setPreferredSize(new Dimension(200, 200));
+
+        JPanel panel = new JPanel(new GridLayout(3, 1));
+        panel.add(new JPanel());
+        panel.add(tuz);
+        panel.add(new JPanel());
+        panel.setMinimumSize(new Dimension(200, 200));
+        return panel;
+    }
+
     /**
      * Helper function to create a JPanel containing both Kazans
      *
@@ -184,64 +220,34 @@ public class GameWindow extends JFrame {
     private void setUpKazans() {
         JPanel kazanPanel = new JPanel(new BorderLayout());
         kazanPanel.setBackground(BACKGROUND_COLOR);
-        kazanPanel.setBorder(new EmptyBorder(0, 0, 20, 0));
-
-        JPanel leftPanel = new JPanel();
-        leftPanel.setLayout(new BorderLayout());
-
-         leftTuz = new Hole(true);
-        leftTuz.setName("leftTuz");
-        Korgool leftTuzKorgool = new Korgool(leftTuz, Color.RED);
-        leftTuzKorgool.setName("leftTuzKorgool");
-        leftTuz.addKorgool(leftTuzKorgool); // Korgool doesn't go in the right location because the frame is not set up yet at this point.
-        leftTuz.setEnabled(false);
-        leftTuz.setMaximumSize(new Dimension(200, 200));
-        JPanel leftTuzPanel = new JPanel();
-        leftTuzPanel.setLayout(new BorderLayout());
-        leftTuzPanel.add(leftTuz, BorderLayout.CENTER);
-        leftTuzPanel.setPreferredSize(new Dimension(200, 200));
-        leftPanel.add(leftTuzPanel, BorderLayout.WEST);
-
+        kazanPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
 
         kazanLeft = new Hole(true);
-        kazanLeft.setColorHighlighted(kazanLeft.getColorNormal()); // TODO: this is only a temporary "fix"
         kazanLeft.setColorBorderNormal(new Color(160,82,45));
         kazanLeft.setName("leftKazan");
         kazanLeft.setEnabled(false);
-        kazanLeft.setPreferredSize(new Dimension(400,400));
-        leftPanel.add(kazanLeft, BorderLayout.CENTER);
-
-
-        JPanel rightPanel = new JPanel();
-        rightPanel.setLayout(new BorderLayout());
-
-         rightTuz = new Hole(true);
-        rightTuz.setName("leftTuz");
-        Korgool rightTuzKorgool = new Korgool(rightTuz, Color.RED);
-        rightTuzKorgool.setName("rightTuzKorgool");
-        rightTuz.addKorgool(rightTuzKorgool); // Korgool doesn't go in the right location because the frame is not set up yet at this point.
-        rightTuz.setEnabled(false);
-        rightTuz.setMaximumSize(new Dimension(200, 200));
-        JPanel rightTuzPanel = new JPanel();
-        rightTuzPanel.setLayout(new BorderLayout());
-        rightTuzPanel.add(rightTuz, BorderLayout.CENTER);
-        rightTuzPanel.setPreferredSize(new Dimension(200, 200));
-        rightPanel.add(rightTuzPanel, BorderLayout.EAST);
+        kazanLeft.setPreferredSize(new Dimension(400,300));
+        kazanLeft.setEnabled(false);
 
         kazanRight = new Hole(true);
-        kazanRight.setColorHighlighted(kazanRight.getColorNormal()); // TODO: this is only a temporary "fix"
         kazanRight.setColorBorderNormal(new Color(160,82,45));
         kazanRight.setName("rightKazan");
         kazanRight.setEnabled(false);
-        kazanRight.setPreferredSize(new Dimension(400,400));
-        rightPanel.add(kazanRight, BorderLayout.CENTER);
-
+        kazanRight.setPreferredSize(new Dimension(400,300));
+        kazanRight.setEnabled(false);
 
         kazans.put(kazanRight.getName(), kazanRight);
         kazans.put(kazanLeft.getName(), kazanLeft);
 
-        kazanPanel.add(leftPanel, BorderLayout.WEST);
-        kazanPanel.add(rightPanel, BorderLayout.EAST);
+        infoLabel = new JLabel();
+        infoLabel.setPreferredSize(new Dimension(300, 300));
+        infoLabel.setFont(new Font("Monaco", Font.BOLD, 20));
+        infoLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        infoLabel.setVerticalAlignment(SwingConstants.CENTER);
+
+        kazanPanel.add(kazanLeft, BorderLayout.WEST);
+        kazanPanel.add(infoLabel, BorderLayout.CENTER);
+        kazanPanel.add(kazanRight, BorderLayout.EAST);
         root.add(kazanPanel, BorderLayout.CENTER);
     }
 
