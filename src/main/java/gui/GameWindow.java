@@ -96,7 +96,7 @@ public class GameWindow extends JFrame {
      * ActionListener to each item in the menu.
      */
     private void setUpMenu() {
-        String[] FileMenuItems = {"CustomInput", "Save", "Load", "Quit"};
+        String[] FileMenuItems = {"CustomInput", "NewGame", "Save", "Load", "Quit"};
         JMenu FileMenu = new JMenu("File");
 		FileMenu.setName("filemenu");
         FileMenu.setFont(FileMenu.getFont().deriveFont(16F));
@@ -263,6 +263,10 @@ public class GameWindow extends JFrame {
      */
     private void menuOnClickAction(String menuItemId) {
         switch (menuItemId) {
+			case "NewGame":
+				JOptionPane.showConfirmDialog(null, "Are you sure you want to start a new game?");
+				loadGame("src\\main\\java\\newGameFile1.csv","src\\main\\java\\newGameFile2.csv");
+                break;
             case "CustomInput":
 				if(manager!=null){
 					new CustomInputWindow(BACKGROUND_COLOR, manager);
@@ -274,7 +278,7 @@ public class GameWindow extends JFrame {
                 break;
             case "Load":
                 JOptionPane.showConfirmDialog(null, "Are you sure you want to load the latest save state?");
-                loadGame();
+                loadGame("src\\main\\java\\saveFile.csv","src\\main\\java\\saveFile2.csv");
                 break;
             case "Quit":
                 JOptionPane.showConfirmDialog(null, "Are you sure you want to quit?");
@@ -316,9 +320,9 @@ public class GameWindow extends JFrame {
         }
     }
 
-    private void loadGame(){
+    private void loadGame(String file1, String file2){
         try{
-            File toRead=new File("src\\main\\java\\saveFile.csv");
+            File toRead=new File(file1);
             FileInputStream fis=new FileInputStream(toRead);
     
             Scanner sc=new Scanner(fis);
@@ -341,7 +345,7 @@ public class GameWindow extends JFrame {
         }
 		
 		try{
-            File toRead=new File("src\\main\\java\\saveFile2.csv");
+            File toRead=new File(file2);
             FileInputStream fis=new FileInputStream(toRead);
     
             Scanner sc=new Scanner(fis);
