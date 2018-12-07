@@ -60,10 +60,11 @@ public class Hole extends OvalButton {
         double coefW = newW / oldW;
         double coefH = newH / oldH;
 
-        korgools.forEach(k -> {
+        for (int i = 0; i < korgools.size(); i++) {
+            Korgool k = korgools.get(i);
             k.setSize(korgoolSize);
             k.setLocation((int)Math.round((k.getLocation().x * coefW)), (int)Math.round((k.getLocation().y * coefH)));
-        });
+        }
 
         if (tuzKorgool != null) {
             tuzKorgool.setSize(korgoolSize);
