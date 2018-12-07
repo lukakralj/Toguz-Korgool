@@ -107,6 +107,9 @@ public class AnimationController extends Thread {
      * @param numOfKorgools Number of korgools we want to move.
      */
     public void addEvent(int eventType, String holeId, int numOfKorgools) {
+        if (stop) {
+            return;
+        }
         events.add(new AnimEvent(eventType, holeId, numOfKorgools));
     }
 
@@ -125,10 +128,10 @@ public class AnimationController extends Thread {
      * Start executing the events.
      */
     public void run() {
-        while (!stop) {
+        while (!stop || currentEvent != events.size()) {
             try {
                 synchronized (this) {
-                    wait(10);
+                    wait(5);
                 }
             }
             catch (InterruptedException e) {

@@ -14,15 +14,14 @@ public class GameManager {
 
     private GameWindow gameWindow;
     private Board core;
-    private AnimationController anim;
 
     /**
      * Construct the game manager
      */
     public GameManager() {
         gameWindow = new GameWindow(this);
-        anim = AnimationController.resetController(gameWindow);
-        anim.start();
+        AnimationController.resetController(gameWindow);
+        AnimationController.instance().start();
         populateInitialBoard();
         core = new Board();
     }
@@ -72,9 +71,6 @@ public class GameManager {
         for (int i = 0; i < 9; i++) {
             gameWindow.populateWithKorgools("B" + (9 - i), bHoles[i]);
         }
-
-        //updates display
-        updateDisplay();
     }
 
 
@@ -90,76 +86,6 @@ public class GameManager {
         player.setHoles(holes);
         player.setTuz(tuz - 1);
         player.setKazan(kazan);
-    }
-
-    /**
-     * Combines all previous update methods into one general function meant to update the GUI after any changes.
-     */
-    private void updateDisplay() {
-        updateWhiteDisplay();
-        updateBlackDisplay();
-    }
-
-    /**
-     * Update the GUI to correctly display the changes that have occurred in the white player's board
-     */
-    private void updateWhiteDisplay() {
-        Player player = core.getWhitePlayer();
-        /*for (int i = 1; i <= 9; i++) {
-            gameWindow.setHoleText("W" + i, player.getHoleAt(i - 1));
-        }*/
-
-        //updateKazan(player);
-        updateTuz(player);
-    }
-
-    /**
-     * Update the GUI to correctly display the changes that have occurred in the black player's board
-     */
-    private void updateBlackDisplay() {
-        Player player = core.getBlackPlayer();
-        /*int holeIndex = 0;
-        for (int i = 9; i >= 1; i--) {
-            gameWindow.setHoleText("B" + i, player.getHoleAt(i - 1));
-            holeIndex++;
-        }*/
-
-        //updateKazan(player);
-        updateTuz(player);
-    }
-
-    /**
-     * Update the GUI to correctly display the changes that have occurred in the player's kazan.
-     * @param player Player whose kazan is to be updated
-     */
-    private void updateKazan(Player player) {
-        String text = player.getKazan() + "";
-        if (player == core.getWhitePlayer()) {
-            gameWindow.setKazanRightText(text);
-        } else {
-            gameWindow.setKazanLeftText(text);
-        }
-    }
-
-    /**
-     * Update GUI to correctly display player's tuz
-     * @param player player whose tuz is to be updated
-     */
-    private void updateTuz(Player player) {
-        int tuz = player.getTuz();
-        int buttonNumber;
-        String buttonTag;
-        if (tuz > -1) {
-            if (player == core.getWhitePlayer()) {
-                buttonNumber = 9 - tuz;  // because black player's buttonIDs are reversed
-                buttonTag = "B";
-            } else {
-                buttonNumber = tuz + 1;  // because ID's start from 1
-                buttonTag = "W";
-
-            }
-            gameWindow.makeTuz(buttonTag + buttonNumber);
-        }
     }
 
     /**
@@ -187,7 +113,6 @@ public class GameManager {
         BoardStatus endStatus = core.checkResult();
         checkMoveStatus(moveStatus, isWhiteTurn, endStatus);
         checkEndStatus(endStatus);
-
     }
 
     /**
@@ -226,10 +151,8 @@ public class GameManager {
         else {
             core.getAllKorgools(core.getWhitePlayer());
         }
-        updateDisplay();
         BoardStatus endStatus = core.checkResultOnImpossible();
         checkEndStatus(endStatus);
-
     }
 
     /**
@@ -240,14 +163,16 @@ public class GameManager {
     private void checkEndStatus(BoardStatus endStatus) {
 
         if (endStatus == BoardStatus.B_WON) {
-            gameWindow.setKazanLeftText("Black player won!");
+            gameWindow.displayMessage("Black player won!");
+            AnimationController.instance().stopAnimator();
 
         } else if (endStatus == BoardStatus.W_WON) {
-            gameWindow.setKazanRightText("White player won!");
+            gameWindow.displayMessage("White player won!");
+            AnimationController.instance().stopAnimator();
 
         } else if (endStatus == BoardStatus.DRAW) {
-            gameWindow.setKazanLeftText("It's a tie!");
-            gameWindow.setKazanRightText("It's a tie!");
+            gameWindow.displayMessage("It's a tie!");
+            AnimationController.instance().stopAnimator();
         }
     }
 
@@ -259,7 +184,6 @@ public class GameManager {
      */
     private void checkMoveStatus(BoardStatus moveStatus, boolean isWhiteTurn, BoardStatus endStatus) {
         if (moveStatus == BoardStatus.SUCCESSFUL) {  // move went well but the game is not finished, next player should make a move
-            updateDisplay();
             if (isWhiteTurn) {
                 makeMove("", false);   // calls makeMove with hole chosen by the machine.
             }
@@ -268,13 +192,6 @@ public class GameManager {
         if (moveStatus == BoardStatus.MOVE_IMPOSSIBLE) {
             endImpossibleGame(isWhiteTurn);
         }
-    }
-
-    /**
-     * Unsets all the tuzes to being normal buttons by changing its color
-     */
-    public void resetTuzes() {
-        gameWindow.unsetTuzes();
     }
 
     public Hole getKazanLeft() {

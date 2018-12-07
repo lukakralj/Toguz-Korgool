@@ -168,16 +168,6 @@ public class GameWindow extends JFrame {
         }
     }
 
-    /**
-     * Unsets all the tuzes to being normal buttons by changing its color
-     *
-     */
-    public void unsetTuzes() {
-        for (Hole hole : buttonMap.values()) {
-            hole.setTuz(false);
-        }
-    }
-
     private void setUpTuzMarkers() {
         JPanel left = createSingleMarker("left");
         JPanel right = createSingleMarker("right");
@@ -392,24 +382,8 @@ public class GameWindow extends JFrame {
         hole.repaint();
     }
 
-
-
-    /**
-     * Function to set the text of the right kazan
-     *
-     * @param input the text to make the kazan display
-     */
-    public void setKazanRightText(String input) {
-        kazanRight.setText(input);
-    }
-
-    /**
-     * Function to set the text of the left kazan
-     *
-     * @param input the text to make the kazan display
-     */
-    public void setKazanLeftText(String input) {
-        kazanLeft.setText(input);
+    public void displayMessage(String message) {
+        infoLabel.setText(message);
     }
 	
 	public Hole getKazanLeft() {
@@ -426,10 +400,6 @@ public class GameWindow extends JFrame {
 
     public Hole getRightTuz() {
         return rightTuz;
-    }
-
-    public void makeTuz(String buttonId) {
-        buttonMap.get(buttonId).setTuz(true);
     }
 
 }
