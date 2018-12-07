@@ -34,6 +34,7 @@ public class GameManager {
         for (String buttonId : setOfButtonsIDs) {
             gameWindow.populateWithKorgools(buttonId, 9);
         }
+        gameWindow.resetTuzes();
     }
 
     /**
@@ -58,11 +59,15 @@ public class GameManager {
      */
     public void populateInitialBoard(int[] wHoles, int[] bHoles, int wTuz, int bTuz, int wKazan, int bKazan) {
         //updates game logic
+        AnimationController.resetController(gameWindow);
+        AnimationController.instance().start();
         populatePlayerBoard(core.getWhitePlayer(), wHoles, wTuz, wKazan);
         populatePlayerBoard(core.getBlackPlayer(), bHoles, bTuz, bKazan);
 
         gameWindow.populateWithKorgools("left", bKazan);
         gameWindow.populateWithKorgools("right", wKazan);
+
+        gameWindow.resetTuzes();
 
         for (int i = 0; i < 9; i++) {
             gameWindow.populateWithKorgools("W" + (i + 1), wHoles[i]);
@@ -70,6 +75,13 @@ public class GameManager {
 
         for (int i = 0; i < 9; i++) {
             gameWindow.populateWithKorgools("B" + (9 - i), bHoles[i]);
+        }
+
+        if (wTuz != -1) {
+            gameWindow.setTuz("B" + (9 - wTuz)); // set white tuz
+        }
+        if (bTuz != -1) {
+            gameWindow.setTuz("W" + bTuz); // set black tuz
         }
     }
 

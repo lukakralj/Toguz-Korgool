@@ -188,9 +188,6 @@ public class GameWindow extends JFrame {
         }
 
         tuz.setName(side + "Tuz");
-        Korgool tuzKorgool = new Korgool(tuz, Color.RED);
-        tuzKorgool.setName(side + "TuzKorgool");
-        tuz.addKorgool(tuzKorgool); // Korgool doesn't go in the right location because the frame is not set up yet at this point.
         tuz.setEnabled(false);
         tuz.setBorder(new EmptyBorder(10, 10, 10, 10));
         tuz.setPreferredSize(new Dimension(200, 200));
@@ -383,7 +380,34 @@ public class GameWindow extends JFrame {
         // TODO: would it be faster to only create the new once/delete the excess???
         hole.emptyHole();
         hole.createAndAdd(numOfKorgools);
-        hole.repaint();
+    }
+
+    public void resetTuzes() {
+        leftTuz.emptyHole();
+        rightTuz.emptyHole();
+
+        Korgool left = new Korgool(leftTuz, Color.RED);
+        left.setName("leftTuzKorgool");
+        leftTuz.addKorgool(left);
+
+        Korgool right = new Korgool(rightTuz, Color.RED);
+        right.setName("rightTuzKorgool");
+        rightTuz.addKorgool(right);
+    }
+
+    public void setTuz(String holeId) {
+        String name;
+        if (holeId.startsWith("W")) { //white player claimed tuz
+            name = "right";
+            rightTuz.emptyHole();
+        }
+        else {
+            name = "left";
+            leftTuz.emptyHole();
+        }
+        Korgool k = new Korgool(buttonMap.get(holeId), Color.RED);
+        k.setName(name + "TuzKorgool");
+        buttonMap.get(holeId).addKorgool(k);
     }
 
     public void displayMessage(String message) {

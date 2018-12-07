@@ -138,6 +138,9 @@ public class Hole extends OvalButton {
      */
     public void emptyHole() {
         korgools.forEach(this::remove);
+        if (tuzKorgool != null) {
+            remove(tuzKorgool);
+        }
         korgools = new ArrayList<>(32);
     }
 
