@@ -1,6 +1,7 @@
 package gui;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 
@@ -54,21 +55,6 @@ public class Korgool extends OvalButton {
         super("", color, Color.yellow, Color.BLACK, Color.yellow); // if we see yellow color something went wrong
         this.parentHole = parentHole;
         setBorderThickness(borderThickness);
-        updateActionListener();
-    }
-
-    /**
-     * Change the action listener of the korgool to trigger the action listener of its current parent.
-     */
-    private void updateActionListener() {
-        for (ActionListener l : getActionListeners()) {
-            removeActionListener(l);
-        }
-        addActionListener(e -> {
-            if (parentHole.getActionListeners().length > 0) {
-                parentHole.getActionListeners()[0].actionPerformed(e);
-            }
-        });
     }
 
     /**
@@ -78,7 +64,6 @@ public class Korgool extends OvalButton {
      */
     public void setParentHole(Hole newParent) {
         parentHole = newParent;
-        updateActionListener();
     }
 
     //==============================================
@@ -112,7 +97,7 @@ public class Korgool extends OvalButton {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-
+        parentHole.buttonClicked(new ActionEvent(e.getSource(), e.getID(), e.paramString()));
     }
 
     @Override

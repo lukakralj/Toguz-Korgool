@@ -165,6 +165,12 @@ public class OvalButton extends JButton implements MouseListener, MouseMotionLis
         });
     }
 
+    protected void buttonClicked(ActionEvent e) {
+        if (isInOval(MouseInfo.getPointerInfo().getLocation())) {
+            super.actionListener.actionPerformed(e);
+        }
+    }
+
     /**
      * Check if the specified point is within the oval of the button.
      *

@@ -228,18 +228,6 @@ public class Hole extends OvalButton {
         korgoolArea = new Rectangle((int)x, (int)y, (int)(newW - diameter), (int)(newH - diameter));
     }
 
-    /**
-     * Randomly allocates korgools within the valid korgool area.
-     *
-     * @return Point of the top left corner of where the korgool should be placed.
-     */
-    public Point calculateKorgoolLocation() {
-        double x = korgoolArea.x + rand.nextDouble() * korgoolArea.width;
-        double y = korgoolArea.y + rand.nextDouble() * korgoolArea.height;
-
-        return new Point((int)x, (int)y);
-    }
-
     private List<Location> generateLocations() {
         List<Location> locations = new ArrayList<>(170);
         for (int i = 0; i < 170; i++) {
