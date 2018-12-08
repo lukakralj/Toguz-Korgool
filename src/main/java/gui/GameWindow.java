@@ -374,7 +374,7 @@ public class GameWindow extends JFrame {
 		for(int i=0; i<9; i++){
 			bHoles[i]=buttonMap.get("B"+i).getNumberOfKorgools();
 		}
-		manager.populateInitialBoard(wHoles,bHoles,wTuz,bTuz,wKazan,bKazan);
+		manager.populateInitialBoard(wHoles,bHoles,-1,-1,wKazan,bKazan);
     }
 
     /**
