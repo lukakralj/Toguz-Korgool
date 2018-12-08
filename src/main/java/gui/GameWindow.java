@@ -364,6 +364,17 @@ public class GameWindow extends JFrame {
         }catch(Exception e){
             e.printStackTrace();
         }
+		int[] wHoles = new int[9];
+		int[] bHoles = new int[9];
+		int wKazan = kazans.get("kazanRight").getNumberOfKorgools();
+		int bKazan = kazans.get("kazanLeft").getNumberOfKorgools();
+		for(int i=0; i<9; i++){
+			wHoles[i]=buttonMap.get("W"+i).getNumberOfKorgools();
+		}
+		for(int i=0; i<9; i++){
+			bHoles[i]=buttonMap.get("B"+i).getNumberOfKorgools();
+		}
+		manager.populateInitialBoard(wHoles,bHoles,wTuz,bTuz,wKazan,bKazan);
     }
 
     /**
