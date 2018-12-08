@@ -318,6 +318,8 @@ public class GameWindow extends JFrame {
     }
 
     private void loadGame(String file1, String file2){
+		int wTuz = -1;
+		int bTuz = -1;
         try{
             File toRead=new File(file1);
             FileInputStream fis=new FileInputStream(toRead);
@@ -331,6 +333,11 @@ public class GameWindow extends JFrame {
                 Hole button = buttonMap.get(st.nextToken());
                 populateWithKorgools(button.getName(), Integer.valueOf(st.nextToken()));
 				if(st.nextToken().equals("true")){
+					if(button.getName().contains("W")){
+						wTuz=Integer.valueOf(button.getName().indexOf(1));
+					}else{
+						bTuz=Integer.valueOf(button.getName().indexOf(1));
+					}
 					button.setTuz(true);
 				}else{
                     button.setTuz(false);
@@ -357,6 +364,17 @@ public class GameWindow extends JFrame {
         }catch(Exception e){
             e.printStackTrace();
         }
+		int[] wHoles = new int[9];
+		int[] bHoles = new int[9];
+		int wKazan = kazans.get("kazanRight").getNumberOfKorgools();
+		int bKazan = kazans.get("kazanLeft").getNumberOfKorgools();
+		for(int i=0; i<9; i++){
+			wHoles[i]=buttonMap.get("W"+i).getNumberOfKorgools();
+		}
+		for(int i=0; i<9; i++){
+			bHoles[i]=buttonMap.get("B"+i).getNumberOfKorgools();
+		}
+		manager.populateInitialBoard(wHoles,bHoles,wTuz,bTuz,wKazan,bKazan);
     }
 
     /**
