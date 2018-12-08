@@ -31,10 +31,13 @@ public class AnimationController extends Thread {
     /** Event type that specifies that korgools need to be moved from the centre to one of the holes. */
     public static final int MOVE_KORGOOLS = 1024;
     /** Use this constant as hole id to specify that the left kazan is involved in the event. */
-    public static final String LEFT = "left";
+    public static final String LEFT_KAZAN = "left_kazan";
     /** Use this constant as hole id to specify that the right kazan is involved in the event. */
-    public static final String RIGHT = "right";
-
+    public static final String RIGHT_KAZAN = "right_kazan";
+    /** Use this constant as hole id to specify that the left tuz hole is involved in the event. */
+    public static final String LEFT_TUZ = "left_tuz";
+    /** Use this constant as hole id to specify that the right tuz hole is involved in the event. */
+    public static final String RIGHT_TUZ = "right_tuz";
     private static AnimationController instance;
 
     // Time in milliseconds, how long we want the animation to be.
@@ -100,10 +103,13 @@ public class AnimationController extends Thread {
      * Add animation event to the queue. The event will be executed when run() is called.
      *
      * @param eventType Use one of the constants EMPTY_HOLE or MOVE_KORGOOLS.
-     * @param holeId Use hole id or one of the constants LEFT or RIGHT for kazans.
+     * @param holeId Use hole id or one of the constants LEFT_KAZAN or RIGHT_KAZAN for kazans.
      * @param numOfKorgools Number of korgools we want to move.
      */
     public void addEvent(int eventType, String holeId, int numOfKorgools) {
+        if (stop) {
+            return;
+        }
         events.add(new AnimEvent(eventType, holeId, numOfKorgools));
     }
 
@@ -112,7 +118,7 @@ public class AnimationController extends Thread {
      * This event will involve all the korgools available. EMPTY_HOLE will always move all.
      *
      * @param eventType Use one of the constants EMPTY_HOLE or MOVE_KORGOOLS.
-     * @param holeId Use hole id or one of the constants LEFT or RIGHT for kazans.
+     * @param holeId Use hole id or one of the constants LEFT_KAZAN or RIGHT_KAZAN for kazans.
      */
     public void addEvent(int eventType, String holeId) {
         addEvent(eventType, holeId, MOVE_ALL);
@@ -122,10 +128,10 @@ public class AnimationController extends Thread {
      * Start executing the events.
      */
     public void run() {
-        while (!stop) {
+        while (!stop || currentEvent != events.size()) {
             try {
                 synchronized (this) {
-                    wait(10);
+                    wait(5);
                 }
             }
             catch (InterruptedException e) {
@@ -161,13 +167,26 @@ public class AnimationController extends Thread {
      * @param id Id of the hole we are removing from.
      */
     private void emptyEvent(String id) {
-        if (id == LEFT || id == RIGHT) {
+        if (id == LEFT_KAZAN || id == RIGHT_KAZAN) {
             System.out.println("Tried to animate emptying of the kazans - not defined.");
             return;
         }
-
-        Hole hole = animateFor.getButtonMap().get(id);
-        List<Korgool> toMove = hole.releaseKorgools();
+        Hole hole;
+        List<Korgool> toMove;
+        if (id == LEFT_TUZ) {
+            hole = animateFor.getLeftTuz();
+            toMove = new ArrayList<>();
+            toMove.add(hole.releaseTuzKorgool());
+        }
+        else if (id == RIGHT_TUZ) {
+            hole = animateFor.getRightTuz();
+            toMove = new ArrayList<>();
+            toMove.add(hole.releaseTuzKorgool());
+        }
+        else {
+            hole = animateFor.getButtonMap().get(id);
+            toMove = hole.releaseKorgools();
+        }
         Point paneLoc = animateFor.getContentPane().getLocationOnScreen();
         toMove.forEach(k -> {
             Point kLoc = k.getLocationOnScreen();
@@ -215,10 +234,10 @@ public class AnimationController extends Thread {
      */
     private void moveEvent(String id, int numOfKorgools) {
         Hole hole;
-        if (id == LEFT) {
+        if (id == LEFT_KAZAN) {
             hole = animateFor.getKazanLeft();
         }
-        else if (id == RIGHT) {
+        else if (id == RIGHT_KAZAN) {
             hole = animateFor.getKazanRight();
         }
         else {
