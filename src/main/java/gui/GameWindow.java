@@ -364,6 +364,7 @@ public class GameWindow extends JFrame {
         }catch(Exception e){
             e.printStackTrace();
         }
+		/*
 		int[] wHoles = new int[9];
 		int[] bHoles = new int[9];
 		int wKazan = kazans.get("kazanRight").getNumberOfKorgools();
@@ -375,6 +376,7 @@ public class GameWindow extends JFrame {
 			bHoles[i]=buttonMap.get("B"+i).getNumberOfKorgools();
 		}
 		manager.populateInitialBoard(wHoles,bHoles,-1,-1,wKazan,bKazan);
+		*/
     }
 
     /**
