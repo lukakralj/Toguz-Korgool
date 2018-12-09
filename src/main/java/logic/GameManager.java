@@ -120,6 +120,7 @@ public class GameManager {
 
             }
             gameWindow.makeTuz(buttonTag + buttonNumber);
+            System.out.println("Tuz has been set to: " +tuz + "which is button number "+ buttonNumber);
         }
     }
 
@@ -157,7 +158,7 @@ public class GameManager {
      *
      *  @return the hole chosen by the machine
      */
-    private int machineChooseHole() {
+    public int machineChooseHole() {
         boolean foundNumber = false;
         int hole = -1;
         while (!foundNumber) {
@@ -168,6 +169,7 @@ public class GameManager {
             System.out.println("Bot chose hole of index " + hole);
             if (core.getBlackPlayer().getHoleAt(hole) != 0) {
                 foundNumber = true;
+                System.out.println("Bot CHOSE FINAL hole of index " + hole);
             }
         }
         return hole;

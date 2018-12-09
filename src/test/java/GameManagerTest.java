@@ -1,11 +1,16 @@
 import static org.junit.Assert.assertEquals;
 import gui.GameWindow;
 import gui.Hole;
+import logic.AnimationController;
 import logic.GameManager;
 import logic.Player;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import com.athaydes.automaton.Swinger;
+import static org.junit.Assert.*;
+import static com.athaydes.automaton.assertion.AutomatonMatcher.hasText;
+import com.athaydes.automaton.Speed;
 
 import java.util.HashMap;
 
@@ -30,7 +35,6 @@ public class GameManagerTest {
         swinger = Swinger.getUserWith(gameWindow);
         swinger.pause(200);
     }
-
     @Test
     public void testSetUp() {
         Player white =  gameManager.getCore().getWhitePlayer();
@@ -70,7 +74,62 @@ public class GameManagerTest {
 
     @Test
     public void testSingleGame() {
+        gameManager.setRandomSeed();
+        //Swinger.setDEFAULT(Speed.FAST);
+        AnimationController.setRunTime(2);
+        swinger.pause(500);
+        swinger.clickOn("name:W1").pause(600);
+        swinger.clickOn("name:W2").pause(600);
+        swinger.clickOn("name:W4").pause(600);
+        swinger.clickOn("name:W5").pause(600);
+        swinger.clickOn("name:W3").pause(600);
+        swinger.clickOn("name:W5").pause(600);
+        swinger.clickOn("name:W6").pause(600);
+        swinger.clickOn("name:W4").pause(600);
+        swinger.clickOn("name:W5").pause(600);
+        swinger.clickOn("name:W6").pause(600);
+        swinger.clickOn("name:W9").pause(600);
+        swinger.clickOn("name:W8").pause(600);
+        swinger.clickOn("name:W7").pause(600);
+        swinger.clickOn("name:W1").pause(600);
+        swinger.clickOn("name:W8").pause(600);
+        swinger.clickOn("name:W9").pause(600);
+        swinger.clickOn("name:W1").pause(600);
+        swinger.clickOn("name:W9").pause(600);
+        swinger.clickOn("name:W4").pause(600);
+        swinger.clickOn("name:W5").pause(600);
+        swinger.clickOn("name:W3").pause(600);
+        swinger.clickOn("name:W8").pause(600);
+        swinger.clickOn("name:W8").pause(600);
+        swinger.clickOn("name:W6").pause(600);
+        swinger.clickOn("name:W7").pause(600);
+        swinger.clickOn("name:W9").pause(600);
+        swinger.clickOn("name:W9").pause(900);  //not tested yet
 
+//        swinger.clickOn("name:W5").pause(5000).clickOn("name:W6").pause(5000);
+//        swinger.clickOn("name:W7").pause(5000).clickOn("name:W8").pause(5000);
+//        swinger.clickOn("name:W9").pause(5000).clickOn("name:W1").pause(5000);
+//        swinger.clickOn("name:W
+// 2").pause(5000).clickOn("name:W3").pause(5000);
+//        swinger.clickOn("name:W4").pause(5000).clickOn("name:W5").pause(5000);
+//        swinger.clickOn("name:W6").pause(5000).clickOn("name:W7").pause(5000);
+//        swinger.clickOn("name:W8").pause(5000).clickOn("name:W9").pause(5000);
+//        swinger.clickOn("name:W1").pause(5000).clickOn("name:W2").pause(5000);
+//        swinger.clickOn("name:W3").pause(5000).clickOn("name:W4").pause(5000);
+//        swinger.clickOn("name:W5").pause(5000).clickOn("name:W6").pause(5000);
+//        swinger.clickOn("name:W7").pause(5000).clickOn("name:W8").pause(5000);
+//        swinger.clickOn("name:W9").pause(5000).clickOn("name:W1").pause(5000);
+//        swinger.clickOn("name:W2").pause(5000).clickOn("name:W3").pause(5000);
+//        swinger.clickOn("name:W4").pause(5000).clickOn("name:W5").pause(5000);
+//        swinger.clickOn("name:W6").pause(5000).clickOn("name:W7").pause(5000);
+//        swinger.clickOn("name:W8").pause(5000).clickOn("name:W9").pause(5000);
+
+//        swinger.clickOn(“name:W3”).pause(2000).clickOn(“name:W3").pause(2000).clickOn(“name:W3”).pause(2000).clickOn(“name:W3").pause(2000)
+//                .clickOn(“name:W3”).pause(2000).clickOn(“name:W3").pause(2000).clickOn(“name:W3”).pause(2000).clickOn(“name:W3").pause(2000);
+//                .clickOn(“name:W1”).pause(2000).clickOn(“name:W2").pause(2000).clickOn(“name:W3”).pause(2000).clickOn(“name:W4").pause(2000)
+//                .clickOn(“name:W1”).pause(2000).clickOn(“name:W2").pause(2000).clickOn(“name:W3”).pause(2000).clickOn(“name:W4").pause(2000)
+//                .clickOn(“name:W1”).pause(2000).clickOn(“name:W2").pause(2000).clickOn(“name:W3”).pause(2000).clickOn(“name:W4").pause(2000);
 
     }
+
 }
