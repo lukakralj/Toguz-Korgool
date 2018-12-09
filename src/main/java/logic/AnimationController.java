@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
  * The animations can be stopped with stopAnimator(). However, the instance needs to be reset after that.
  *
  * @author Luka Kralj
- * @version 29 November 2018
+ * @version 04 December 2018
  */
 public class AnimationController extends Thread {
     /** Marks that all available korgools need to be included in the event. */
@@ -31,14 +31,17 @@ public class AnimationController extends Thread {
     /** Event type that specifies that korgools need to be moved from the centre to one of the holes. */
     public static final int MOVE_KORGOOLS = 1024;
     /** Use this constant as hole id to specify that the left kazan is involved in the event. */
-    public static final String LEFT = "left";
+    public static final String LEFT_KAZAN = "left_kazan";
     /** Use this constant as hole id to specify that the right kazan is involved in the event. */
-    public static final String RIGHT = "right";
-
+    public static final String RIGHT_KAZAN = "right_kazan";
+    /** Use this constant as hole id to specify that the left tuz hole is involved in the event. */
+    public static final String LEFT_TUZ = "left_tuz";
+    /** Use this constant as hole id to specify that the right tuz hole is involved in the event. */
+    public static final String RIGHT_TUZ = "right_tuz";
     private static AnimationController instance;
 
     // Time in milliseconds, how long we want the animation to be.
-    private static int RUN_TIME = 500;
+    private static int RUN_TIME = 250;
     private long startTime;
 
     private List<AnimEvent> events;
@@ -100,10 +103,13 @@ public class AnimationController extends Thread {
      * Add animation event to the queue. The event will be executed when run() is called.
      *
      * @param eventType Use one of the constants EMPTY_HOLE or MOVE_KORGOOLS.
-     * @param holeId Use hole id or one of the constants LEFT or RIGHT for kazans.
+     * @param holeId Use hole id or one of the constants LEFT_KAZAN or RIGHT_KAZAN for kazans.
      * @param numOfKorgools Number of korgools we want to move.
      */
     public void addEvent(int eventType, String holeId, int numOfKorgools) {
+        if (stop) {
+            return;
+        }
         events.add(new AnimEvent(eventType, holeId, numOfKorgools));
     }
 
@@ -112,111 +118,20 @@ public class AnimationController extends Thread {
      * This event will involve all the korgools available. EMPTY_HOLE will always move all.
      *
      * @param eventType Use one of the constants EMPTY_HOLE or MOVE_KORGOOLS.
-     * @param holeId Use hole id or one of the constants LEFT or RIGHT for kazans.
+     * @param holeId Use hole id or one of the constants LEFT_KAZAN or RIGHT_KAZAN for kazans.
      */
     public void addEvent(int eventType, String holeId) {
         addEvent(eventType, holeId, MOVE_ALL);
     }
 
     /**
-     * Prepares the korgools for an empty event (remove from hole, calculate targets).
-     *
-     * @param id Id of the hole we are removing from.
-     */
-    private void emptyEvent(String id) {
-        if (id == LEFT || id == RIGHT) {
-            System.out.println("Tried to animate emptying of the kazans - not defined.");
-            return;
-        }
-
-        Hole hole = animateFor.getButtonMap().get(id);
-        List<Korgool> toMove = hole.releaseKorgools();
-        Point paneLoc = animateFor.getContentPane().getLocationOnScreen();
-        toMove.forEach(k -> {
-            Point kLoc = k.getLocationOnScreen();
-            glassPane.add(k);
-            toDistribute.add(k);
-            k.setLocation(kLoc.x - paneLoc.x, kLoc.y - paneLoc.y);
-        });
-
-        List<AnimKorgool> animKorgools = toMove.stream().map(k ->
-                new AnimKorgool(k, k.getLocation(), new Point(animateFor.getContentPane().getSize().width/2, animateFor.getContentPane().getSize().height/2))
-                )
-                .collect(Collectors.toList());
-        performMove(animKorgools, null);
-    }
-
-    /**
-     * Prepares the korools for a move event (calculate targets, add to the correct hole).
-     *
-     * @param id Id of the hole we are moving to.
-     * @param numOfKorgools Number of korgools we want to move.
-     */
-    private void moveEvent(String id, int numOfKorgools) {
-        Hole hole;
-        if (id == LEFT) {
-            hole = animateFor.getKazanLeft();
-        }
-        else if (id == RIGHT) {
-            hole = animateFor.getKazanRight();
-        }
-        else {
-            hole = animateFor.getButtonMap().get(id);
-        }
-        List<Korgool> toMove = new ArrayList<>();
-        numOfKorgools = (numOfKorgools == MOVE_ALL) ? toDistribute.size() : numOfKorgools;
-        for (int i = 0; i < numOfKorgools; i++) {
-            if (toDistribute.isEmpty()) {
-                break;
-            }
-            toMove.add(toDistribute.remove(toDistribute.size() - 1));
-        }
-
-        Point paneLoc = animateFor.getContentPane().getLocationOnScreen();
-
-        List<AnimKorgool> animKorgools = toMove.stream().map(k ->
-                new AnimKorgool(k, k.getLocation(), new Point(hole.getLocationOnScreen().x - paneLoc.x + hole.getSize().width/2, hole.getLocationOnScreen().y - paneLoc.y + hole.getSize().height/2))
-                )
-                .collect(Collectors.toList());
-        performMove(animKorgools, hole);
-    }
-
-    /**
-     * Executes the moving of korgools in the list.
-     *
-     * @param korgools List of korgools to move.
-     * @param newParent The hole we are moving the korgools to. Null if we are moving them in the centre.
-     */
-    private void performMove(List<AnimKorgool> korgools, Hole newParent) {
-        startTime = System.currentTimeMillis();
-        boolean endMove = false;
-        while (!endMove) {
-            long duration = System.currentTimeMillis() - startTime;
-            double progress = (double)duration / (double)RUN_TIME;
-            if (progress > 1f) {
-                endMove = true;
-                if (newParent != null) {
-                    korgools.forEach(k -> newParent.addKorgool(k.korgool));
-                }
-            }
-            else {
-                korgools.forEach(k -> {
-                    Point newLocation = newPoint(k.start, k.target, progress);
-                    k.korgool.setLocation(newLocation);
-                });
-                glassPane.repaint();
-            }
-        }
-    }
-
-    /**
      * Start executing the events.
      */
     public void run() {
-        while (!stop) {
+        while (!stop || currentEvent != events.size()) {
             try {
                 synchronized (this) {
-                    wait(10);
+                    wait(5);
                 }
             }
             catch (InterruptedException e) {
@@ -244,6 +159,140 @@ public class AnimationController extends Thread {
      */
     public void stopAnimator() {
         stop = true;
+    }
+
+    /**
+     * Prepares the korgools for an empty event (remove from hole, calculate targets).
+     *
+     * @param id Id of the hole we are removing from.
+     */
+    private void emptyEvent(String id) {
+        if (id == LEFT_KAZAN || id == RIGHT_KAZAN) {
+            System.out.println("Tried to animate emptying of the kazans - not defined.");
+            return;
+        }
+        Hole hole;
+        List<Korgool> toMove;
+        if (id == LEFT_TUZ) {
+            hole = animateFor.getLeftTuz();
+            toMove = new ArrayList<>();
+            toMove.add(hole.releaseTuzKorgool());
+        }
+        else if (id == RIGHT_TUZ) {
+            hole = animateFor.getRightTuz();
+            toMove = new ArrayList<>();
+            toMove.add(hole.releaseTuzKorgool());
+        }
+        else {
+            hole = animateFor.getButtonMap().get(id);
+            toMove = hole.releaseKorgools();
+        }
+        Point paneLoc = animateFor.getContentPane().getLocationOnScreen();
+        toMove.forEach(k -> {
+            Point kLoc = k.getLocationOnScreen();
+            glassPane.add(k);
+            toDistribute.add(k);
+            k.setLocation(kLoc.x - paneLoc.x, kLoc.y - paneLoc.y);
+        });
+
+        Location avgLoc = calculateAvgLocation(toMove);
+        Location centre = new Location(((double)animateFor.getContentPane().getSize().width)/2.0,
+                                        ((double)animateFor.getContentPane().getSize().height)/2.0);
+        double diffX = avgLoc.x - centre.x;
+        double diffY = avgLoc.y - centre.y;
+        List<AnimKorgool> animKorgools = toMove.stream().map(k ->
+                new AnimKorgool(k, k.getLocation(),
+                        new Point((int)(k.getLocation().x - diffX),
+                                (int)(k.getLocation().y - diffY)))
+                )
+                .collect(Collectors.toList());
+        performMove(animKorgools, null);
+    }
+
+    /**
+     * Calculates the average location of korgools in the list.
+     *
+     * @param korgools List of korgools to get average for.
+     * @return Average location of these korgools.
+     */
+    private Location calculateAvgLocation(List<Korgool> korgools) {
+        Location avgLoc = new Location(0, 0);
+        korgools.forEach(k -> {
+            avgLoc.x += k.getLocation().x;
+            avgLoc.y += k.getLocation().y;
+        });
+        avgLoc.x /= korgools.size();
+        avgLoc.y /= korgools.size();
+        return avgLoc;
+    }
+
+    /**
+     * Prepares the korools for a move event (calculate targets, add to the correct hole).
+     *
+     * @param id Id of the hole we are moving to.
+     * @param numOfKorgools Number of korgools we want to move.
+     */
+    private void moveEvent(String id, int numOfKorgools) {
+        Hole hole;
+        if (id == LEFT_KAZAN) {
+            hole = animateFor.getKazanLeft();
+        }
+        else if (id == RIGHT_KAZAN) {
+            hole = animateFor.getKazanRight();
+        }
+        else {
+            hole = animateFor.getButtonMap().get(id);
+        }
+        List<Korgool> toMove = new ArrayList<>();
+        numOfKorgools = (numOfKorgools == MOVE_ALL) ? toDistribute.size() : numOfKorgools;
+        for (int i = 0; i < numOfKorgools; i++) {
+            if (toDistribute.isEmpty()) {
+                break;
+            }
+            toMove.add(toDistribute.remove(toDistribute.size() - 1));
+        }
+
+        Point paneLoc = animateFor.getContentPane().getLocationOnScreen();
+
+        List<AnimKorgool> animKorgools = new ArrayList<>();
+        for (int i = 0; i < toMove.size(); i++) {
+            animKorgools.add(
+                    new AnimKorgool(toMove.get(i), toMove.get(i).getLocation(),
+                            new Point((hole.getLocationOnScreen().x - animateFor.getContentPane().getLocationOnScreen().x) + hole.getNextLocation(i).x,
+                                    (hole.getLocationOnScreen().y - animateFor.getContentPane().getLocationOnScreen().y) + hole.getNextLocation(i).y))
+            );
+        }
+        performMove(animKorgools, hole);
+    }
+
+    /**
+     * Executes the moving of korgools in the list.
+     *
+     * @param korgools List of korgools to move.
+     * @param newParent The hole we are moving the korgools to. Null if we are moving them in the centre.
+     */
+    private void performMove(List<AnimKorgool> korgools, Hole newParent) {
+        startTime = System.currentTimeMillis();
+        boolean endMove = false;
+        while (!endMove) {
+            long duration = System.currentTimeMillis() - startTime;
+            double progress = (double)duration / (double)RUN_TIME;
+            if (progress > 1f) {
+                endMove = true;
+                if (newParent != null) {
+                    for (AnimKorgool k : korgools) {
+                        newParent.addKorgool(k.korgool);
+                    }
+                }
+            }
+            else {
+                korgools.forEach(k -> {
+                    Point newLocation = newPoint(k.start, k.target, progress);
+                    k.korgool.setLocation(newLocation);
+                });
+                glassPane.repaint();
+            }
+        }
     }
 
     /**
@@ -309,10 +358,20 @@ public class AnimationController extends Thread {
         }
     }
 
+    private class Location {
+        double x;
+        double y;
+
+        private Location(double x, double y) {
+            this.x = x;
+            this.y = y;
+        }
+    }
+
     /**
-     * Set new run time for all animations. The higher the value the slower the animations will be.
+     * ONLY USE FOR TESTING - TO SPEED UP ANIMATIONS!
      *
-     * @param timeInMillis
+     * @param timeInMillis Duration of each animation in milliseconds.
      */
     public static void setRunTime(int timeInMillis) {
         RUN_TIME = timeInMillis;

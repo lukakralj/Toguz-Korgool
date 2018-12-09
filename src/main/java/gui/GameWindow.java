@@ -6,6 +6,9 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 import java.io.*;
+import java.util.List;
+
+import logic.AnimationController;
 import logic.GameManager;
 
 /*
@@ -18,10 +21,12 @@ public class GameWindow extends JFrame {
     private static final Color BACKGROUND_COLOR = Color.LIGHT_GRAY, TOP_PANEL_COLOR = Color.GRAY;
     private HashMap<String, Hole> buttonMap;
     private Hole kazanRight, kazanLeft;
+    private Hole rightTuz, leftTuz;
     private JPanel root;
     private JLayeredPane layeredPane;
     private HashMap<String, Hole> kazans;
     private GameManager manager;
+    private JLabel infoLabel;
 
     /**
      * Construct the game window
@@ -34,12 +39,10 @@ public class GameWindow extends JFrame {
         kazans = new HashMap<>();
         setUpMenu();
         setUpTopPanel();
-        setUpBottomBar();
+        setUpTuzMarkers();
+        setUpKazans();
         setUpLowerPanel();
-        setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
         layeredPane = new JLayeredPane();
-        root.setSize(new Dimension(1280, 720));
-        root.setMinimumSize(new Dimension(1000, 600));
         root.setLocation(0, 0);
         layeredPane.add(root, new Integer(0));
 
@@ -48,17 +51,13 @@ public class GameWindow extends JFrame {
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
-                int newW = getContentPane().getSize().width < 1000 ? 1000 : getContentPane().getSize().width;
-                int newH = getContentPane().getSize().height < 600 ? 600 : getContentPane().getSize().height;
-                root.setSize(newW, newH);
+                resizeWindow();
             }
         });
 
         addWindowStateListener(e -> {
             revalidate();
-            int newW = getContentPane().getSize().width < 1000 ? 1000 : getContentPane().getSize().width;
-            int newH = getContentPane().getSize().height < 600 ? 600 : getContentPane().getSize().height;
-            root.setSize(newW, newH);
+            resizeWindow();
             repaint();
         });
         pack();
@@ -67,6 +66,12 @@ public class GameWindow extends JFrame {
 
 	public GameWindow() {
         this(null);
+    }
+
+    private void resizeWindow() {
+        int newW = getContentPane().getSize().width < 1401 ? 1401 : getContentPane().getSize().width;
+        int newH = getContentPane().getSize().height < 677 ? 677 : getContentPane().getSize().height;
+        root.setSize(newW, newH);
     }
 
     public JLayeredPane getLayeredPane() {
@@ -79,7 +84,7 @@ public class GameWindow extends JFrame {
     private void setFrameProperties() {
         setTitle("Toguz Korgol");
         setResizable(true);
-        setPreferredSize(new Dimension(1280, 720));
+        setPreferredSize(new Dimension(1501, 790));
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         root.setBackground(BACKGROUND_COLOR);
         root.setLayout(new BorderLayout());
@@ -92,7 +97,7 @@ public class GameWindow extends JFrame {
      * ActionListener to each item in the menu.
      */
     private void setUpMenu() {
-        String[] FileMenuItems = {"CustomInput", "Save", "Load", "Quit"};
+        String[] FileMenuItems = {"CustomInput", "NewGame", "Save", "Load", "Quit"};
         JMenu FileMenu = new JMenu("File");
 		FileMenu.setName("filemenu");
         FileMenu.setFont(FileMenu.getFont().deriveFont(16F));
@@ -122,7 +127,7 @@ public class GameWindow extends JFrame {
      */
     private void setUpTopPanel() {
         JPanel topPanel = new JPanel();
-        topPanel.setBorder(new EmptyBorder(10, 10, 20, 10));//Set Padding around the Top Panel
+        topPanel.setBorder(new EmptyBorder(10, 10, 10, 10));//Set Padding around the Top Panel
         topPanel.setBackground(TOP_PANEL_COLOR);
         GridLayout topButtons = new GridLayout(0, 9, 10, 10);//Set padding around invidual buttons
         topPanel.setLayout(topButtons);
@@ -135,17 +140,13 @@ public class GameWindow extends JFrame {
      * and then add an ActionListner to each individual button.
      */
     private void setUpLowerPanel() {
-        JPanel lowerPanel = new JPanel(new BorderLayout());
-        lowerPanel.setBorder(new EmptyBorder(0, 10, 10, 10));//Set Padding around the Bottom Panel
+        JPanel lowerPanel = new JPanel();
+        lowerPanel.setBorder(new EmptyBorder(10, 10, 10, 10));//Set Padding around the Bottom Panel
         lowerPanel.setBackground(BACKGROUND_COLOR);
-        root.add(lowerPanel, BorderLayout.CENTER);
-        JPanel lowerButtonPanel = new JPanel();
         GridLayout bottomButtons = new GridLayout(0, 9, 10, 10);//Set padding around individual buttons
-        lowerButtonPanel.setLayout(bottomButtons);
-        lowerButtonPanel.setBackground(BACKGROUND_COLOR);
-        lowerPanel.add(lowerButtonPanel, BorderLayout.SOUTH);
-        lowerPanel.add(setUpKazans(), BorderLayout.CENTER);
-        fillPanelWithButtons(lowerButtonPanel, "W");
+        lowerPanel.setLayout(bottomButtons);
+        fillPanelWithButtons(lowerPanel, "W");
+        root.add(lowerPanel, BorderLayout.SOUTH);
     }
 
     /**
@@ -156,65 +157,86 @@ public class GameWindow extends JFrame {
      */
     private void fillPanelWithButtons(JPanel panel, String color) {
         for (int i = 1; i < 10; ++i) {
-            Hole button = new Hole();
+            Hole button = new Hole(false);
             button.setName(color + i);
             buttonMap.put(button.getName(), button);
-            button.setPreferredSize(new Dimension(30, 160));
+            button.setPreferredSize(new Dimension(30, 200));
             button.addActionListener(e -> holeOnClickAction(button.getName()));
+            if (color.equals("B")) {
+                button.setEnabled(false);
+            }
             panel.add(button);
         }
     }
 
-    /**
-     * Unsets all the tuzes to being normal buttons by changing its color
-     *
-     */
-    public void unsetTuzes() {
-        for (Hole hole : buttonMap.values()) {
-            hole.setTuz(false);
-        }
+    private void setUpTuzMarkers() {
+        JPanel left = createSingleMarker("left");
+        JPanel right = createSingleMarker("right");
+
+        root.add(left, BorderLayout.WEST);
+        root.add(right, BorderLayout.EAST);
     }
 
-    /**
-     * Function to construct the bottom bar of the GUI.
-     */
-    private void setUpBottomBar() {
-        JPanel bottomPanel = new JPanel();
-        bottomPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
-        bottomPanel.setBackground(BACKGROUND_COLOR);
-        root.add(bottomPanel, BorderLayout.SOUTH);
-        BorderLayout bl = new BorderLayout();
-        bottomPanel.setLayout(bl);
-        JButton makeMove = new JButton("Make this move");
-        makeMove.setName("NEXT");
-        makeMove.addActionListener(e -> genericOnClickAction(makeMove.getName()));
-        bottomPanel.add(makeMove, BorderLayout.CENTER);
+    private JPanel createSingleMarker(String side) {
+        Hole tuz;
+        if (side.equals("left")) {
+            leftTuz = new Hole(true);
+            tuz = leftTuz;
+        }
+        else {
+            rightTuz = new Hole(true);
+            tuz = rightTuz;
+        }
+
+        tuz.setName(side + "Tuz");
+        tuz.setEnabled(false);
+        tuz.setBorder(new EmptyBorder(10, 10, 10, 10));
+        tuz.setPreferredSize(new Dimension(200, 200));
+
+        JPanel panel = new JPanel(new GridLayout(3, 1));
+        panel.add(new JPanel());
+        panel.add(tuz);
+        panel.add(new JPanel());
+        panel.setMinimumSize(new Dimension(200, 200));
+        return panel;
     }
 
     /**
      * Helper function to create a JPanel containing both Kazans
      *
-     * @return JPanel containing both Kazans
      */
-    private JPanel setUpKazans() {
+    private void setUpKazans() {
         JPanel kazanPanel = new JPanel(new BorderLayout());
         kazanPanel.setBackground(BACKGROUND_COLOR);
-        kazanPanel.setBorder(new EmptyBorder(0, 0, 20, 0));
-        kazanRight = new Hole();
-        kazanRight.setColorHighlighted(kazanRight.getColorNormal()); // TODO: this is only a temporary "fix"
-        kazanRight.setColorBorderNormal(new Color(160,82,45));
-		kazanRight.setName("rightKazan");
-        kazanRight.setPreferredSize(new Dimension(620, kazanPanel.getHeight() - 10));
-        kazanLeft = new Hole();
-        kazanLeft.setColorHighlighted(kazanLeft.getColorNormal()); // TODO: this is only a temporary "fix"
+        kazanPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
+
+        kazanLeft = new Hole(true);
         kazanLeft.setColorBorderNormal(new Color(160,82,45));
-		kazanLeft.setName("leftKazan");
-        kazanLeft.setPreferredSize(new Dimension(620, kazanPanel.getHeight() - 10));
+        kazanLeft.setName("leftKazan");
+        kazanLeft.setEnabled(false);
+        kazanLeft.setPreferredSize(new Dimension(400,300));
+        kazanLeft.setEnabled(false);
+
+        kazanRight = new Hole(true);
+        kazanRight.setColorBorderNormal(new Color(160,82,45));
+        kazanRight.setName("rightKazan");
+        kazanRight.setEnabled(false);
+        kazanRight.setPreferredSize(new Dimension(400,300));
+        kazanRight.setEnabled(false);
+
         kazans.put(kazanRight.getName(), kazanRight);
         kazans.put(kazanLeft.getName(), kazanLeft);
-        kazanPanel.add(kazanRight, BorderLayout.EAST);
+
+        infoLabel = new JLabel();
+        infoLabel.setPreferredSize(new Dimension(300, 300));
+        infoLabel.setFont(new Font("Monaco", Font.BOLD, 20));
+        infoLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        infoLabel.setVerticalAlignment(SwingConstants.CENTER);
+
         kazanPanel.add(kazanLeft, BorderLayout.WEST);
-        return kazanPanel;
+        kazanPanel.add(infoLabel, BorderLayout.CENTER);
+        kazanPanel.add(kazanRight, BorderLayout.EAST);
+        root.add(kazanPanel, BorderLayout.CENTER);
     }
 
     /**
@@ -232,27 +254,6 @@ public class GameWindow extends JFrame {
     }
 
     /**
-     * onClick action for clicking any non-hole button. Inclusion of buttonId allows for identification of
-     * the button that was clicked
-     *
-     * @param buttonId the ID of the button clicked
-     */
-    private void genericOnClickAction(String buttonId) {
-        // TODO: used for debugging buttons ids
-        buttonMap.forEach((k, v) -> {
-            if (k.startsWith("B")) {
-                System.out.print(k + " = " + v.getLocationOnScreen().x + " ");
-            }
-        });
-        System.out.println();
-        buttonMap.forEach((k, v) -> {
-            if (k.startsWith("W")) {
-                System.out.print(k + " = " + v.getLocationOnScreen().x + " ");
-            }
-        });
-    }
-
-    /**
      * onClick action for clicking any menu item. Inclusion of menuItemId allows for identification of
      * the menu item that was clicked
      *
@@ -260,6 +261,10 @@ public class GameWindow extends JFrame {
      */
     private void menuOnClickAction(String menuItemId) {
         switch (menuItemId) {
+			case "NewGame":
+				JOptionPane.showConfirmDialog(null, "Are you sure you want to start a new game?");
+				loadGame("src\\main\\java\\newGameFile1.csv","src\\main\\java\\newGameFile2.csv");
+                break;
             case "CustomInput":
 				if(manager!=null){
 					new CustomInputWindow(BACKGROUND_COLOR, manager);
@@ -271,7 +276,7 @@ public class GameWindow extends JFrame {
                 break;
             case "Load":
                 JOptionPane.showConfirmDialog(null, "Are you sure you want to load the latest save state?");
-                loadGame();
+                loadGame("src\\main\\java\\saveFile.csv","src\\main\\java\\saveFile2.csv");
                 break;
             case "Quit":
                 JOptionPane.showConfirmDialog(null, "Are you sure you want to quit?");
@@ -313,24 +318,30 @@ public class GameWindow extends JFrame {
         }
     }
 
-    private void loadGame(){
+    private void loadGame(String file1, String file2){
+        AnimationController.resetController(this);
+        AnimationController.instance().start();
         try{
-            File toRead=new File("src\\main\\java\\saveFile.csv");
+            File toRead=new File(file1);
             FileInputStream fis=new FileInputStream(toRead);
     
             Scanner sc=new Scanner(fis);
     
             String placeholder = "";
+            resetTuzes();
+            List<String> tuzes = new ArrayList<>();
             while(sc.hasNextLine()){
                 placeholder=sc.nextLine();
                 StringTokenizer st = new StringTokenizer(placeholder,",",false);
-                Hole button = buttonMap.get(st.nextToken());
+                String holeId = st.nextToken();
+                Hole button = buttonMap.get(holeId);
                 populateWithKorgools(button.getName(), Integer.valueOf(st.nextToken()));
 				if(st.nextToken().equals("true")){
-					button.setTuz(true);
-				}else{
-                    button.setTuz(false);
+					tuzes.add(holeId);
 				}
+            }
+            for (String id : tuzes) {
+                setTuz(id);
             }
             fis.close();
         }catch(Exception e){
@@ -338,7 +349,7 @@ public class GameWindow extends JFrame {
         }
 		
 		try{
-            File toRead=new File("src\\main\\java\\saveFile2.csv");
+            File toRead=new File(file2);
             FileInputStream fis=new FileInputStream(toRead);
     
             Scanner sc=new Scanner(fis);
@@ -353,6 +364,19 @@ public class GameWindow extends JFrame {
         }catch(Exception e){
             e.printStackTrace();
         }
+		/*
+		int[] wHoles = new int[9];
+		int[] bHoles = new int[9];
+		int wKazan = kazans.get("kazanRight").getNumberOfKorgools();
+		int bKazan = kazans.get("kazanLeft").getNumberOfKorgools();
+		for(int i=0; i<9; i++){
+			wHoles[i]=buttonMap.get("W"+i).getNumberOfKorgools();
+		}
+		for(int i=0; i<9; i++){
+			bHoles[i]=buttonMap.get("B"+i).getNumberOfKorgools();
+		}
+		manager.populateInitialBoard(wHoles,bHoles,-1,-1,wKazan,bKazan);
+		*/
     }
 
     /**
@@ -379,24 +403,36 @@ public class GameWindow extends JFrame {
         hole.repaint();
     }
 
+    public void resetTuzes() {
+        leftTuz.emptyHole();
+        rightTuz.emptyHole();
 
+        Korgool left = new Korgool(leftTuz, Color.RED);
+        left.setName("leftTuzKorgool");
+        leftTuz.addKorgool(left);
 
-    /**
-     * Function to set the text of the right kazan
-     *
-     * @param input the text to make the kazan display
-     */
-    public void setKazanRightText(String input) {
-        kazanRight.setText(input);
+        Korgool right = new Korgool(rightTuz, Color.RED);
+        right.setName("rightTuzKorgool");
+        rightTuz.addKorgool(right);
     }
 
-    /**
-     * Function to set the text of the left kazan
-     *
-     * @param input the text to make the kazan display
-     */
-    public void setKazanLeftText(String input) {
-        kazanLeft.setText(input);
+    public void setTuz(String holeId) {
+        String name;
+        if (holeId.startsWith("W")) { //white player claimed tuz
+            name = "right";
+            rightTuz.emptyHole();
+        }
+        else {
+            name = "left";
+            leftTuz.emptyHole();
+        }
+        Korgool k = new Korgool(buttonMap.get(holeId), Color.RED);
+        k.setName(name + "TuzKorgool");
+        buttonMap.get(holeId).addKorgool(k);
+    }
+
+    public void displayMessage(String message) {
+        infoLabel.setText(message);
     }
 	
 	public Hole getKazanLeft() {
@@ -407,8 +443,12 @@ public class GameWindow extends JFrame {
         return kazanRight;
     }
 
-    public void makeTuz(String buttonId) {
-        buttonMap.get(buttonId).setTuz(true);
+    public Hole getLeftTuz() {
+        return leftTuz;
+    }
+
+    public Hole getRightTuz() {
+        return rightTuz;
     }
 
 }
