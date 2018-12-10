@@ -5,6 +5,16 @@ import gui.Hole;
 import gui.OvalButton;
 import java.util.Random;
 import java.util.Set;
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import java.awt.*;
+import java.awt.event.*;
+import java.util.*;
+import java.io.*;
+import java.util.List;
+
+import logic.AnimationController;
+import logic.GameManager;
 
 /**
  * Main class for the Team Platypus Agile Project
@@ -14,6 +24,8 @@ public class GameManager {
 
     private GameWindow gameWindow;
     private Board core;
+    private HashMap<String, Hole> buttonMap;
+    private HashMap<String, Hole> kazans;
 
     /**
      * Construct the game manager
@@ -24,6 +36,8 @@ public class GameManager {
         AnimationController.instance().start();
         populateInitialBoard();
         core = new Board();
+        buttonMap = gameWindow.getButtonMap();
+        kazans = gameWindow.getKazans();
     }
 
     /**
@@ -147,6 +161,101 @@ public class GameManager {
             }
         }
         return hole;
+    }
+
+    private PrintWriter getPrintWriter(String filetoOpen) throws FileNotFoundException{
+        File saveFile=new File(filetoOpen);
+        FileOutputStream fos=new FileOutputStream(saveFile);
+        PrintWriter pw=new PrintWriter(fos);
+        return pw;
+    }
+
+    private void closePrintWriter(PrintWriter pw){
+        pw.flush();
+        pw.close();
+    }
+
+    public void saveGame(){
+        try{
+            PrintWriter pw = getPrintWriter("src\\main\\java\\saveFile.csv");
+            for(Map.Entry<String,Hole> entries :buttonMap.entrySet()){
+                pw.println(entries.getKey()+","+entries.getValue().getNumberOfKorgools()+","+entries.getValue().isTuz());
+            }
+            closePrintWriter(pw);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+		
+		try{
+            PrintWriter pw = getPrintWriter("src\\main\\java\\saveFile2.csv");
+            for(Map.Entry<String,Hole> entries :kazans.entrySet()){
+                pw.println(entries.getKey()+","+entries.getValue().getNumberOfKorgools());
+            }
+            closePrintWriter(pw);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public void loadGame(String file1, String file2){
+        AnimationController.resetController(gameWindow);
+        AnimationController.instance().start();
+        try{
+            File toRead=new File(file1);
+            FileInputStream fis=new FileInputStream(toRead);
+    
+            Scanner sc=new Scanner(fis);
+    
+            String placeholder = "";
+            gameWindow.resetTuzes();
+            List<String> tuzes = new ArrayList<>();
+            while(sc.hasNextLine()){
+                placeholder=sc.nextLine();
+                StringTokenizer st = new StringTokenizer(placeholder,",",false);
+                String holeId = st.nextToken();
+                Hole button = buttonMap.get(holeId);
+                gameWindow.populateWithKorgools(button.getName(), Integer.valueOf(st.nextToken()));
+				if(st.nextToken().equals("true")){
+					tuzes.add(holeId);
+				}
+            }
+            for (String id : tuzes) {
+                gameWindow.setTuz(id);
+            }
+            fis.close();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+		
+		try{
+            File toRead=new File(file2);
+            FileInputStream fis=new FileInputStream(toRead);
+    
+            Scanner sc=new Scanner(fis);
+    
+            String placeholder = "";
+            while(sc.hasNextLine()){
+                placeholder=sc.nextLine();
+                StringTokenizer st = new StringTokenizer(placeholder,",",false);
+                gameWindow.populateWithKorgools(st.nextToken(), Integer.valueOf(st.nextToken()));
+            }
+            fis.close();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+		/*
+		int[] wHoles = new int[9];
+		int[] bHoles = new int[9];
+		int wKazan = kazans.get("kazanRight").getNumberOfKorgools();
+		int bKazan = kazans.get("kazanLeft").getNumberOfKorgools();
+		for(int i=0; i<9; i++){
+			wHoles[i]=buttonMap.get("W"+i).getNumberOfKorgools();
+		}
+		for(int i=0; i<9; i++){
+			bHoles[i]=buttonMap.get("B"+i).getNumberOfKorgools();
+		}
+		manager.populateInitialBoard(wHoles,bHoles,-1,-1,wKazan,bKazan);
+		*/
     }
 
 
