@@ -267,7 +267,7 @@ public class GameWindow extends JFrame {
         switch (menuItemId) {
 			case "NewGame":
 				JOptionPane.showConfirmDialog(null, "Are you sure you want to start a new game?");
-				manager.loadGame("src\\main\\java\\newGameFile1.csv","src\\main\\java\\newGameFile2.csv");
+				manager.loadGame("src\\main\\resources\\newGameFile1.csv","src\\main\\resources\\newGameFile2.csv");
                 break;
             case "CustomInput":
 				if(manager!=null){
@@ -280,7 +280,7 @@ public class GameWindow extends JFrame {
                 break;
             case "Load":
                 JOptionPane.showConfirmDialog(null, "Are you sure you want to load the latest save state?");
-                manager.loadGame("src\\main\\java\\saveFile.csv","src\\main\\java\\saveFile2.csv");
+                manager.loadGame("src\\main\\resources\\saveFile.csv","src\\main\\resources\\saveFile2.csv","src\\main\\resources\\saveFile3.csv","src\\main\\resources\\saveFile4.csv");
                 break;
             case "Quit":
                 JOptionPane.showConfirmDialog(null, "Are you sure you want to quit?");

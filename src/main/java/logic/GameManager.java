@@ -177,7 +177,7 @@ public class GameManager {
 
     public void saveGame(){
         try{
-            PrintWriter pw = getPrintWriter("src\\main\\java\\saveFile.csv");
+            PrintWriter pw = getPrintWriter("src\\main\\resources\\saveFile.csv");
             for(Map.Entry<String,Hole> entries :buttonMap.entrySet()){
                 pw.println(entries.getKey()+","+entries.getValue().getNumberOfKorgools()+","+entries.getValue().isTuz());
             }
@@ -187,7 +187,7 @@ public class GameManager {
         }
 		
 		try{
-            PrintWriter pw = getPrintWriter("src\\main\\java\\saveFile2.csv");
+            PrintWriter pw = getPrintWriter("src\\main\\resources\\saveFile2.csv");
             for(Map.Entry<String,Hole> entries :kazans.entrySet()){
                 pw.println(entries.getKey()+","+entries.getValue().getNumberOfKorgools());
             }
@@ -197,7 +197,7 @@ public class GameManager {
         }
 
         try{
-            PrintWriter pw = getPrintWriter("src\\main\\java\\saveFile3.csv");
+            PrintWriter pw = getPrintWriter("src\\main\\resources\\saveFile3.csv");
             int[] wHoles = core.getWhitePlayer().getHoles();
             int wTuz = core.getWhitePlayer().getTuz();
             int wKazan = core.getWhitePlayer().getKazan();
@@ -212,7 +212,7 @@ public class GameManager {
         }
 
         try{
-            PrintWriter pw = getPrintWriter("src\\main\\java\\saveFile4.csv");
+            PrintWriter pw = getPrintWriter("src\\main\\resources\\saveFile4.csv");
             int[] bHoles = core.getBlackPlayer().getHoles();
             int bTuz = core.getBlackPlayer().getTuz();
             int bKazan = core.getBlackPlayer().getKazan();
@@ -280,53 +280,9 @@ public class GameManager {
         int[] bHoles = new int[9];
         int wKazan = 0;
         int bKazan = 0;
-        int wTuz = 0;
-        int bTuz = 0;
-        AnimationController.resetController(gameWindow);
-        AnimationController.instance().start();
-        try{
-            File toRead=new File(file1);
-            FileInputStream fis=new FileInputStream(toRead);
-    
-            Scanner sc=new Scanner(fis);
-    
-            String placeholder = "";
-            gameWindow.resetTuzes();
-            List<String> tuzes = new ArrayList<>();
-            while(sc.hasNextLine()){
-                placeholder=sc.nextLine();
-                StringTokenizer st = new StringTokenizer(placeholder,",",false);
-                String holeId = st.nextToken();
-                Hole button = buttonMap.get(holeId);
-                gameWindow.populateWithKorgools(button.getName(), Integer.valueOf(st.nextToken()));
-				if(st.nextToken().equals("true")){
-					tuzes.add(holeId);
-				}
-            }
-            for (String id : tuzes) {
-                gameWindow.setTuz(id);
-            }
-            fis.close();
-        }catch(Exception e){
-            e.printStackTrace();
-        }
-		
-		try{
-            File toRead=new File(file2);
-            FileInputStream fis=new FileInputStream(toRead);
-    
-            Scanner sc=new Scanner(fis);
-    
-            String placeholder = "";
-            while(sc.hasNextLine()){
-                placeholder=sc.nextLine();
-                StringTokenizer st = new StringTokenizer(placeholder,",",false);
-                gameWindow.populateWithKorgools(st.nextToken(), Integer.valueOf(st.nextToken()));
-            }
-            fis.close();
-        }catch(Exception e){
-            e.printStackTrace();
-        }
+        int wTuz = -1;
+        int bTuz = -1;
+        loadGame(file1, file2);
 
         try{
             File toRead=new File(file3);
