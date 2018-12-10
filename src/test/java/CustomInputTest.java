@@ -11,6 +11,8 @@ import java.awt.*;
 import gui.*;
 import static com.athaydes.automaton.assertion.AutomatonMatcher.hasText;
 
+import com.athaydes.automaton.Speed;
+
 /**
  * Class that contains tests for the custom input window.
  */
@@ -36,6 +38,7 @@ public class CustomInputTest {
         testFrame.pack();
         testFrame.setVisible(true);
         swinger = Swinger.getUserWith(testFrame);
+        Swinger.setDEFAULT(Speed.VERY_FAST);
     }
 
     /**
@@ -120,7 +123,7 @@ public class CustomInputTest {
         swinger.clickOn("name:openDialog").pause(2000).setRoot(testWindow);
         swinger.clickOn("name:confirm").pause(1000);
         Component textArea = swinger.getAt("name:outputLog");
-        assertThat(textArea, hasText("Please ensure the number of Korgools adds to 162"));
+        assertThat(textArea, hasText("Please ensure the total number of Korgools is 162"));
     }
 
     /**
@@ -137,7 +140,7 @@ public class CustomInputTest {
         }
         swinger.clickOn("name:confirm").pause(200);
         Component textArea = swinger.getAt("name:outputLog");
-        assertThat(textArea, hasText("Please ensure the number of Korgools adds to 162"));
+        assertThat(textArea, hasText("Please ensure the total number of Korgools is 162"));
     }
 
     /**
@@ -150,7 +153,7 @@ public class CustomInputTest {
         swinger.clickOn("name:R_W1").pause(1000);
         swinger.clickOn("name:confirm").pause(1000);
         Component textArea = swinger.getAt("name:outputLog");
-        assertThat(textArea, hasText("The Tuz cannot be the same hole on opposite sides"));
+        assertThat(textArea, hasText("Tuz may not exist as the same hole on opposite sides"));
     }
 
     /**
@@ -162,11 +165,11 @@ public class CustomInputTest {
         Component textArea = swinger.getAt("name:outputLog");
         swinger.clickOn("name:R_B9").pause(1000);
         swinger.clickOn("name:confirm").pause(1000);
-        assertThat(textArea, hasText("Hole 9 cannot be a Tuz"));
+        assertThat(textArea, hasText("Hole 9 may not become a Tuz"));
         swinger.clickOn("name:R_B8").pause(1000);
         swinger.clickOn("name:R_W9").pause(1000);
         swinger.clickOn("name:confirm").pause(1000);
-        assertThat(textArea, hasText("Hole 9 cannot be a Tuz"));
+        assertThat(textArea, hasText("Hole 9 may not become a Tuz"));
     }
 
     /**
@@ -181,7 +184,6 @@ public class CustomInputTest {
             JSpinner whiteSpinner = (JSpinner) swinger.getAt("name:W" + i);
             whiteSpinner.setValue(9);
         }
-        assertThat(swinger.getAt("name:infoLabel"), hasText("<html>Please enter in the number of Korgools per hole, and use the radio buttons to indicate which holes are Tuz.<br> Current number of Korgools: 162</html>"));
     }
 
 }

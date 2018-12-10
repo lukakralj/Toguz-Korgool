@@ -39,7 +39,8 @@ public class CustomInputWindow extends JDialog {
         numberOfKorgools = 0;
         manager = managerIn;
         this.backgroundColour = backgroundColourIn;
-        setModal(true);
+        if (manager == null) setModal(false);
+        else setModal(true);
         initialSetUp();
     }
 
