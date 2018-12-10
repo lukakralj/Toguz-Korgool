@@ -186,6 +186,22 @@ public class CustomInputTest {
         }
     }
 
+    /**
+     * Test setting and selecting kazan input cells
+     */
+    @Test
+    public void testKazanCells() {
+        swinger.clickOn("name:openDialog").pause(2000).setRoot(testWindow);
+        JSpinner blackSpinner = (JSpinner) swinger.getAt("name:BlackKazan");
+        blackSpinner.setValue(9);
+        JSpinner whiteSpinner = (JSpinner) swinger.getAt("name:WhiteKazan");
+        whiteSpinner.setValue(9);
+        swinger.clickOn("name:R_B5").pause(1000);
+        swinger.clickOn("name:R_BlackKazan").pause(1000);
+        swinger.clickOn("name:R_W5").pause(1000);
+        swinger.clickOn("name:R_WhiteKazan").pause(1000);
+    }
+
 }
 
 

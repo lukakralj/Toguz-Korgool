@@ -206,10 +206,6 @@ public class CustomInputWindow extends JDialog {
             radioOptionsBlack.add(radio);
         else if (componentId.startsWith("W"))
             radioOptionsWhite.add(radio);
-        else if (componentId.equals("BlackKazan"))
-            radioOptionsBlack.add(radio);
-        else if (componentId.equals("WhiteKazan"))
-            radioOptionsWhite.add(radio);
         radio.setActionCommand(componentId);
         radio.addActionListener(e -> updateSelectedTuz(e.getActionCommand()));
         radioButtonMap.put(radio.getName(), radio);
