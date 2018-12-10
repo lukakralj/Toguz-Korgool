@@ -52,7 +52,7 @@ public class Korgool extends OvalButton {
      * @param borderThickness How thick do we want the korgool border to be.
      */
     public Korgool(Hole parentHole, Color color, int borderThickness) {
-        super(SHAPE_OVAL, HORIZONTAL, color, Color.yellow, Color.BLACK, Color.yellow); // if we see yellow color something went wrong
+        super(SHAPE_OVAL, VERTICAL, color, Color.yellow, Color.BLACK, Color.yellow); // if we see yellow color something went wrong
         this.parentHole = parentHole;
         setBorderThickness(borderThickness);
     }

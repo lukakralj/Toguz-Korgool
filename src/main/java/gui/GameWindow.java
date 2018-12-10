@@ -158,7 +158,7 @@ public class GameWindow extends JFrame {
      */
     private void fillPanelWithButtons(JPanel panel, String color) {
         for (int i = 1; i < 10; ++i) {
-            Hole button = new Hole(false);
+            Hole button = new Hole(OvalButton.SHAPE_CAPSULE, OvalButton.VERTICAL, false);
             button.setName(color + i);
             buttonMap.put(button.getName(), button);
             button.setPreferredSize(new Dimension(30, 200));
@@ -181,11 +181,11 @@ public class GameWindow extends JFrame {
     private JPanel createSingleMarker(String side) {
         Hole tuz;
         if (side.equals("left")) {
-            leftTuz = new Hole(true);
+            leftTuz = new Hole(OvalButton.SHAPE_OVAL, OvalButton.VERTICAL, true);
             tuz = leftTuz;
         }
         else {
-            rightTuz = new Hole(true);
+            rightTuz = new Hole(OvalButton.SHAPE_OVAL, OvalButton.VERTICAL, true);
             tuz = rightTuz;
         }
 
@@ -211,14 +211,14 @@ public class GameWindow extends JFrame {
         kazanPanel.setBackground(BACKGROUND_COLOR);
         kazanPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
 
-        kazanLeft = new Hole(true);
+        kazanLeft = new Hole(OvalButton.SHAPE_CAPSULE, OvalButton.HORIZONTAL, true);
         kazanLeft.setColorBorderNormal(new Color(160,82,45));
         kazanLeft.setName("leftKazan");
         kazanLeft.setEnabled(false);
         kazanLeft.setPreferredSize(new Dimension(400,300));
         kazanLeft.setEnabled(false);
 
-        kazanRight = new Hole(true);
+        kazanRight = new Hole(OvalButton.SHAPE_CAPSULE, OvalButton.HORIZONTAL,true);
         kazanRight.setColorBorderNormal(new Color(160,82,45));
         kazanRight.setName("rightKazan");
         kazanRight.setEnabled(false);

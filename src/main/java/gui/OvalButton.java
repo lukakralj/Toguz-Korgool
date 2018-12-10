@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.*;
+import java.awt.geom.Area;
 
 /**
  * This class represents an oval button. This means that the button will only trigger
@@ -29,6 +30,7 @@ public class OvalButton extends JButton implements MouseListener, MouseMotionLis
     private Color currentBackground;
     private final int shape;
     private final int orientation;
+    private double radius;
 
     /**
      * Construct a default oval button.
@@ -65,6 +67,7 @@ public class OvalButton extends JButton implements MouseListener, MouseMotionLis
         }
         this.shape = shape;
         this.orientation = orientation;
+        radius = 0.2;
         this.colorNormal = colorNormal;
         this.currentBackground = colorNormal;
         this.colorHighlighted = colorHighlighted;
@@ -96,6 +99,17 @@ public class OvalButton extends JButton implements MouseListener, MouseMotionLis
      */
     public Color getColorNormal() {
         return colorNormal;
+    }
+
+    /**
+     * Set radius of the button. 1 means same as SHAPE_OVAL.
+     * @param newRadius New radius: between 0 and 1.
+     */
+    public void setRadius(double newRadius) {
+        if (newRadius < 0 || newRadius > 1) {
+            throw new IllegalArgumentException("Invalid radius: " + newRadius);
+        }
+        radius = newRadius;
     }
 
     /**
@@ -229,7 +243,7 @@ public class OvalButton extends JButton implements MouseListener, MouseMotionLis
             paintOval(gr);
         }
         else if (shape == SHAPE_CAPSULE) {
-
+            paintCapsule(gr);
         }
     }
 
@@ -240,17 +254,7 @@ public class OvalButton extends JButton implements MouseListener, MouseMotionLis
     private void paintOval(Graphics2D g) {
         Dimension d = getSize();
 
-        if (isEnabled() && backgroundHighlighted) {
-            g.setColor(colorHighlighted);
-        }
-        else if (isEnabled()){
-            g.setColor(currentBackground);
-        }
-        else {
-            g.setColor(colorNormal);
-        }
-
-
+        setMainColor(g);
         g.fillOval(0, 0, d.width, d.height);
         Shape border = createOvalBorder();
 
@@ -282,15 +286,65 @@ public class OvalButton extends JButton implements MouseListener, MouseMotionLis
         return area;
     }
 
-    private Shape createCapsule(double x, double y, double width, double height) {
-
-
-
-        // if horizontal rotate 90 degrees
-        if (orientation == HORIZONTAL) {
-
+    private void setMainColor(Graphics g) {
+        if (isEnabled() && backgroundHighlighted) {
+            g.setColor(colorHighlighted);
         }
-        return null;
+        else if (isEnabled()){
+            g.setColor(currentBackground);
+        }
+        else {
+            g.setColor(colorNormal);
+        }
+    }
+
+    private void paintCapsule(Graphics2D g) {
+        Dimension d = getSize();
+        setMainColor(g);
+
+        Shape mainCapsule = createCapsule(0, 0, d.width, d.height);
+        g.fill(mainCapsule);
+
+        if (borderHighlighted) {
+            g.setColor(colorBorderHighlighted);
+        }
+        else {
+            g.setColor(colorBorderNormal);
+        }
+
+        Shape border = createCapsuleBorder();
+        g.fill(border);
+
+    }
+
+    private Shape createCapsule(double x, double y, double width, double height) {
+        double r = radius * height;
+        if (orientation == VERTICAL) {
+            r = radius * height;
+        }
+        Ellipse2D upper = new Ellipse2D.Double(x, y, width, r * 2);
+        Ellipse2D lower = new Ellipse2D.Double(x, y + (height - 2 * r), width, 2 * r);
+        Rectangle2D middle = new Rectangle2D.Double(x, y + r, width, height - 2 * r);
+
+        Area capsule = new Area(upper);
+        capsule.add(new Area(middle));
+        capsule.add(new Area(lower));
+
+        return capsule;
+    }
+
+    private Shape createCapsuleBorder() {
+        double width = getSize().width;
+        double height = getSize().height;
+        Shape outer = createCapsule(0, 0, width, height);
+        double inX = (width/2) - (width/2 - borderThickness);
+        double inY = (height/2) - (height/2 - borderThickness);
+        double inW = width - 2*borderThickness;
+        double inH = height - 2*borderThickness;
+        Shape inner = createCapsule(inX, inY, inW, inH);
+        Area area = new Area(outer);
+        area.subtract(new Area(inner));
+        return area;
     }
 
     //==============================================
