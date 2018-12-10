@@ -67,7 +67,7 @@ public class OvalButton extends JButton implements MouseListener, MouseMotionLis
         }
         this.shape = shape;
         this.orientation = orientation;
-        radius = 0.2;
+        radius = 0.50;
         this.colorNormal = colorNormal;
         this.currentBackground = colorNormal;
         this.colorHighlighted = colorHighlighted;
@@ -187,7 +187,7 @@ public class OvalButton extends JButton implements MouseListener, MouseMotionLis
     @Override
     public void addActionListener(ActionListener l) {
         super.addActionListener(e -> {
-            if (isInOval(MouseInfo.getPointerInfo().getLocation())) {
+            if (isValidClickPosition(MouseInfo.getPointerInfo().getLocation())) {
                 l.actionPerformed(e);
             }
         });
@@ -204,7 +204,7 @@ public class OvalButton extends JButton implements MouseListener, MouseMotionLis
             return isInOval(screenPosition);
         }
         else {
-            return false;
+            return isInCapsule(screenPosition);
         }
     }
 
@@ -228,6 +228,72 @@ public class OvalButton extends JButton implements MouseListener, MouseMotionLis
 
         // Check if the given point is withing the specified ellipse:
         return ((((x - s1)*(x - s1)) / (a*a)) + (((y - s2)*(y - s2)) / (b*b))) <= 1;
+    }
+
+    private boolean isInCapsule(Point p) {
+        double x = p.x;
+        double y = p.y;
+
+        if (orientation == VERTICAL) {
+            Double r = 0.5 * radius * getSize().height;
+            double buttonX = getLocationOnScreen().x;
+            double buttonY = getLocationOnScreen().y;
+            if (y < buttonY + r) {
+                // check if in upper ellipse
+
+                // center of ellipse, semi-major and semi-minor axis
+                double s1 = buttonX + getSize().width / 2;
+                double s2 = buttonY + r;
+                double a = getSize().width / 2;
+                double b = r;
+
+                return ((((x - s1)*(x - s1)) / (a*a)) + (((y - s2)*(y - s2)) / (b*b))) <= 1;
+            }
+            else if (y > buttonY + getSize().height - r) {
+                // check if in lower ellipse
+
+                // center of ellipse, semi-major and semi-minor axis
+                double s1 = buttonX + getSize().width / 2;
+                double s2 = buttonY + getSize().height - r;
+                double a = getSize().width / 2;
+                double b = r;
+
+                return ((((x - s1)*(x - s1)) / (a*a)) + (((y - s2)*(y - s2)) / (b*b))) <= 1;
+            }
+            else {
+                return true;
+            }
+        }
+        else {
+            Double r = 0.5 * radius * getSize().width;
+            double buttonX = getLocationOnScreen().x;
+            double buttonY = getLocationOnScreen().y;
+            if (x < buttonX + r) {
+                // check if in upper ellipse
+
+                // center of ellipse, semi-major and semi-minor axis
+                double s1 = buttonX + r;
+                double s2 = buttonY + getSize().height / 2;
+                double a = r;
+                double b = getSize().height / 2;
+
+                return ((((x - s1)*(x - s1)) / (a*a)) + (((y - s2)*(y - s2)) / (b*b))) <= 1;
+            }
+            else if (x > buttonX + getSize().width - r) {
+                // check if in lower ellipse
+
+                // center of ellipse, semi-major and semi-minor axis
+                double s1 = buttonX + getSize().width - r;
+                double s2 = buttonY + getSize().height / 2;
+                double a = r;
+                double b = getSize().height / 2;
+
+                return ((((x - s1)*(x - s1)) / (a*a)) + (((y - s2)*(y - s2)) / (b*b))) <= 1;
+            }
+            else {
+                return true;
+            }
+        }
     }
 
     /**
@@ -300,10 +366,12 @@ public class OvalButton extends JButton implements MouseListener, MouseMotionLis
 
     private void paintCapsule(Graphics2D g) {
         Dimension d = getSize();
-        setMainColor(g);
 
         Shape mainCapsule = createCapsule(0, 0, d.width, d.height);
+        setMainColor(g);
         g.fill(mainCapsule);
+
+        Shape border = createCapsuleBorder();
 
         if (borderHighlighted) {
             g.setColor(colorBorderHighlighted);
@@ -312,19 +380,27 @@ public class OvalButton extends JButton implements MouseListener, MouseMotionLis
             g.setColor(colorBorderNormal);
         }
 
-        Shape border = createCapsuleBorder();
         g.fill(border);
 
     }
 
     private Shape createCapsule(double x, double y, double width, double height) {
-        double r = radius * height;
+        double r;
+        Ellipse2D upper;
+        Rectangle2D middle;
+        Ellipse2D lower;
         if (orientation == VERTICAL) {
-            r = radius * height;
+            r = 0.5 * radius * height;
+            upper = new Ellipse2D.Double(x, y, width, 2 * r);
+            middle = new Rectangle2D.Double(x, y + r, width, height - 2 * r);
+            lower = new Ellipse2D.Double(x, y + (height - 2 * r), width, 2 * r);
         }
-        Ellipse2D upper = new Ellipse2D.Double(x, y, width, r * 2);
-        Ellipse2D lower = new Ellipse2D.Double(x, y + (height - 2 * r), width, 2 * r);
-        Rectangle2D middle = new Rectangle2D.Double(x, y + r, width, height - 2 * r);
+        else {
+            r = 0.5 * radius * width;
+            upper = new Ellipse2D.Double(x, y, 2 * r, height);
+            middle = new Rectangle2D.Double(x + r, y, width - 2 * r, height);
+            lower = new Ellipse2D.Double(x + (width - 2 * r), y, 2 * r, height);
+        }
 
         Area capsule = new Area(upper);
         capsule.add(new Area(middle));
