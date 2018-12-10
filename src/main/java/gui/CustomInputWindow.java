@@ -88,14 +88,15 @@ public class CustomInputWindow extends JDialog {
         for (int i = 9; i > 0; --i) inputArea.add(inputCell("B" + i));
         inputArea.add(Box.createHorizontalGlue());
         inputArea.add(inputCell("BlackKazan"));
-        inputArea.add(new JLabel("<html><p style=\"text-align:center\">No White<br>Tuz</p></html>"));
+        inputArea.add(new JLabel("<html><p style=\"text-align:center\">No White<br>Tuz Selection</p></html>"));
         for (int i = 0; i < 4; ++i) inputArea.add(Box.createHorizontalGlue());
         inputArea.add(inputCell("WhiteKazan"));
-        inputArea.add(new JLabel("<html><p style=\"text-align:center\">No Black<br>Tuz</p></html>"));
+        inputArea.add(new JLabel("<html><p style=\"text-align:center\">No Black<br>Tuz Selection</p></html>"));
         for (int i = 1; i < 10; ++i) inputArea.add(inputCell("W" + i));
         getContentPane().add(inputArea, BorderLayout.CENTER);
         radioButtonMap.get("R_BlackKazan").setSelected(true);
         radioButtonMap.get("R_WhiteKazan").setSelected(true);
+        updateHoleValues("all");
     }
 
     /**
@@ -170,10 +171,28 @@ public class CustomInputWindow extends JDialog {
         inputCell.setBackground(backgroundColour);
         inputCell.add(createRadioButton(componentId), BorderLayout.EAST);
         inputCell.add(createSpinner(componentId), BorderLayout.CENTER);
-        inputCell.add(new JLabel(componentId, SwingConstants.CENTER), BorderLayout.NORTH);
+        inputCell.add(new JLabel(generateCellTitle(componentId), SwingConstants.CENTER), BorderLayout.NORTH);
         inputCell.add(Box.createHorizontalStrut(20), BorderLayout.WEST);
         inputCell.add(Box.createVerticalStrut(20), BorderLayout.SOUTH);
         return inputCell;
+    }
+
+    /**
+     * Generates a title for the input cell
+     *
+     * @param componentId the component ID the cell represents
+     * @return a proper title for this cell
+     */
+    private String generateCellTitle(String componentId) {
+        if (componentId.equals("BlackKazan"))
+            return "Black Kazan";
+        else if (componentId.equals("WhiteKazan"))
+            return "White Kazan";
+        else if (componentId.startsWith("W"))
+            return "White Hole " + componentId.substring(1);
+        else if (componentId.startsWith("B"))
+            return "Black Hole " + componentId.substring(1);
+        return "";
     }
 
     /**
@@ -186,6 +205,7 @@ public class CustomInputWindow extends JDialog {
         SpinnerNumberModel spinnerModel = new SpinnerNumberModel(0, 0, 162, 1);
         JSpinner spinner = new JSpinner(spinnerModel);
         spinner.setName(componentId);
+        if (componentId.length() == 2) spinner.setValue(9);
         spinner.addChangeListener(e -> updateHoleValues(spinner.getName()));
         spinner.setFont(spinner.getFont().deriveFont(20L));
         spinnerMap.put(componentId, spinner);
@@ -228,17 +248,20 @@ public class CustomInputWindow extends JDialog {
             selectedTuzBlack = Integer.parseInt(radioButtonId.substring(1));
         else if (radioButtonId.startsWith("B"))
             selectedTuzWhite = Integer.parseInt(radioButtonId.substring(1));
+        updateInformationLabel();
     }
 
     /**
      * Action listener for the spinners.
      * Updates the hole value arrays / kazan values based on the spinner content.
      *
-     * @param componentId
+     * @param componentId the component ID of the spinner
      */
     private void updateHoleValues(String componentId) {
         numberOfKorgools = 0;
-        for (JSpinner currentSpinner : spinnerMap.values()) numberOfKorgools += (int) currentSpinner.getValue();
+        for (JSpinner currentSpinner : spinnerMap.values()) {
+            numberOfKorgools += (int) currentSpinner.getValue();
+        }
         updateInformationLabel();
         if (componentId.equals("BlackKazan"))
             blackKazanCount = (int) spinnerMap.get(componentId).getValue();
@@ -254,7 +277,22 @@ public class CustomInputWindow extends JDialog {
      * Updates the content of the information label.
      */
     private void updateInformationLabel() {
-        informationLabel.setText("<html><p style=\"text-align:center\">Please enter in the number of Korgools per hole, and use the radio buttons to indicate which holes are Tuz.<br> Current number of Korgools: " + numberOfKorgools + "</p></html>");
+        informationLabel.setText("<html><p style=\"text-align:center\">Please enter in the number of Korgools per hole, and use the radio buttons to indicate which holes are Tuz." +
+                "<br> White Player Tuz Selection: " + generateTuzLabel(selectedTuzWhite) + "<br>Current number of Korgools: " + numberOfKorgools + "<br>" +
+                "Black Player Tuz Selection: " + generateTuzLabel(selectedTuzBlack) + "</p></html>");
     }
+
+    /**
+     * Generates an appropriate label for each selected Tuz
+     *
+     * @param selectedTuz the hole number of the selected Tuz
+     * @return an appropriate label for the Tuz.
+     */
+    private String generateTuzLabel(int selectedTuz) {
+        if (selectedTuz > 0) return "Hole " + selectedTuz;
+        else return "None";
+    }
+
+
 }
 

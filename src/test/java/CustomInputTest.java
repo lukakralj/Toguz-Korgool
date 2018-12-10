@@ -121,6 +121,8 @@ public class CustomInputTest {
     @Test
     public void testNotEnoughKorgools() {
         swinger.clickOn("name:openDialog").pause(2000).setRoot(testWindow);
+        JSpinner blackSpinner = (JSpinner) swinger.getAt("name:BlackKazan");
+        blackSpinner.setValue(8);
         swinger.clickOn("name:confirm").pause(1000);
         Component textArea = swinger.getAt("name:outputLog");
         assertThat(textArea, hasText("Please ensure the total number of Korgools is 162"));
@@ -132,12 +134,8 @@ public class CustomInputTest {
     @Test
     public void tooManyKorgools() {
         swinger.clickOn("name:openDialog").pause(2000).setRoot(testWindow);
-        for (int i = 1; i <= 9; ++i) {
-            JSpinner blackSpinner = (JSpinner) swinger.getAt("name:B" + i);
-            blackSpinner.setValue(10);
-            JSpinner whiteSpinner = (JSpinner) swinger.getAt("name:W" + i);
-            whiteSpinner.setValue(10);
-        }
+        JSpinner blackSpinner = (JSpinner) swinger.getAt("name:BlackKazan");
+        blackSpinner.setValue(10);
         swinger.clickOn("name:confirm").pause(200);
         Component textArea = swinger.getAt("name:outputLog");
         assertThat(textArea, hasText("Please ensure the total number of Korgools is 162"));
