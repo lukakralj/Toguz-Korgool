@@ -195,6 +195,36 @@ public class GameManager {
         }catch(Exception e){
             e.printStackTrace();
         }
+
+        try{
+            PrintWriter pw = getPrintWriter("src\\main\\java\\saveFile3.csv");
+            int[] wHoles = core.getWhitePlayer().getHoles();
+            int wTuz = core.getWhitePlayer().getTuz();
+            int wKazan = core.getWhitePlayer().getKazan();
+            for(int i=0;i<wHoles.length;i++){
+                pw.println(wHoles[i]);
+            }
+            pw.println(wTuz);
+            pw.println(wKazan);
+            closePrintWriter(pw);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+        try{
+            PrintWriter pw = getPrintWriter("src\\main\\java\\saveFile4.csv");
+            int[] bHoles = core.getBlackPlayer().getHoles();
+            int bTuz = core.getBlackPlayer().getTuz();
+            int bKazan = core.getBlackPlayer().getKazan();
+            for(int i=0;i<bHoles.length;i++){
+                pw.println(bHoles[i]);
+            }
+            pw.println(bTuz);
+            pw.println(bKazan);
+            closePrintWriter(pw);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }
 
     public void loadGame(String file1, String file2){
@@ -243,19 +273,99 @@ public class GameManager {
         }catch(Exception e){
             e.printStackTrace();
         }
-		/*
-		int[] wHoles = new int[9];
-		int[] bHoles = new int[9];
-		int wKazan = kazans.get("kazanRight").getNumberOfKorgools();
-		int bKazan = kazans.get("kazanLeft").getNumberOfKorgools();
-		for(int i=0; i<9; i++){
-			wHoles[i]=buttonMap.get("W"+i).getNumberOfKorgools();
-		}
-		for(int i=0; i<9; i++){
-			bHoles[i]=buttonMap.get("B"+i).getNumberOfKorgools();
-		}
-		manager.populateInitialBoard(wHoles,bHoles,-1,-1,wKazan,bKazan);
-		*/
+    }
+
+    public void loadGame(String file1, String file2, String file3, String file4){
+        int[] wHoles = new int[9];
+        int[] bHoles = new int[9];
+        int wKazan = 0;
+        int bKazan = 0;
+        int wTuz = 0;
+        int bTuz = 0;
+        AnimationController.resetController(gameWindow);
+        AnimationController.instance().start();
+        try{
+            File toRead=new File(file1);
+            FileInputStream fis=new FileInputStream(toRead);
+    
+            Scanner sc=new Scanner(fis);
+    
+            String placeholder = "";
+            gameWindow.resetTuzes();
+            List<String> tuzes = new ArrayList<>();
+            while(sc.hasNextLine()){
+                placeholder=sc.nextLine();
+                StringTokenizer st = new StringTokenizer(placeholder,",",false);
+                String holeId = st.nextToken();
+                Hole button = buttonMap.get(holeId);
+                gameWindow.populateWithKorgools(button.getName(), Integer.valueOf(st.nextToken()));
+				if(st.nextToken().equals("true")){
+					tuzes.add(holeId);
+				}
+            }
+            for (String id : tuzes) {
+                gameWindow.setTuz(id);
+            }
+            fis.close();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+		
+		try{
+            File toRead=new File(file2);
+            FileInputStream fis=new FileInputStream(toRead);
+    
+            Scanner sc=new Scanner(fis);
+    
+            String placeholder = "";
+            while(sc.hasNextLine()){
+                placeholder=sc.nextLine();
+                StringTokenizer st = new StringTokenizer(placeholder,",",false);
+                gameWindow.populateWithKorgools(st.nextToken(), Integer.valueOf(st.nextToken()));
+            }
+            fis.close();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+        try{
+            File toRead=new File(file3);
+            FileInputStream fis=new FileInputStream(toRead);
+    
+            Scanner sc=new Scanner(fis);
+    
+            for(int i=0;i<9;i++){
+                wHoles[i]=Integer.valueOf(sc.nextLine());
+            }
+
+            wTuz=Integer.valueOf(sc.nextLine());
+
+            wKazan=Integer.valueOf(sc.nextLine());
+
+            fis.close();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+        try{
+            File toRead=new File(file4);
+            FileInputStream fis=new FileInputStream(toRead);
+    
+            Scanner sc=new Scanner(fis);
+    
+            for(int i=0;i<9;i++){
+                bHoles[i]=Integer.valueOf(sc.nextLine());
+            }
+
+            bTuz=Integer.valueOf(sc.nextLine());
+
+            bKazan=Integer.valueOf(sc.nextLine());
+
+            fis.close();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+		populateInitialBoard(wHoles, bHoles, wTuz, bTuz, wKazan, bKazan);
     }
 
 
