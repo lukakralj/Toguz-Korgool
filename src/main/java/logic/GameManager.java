@@ -162,10 +162,10 @@ public class GameManager {
      */
     private void endImpossibleGame(boolean isWhiteTurn) {
         if (isWhiteTurn) {
-            core.getAllKorgools(core.getBlackPlayer());
+            core.takeAllKorgools(core.getBlackPlayer());
         }
         else {
-            core.getAllKorgools(core.getWhitePlayer());
+            core.takeAllKorgools(core.getWhitePlayer());
         }
         BoardStatus endStatus = core.checkResultOnImpossible();
         checkEndStatus(endStatus);
