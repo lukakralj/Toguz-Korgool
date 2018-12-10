@@ -37,6 +37,8 @@ public class CustomInputWindow extends JDialog {
     public CustomInputWindow(Color backgroundColourIn, GameManager managerIn) {
         selectedTuzBlack = selectedTuzWhite = -1;
         numberOfKorgools = 0;
+        for (int i = 0; i < 9; ++i) blackHoleContents[i] = 9;
+        for (int i = 0; i < 9; ++i) whiteHoleContents[i] = 9;
         manager = managerIn;
         this.backgroundColour = backgroundColourIn;
         if (manager == null) setModal(false);
@@ -205,7 +207,9 @@ public class CustomInputWindow extends JDialog {
         SpinnerNumberModel spinnerModel = new SpinnerNumberModel(0, 0, 162, 1);
         JSpinner spinner = new JSpinner(spinnerModel);
         spinner.setName(componentId);
-        if (componentId.length() == 2) spinner.setValue(9);
+        if (componentId.length() == 2) {
+            spinner.setValue(9);
+        }
         spinner.addChangeListener(e -> updateHoleValues(spinner.getName()));
         spinner.setFont(spinner.getFont().deriveFont(20L));
         spinnerMap.put(componentId, spinner);
