@@ -152,7 +152,6 @@ public class CustomInputWindow extends JDialog {
             outputLog.setText("Please ensure the total number of Korgools is 162");
         else {
             if (manager != null) {
-                manager.resetTuzes();
                 manager.populateInitialBoard(whiteHoleContents, blackHoleContents, selectedTuzWhite, selectedTuzBlack, whiteKazanCount, blackKazanCount);
             }
             dispose();

@@ -12,15 +12,14 @@ import java.util.Random;
  * or for their kazans.
  *
  * @author Luka Kralj
- * @version 04 December 2018
+ * @version 07 December 2018
  */
 public class Hole extends OvalButton {
 
     private List<Korgool> korgools;
-    private boolean isTuz;
     private boolean isKazan;
     private List<Location> korgoolLocations;
-
+    private Korgool tuzKorgool;
     private Random rand;
     private Rectangle korgoolArea;
     private static Dimension korgoolSize;
@@ -35,42 +34,40 @@ public class Hole extends OvalButton {
         korgoolArea = new Rectangle(0,0,10,10);
         korgoolSize = new Dimension(10, 10);
         setLayout(null);
-        isTuz = false;
         this.isKazan = isKazan;
         // Update korgools size and location only when the hole is moved/resized.
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
-                double oldW = korgoolArea.width;
-                double oldH = korgoolArea.height;
-                updateKorgoolArea();
-                double newW = korgoolArea.width;
-                double newH = korgoolArea.height;
-                double coefW = newW / oldW;
-                double coefH = newH / oldH;
-
-                korgools.forEach(k -> {
-                    k.setSize(korgoolSize);
-                    k.setLocation((int)Math.round((k.getLocation().x * coefW)), (int)Math.round((k.getLocation().y * coefH)));
-                });
+                resizeKorgools();
             }
 
             @Override
             public void componentMoved(ComponentEvent e) {
-                double oldW = korgoolArea.width;
-                double oldH = korgoolArea.height;
-                updateKorgoolArea();
-                double newW = korgoolArea.width;
-                double newH = korgoolArea.height;
-                double coefW = newW / oldW;
-                double coefH = newH / oldH;
-
-                korgools.forEach(k -> {
-                    k.setSize(korgoolSize);
-                    k.setLocation((int)Math.round((k.getLocation().x * coefW)), (int)Math.round((k.getLocation().y * coefH)));
-                });
+                resizeKorgools();
             }
         });
+    }
+
+    private void resizeKorgools() {
+        double oldW = korgoolArea.width;
+        double oldH = korgoolArea.height;
+        updateKorgoolArea();
+        double newW = korgoolArea.width;
+        double newH = korgoolArea.height;
+        double coefW = newW / oldW;
+        double coefH = newH / oldH;
+
+        for (int i = 0; i < korgools.size(); i++) {
+            Korgool k = korgools.get(i);
+            k.setSize(korgoolSize);
+            k.setLocation((int)Math.round((k.getLocation().x * coefW)), (int)Math.round((k.getLocation().y * coefH)));
+        }
+
+        if (tuzKorgool != null) {
+            tuzKorgool.setSize(korgoolSize);
+            tuzKorgool.setLocation((int)Math.round((tuzKorgool.getLocation().x * coefW)), (int)Math.round((tuzKorgool.getLocation().y * coefH)));
+        }
     }
 
     /**
@@ -81,7 +78,13 @@ public class Hole extends OvalButton {
     public void addKorgool(Korgool k) {
         add(k);
         Point next = getNextLocation(0);
-        korgools.add(k);
+        if (k.getName() != null && (k.getName().equals("rightTuzKorgool") || k.getName().equals("leftTuzKorgool"))) {
+            tuzKorgool = k;
+            next = getNextLocation(165 - getNumberOfKorgools());
+        }
+        else {
+            korgools.add(k);
+        }
         k.setParentHole(this);
         k.setSize(korgoolSize);
         k.setLocation(next);
@@ -133,6 +136,9 @@ public class Hole extends OvalButton {
      */
     public void emptyHole() {
         korgools.forEach(this::remove);
+        if (tuzKorgool != null) {
+            remove(tuzKorgool);
+        }
         korgools = new ArrayList<>(32);
     }
 
@@ -152,22 +158,13 @@ public class Hole extends OvalButton {
      * @return True if hole is set as tuz, false if not.
      */
     public boolean isTuz() {
-        return isTuz;
+        return tuzKorgool != null;
     }
 
-    /**
-     * Decide if this hole is a tuz or not. The hole border will be highlighted accordingly.
-     *
-     * @param isTuz True if you want to make this hole a tuz, false otherwise.
-     */
-    public void setTuz(boolean isTuz) {
-        this.isTuz = isTuz;
-        if (isTuz) {
-            setHighlightedBorder(true);
-        }
-        else {
-            setHighlightedBorder(false);
-        }
+    public Korgool releaseTuzKorgool() {
+        Korgool toReturn = tuzKorgool;
+        tuzKorgool = null;
+        return toReturn;
     }
 
     /**
@@ -216,18 +213,6 @@ public class Hole extends OvalButton {
         }
 
         korgoolArea = new Rectangle((int)x, (int)y, (int)(newW - diameter), (int)(newH - diameter));
-    }
-
-    /**
-     * Randomly allocates korgools within the valid korgool area.
-     *
-     * @return Point of the top left corner of where the korgool should be placed.
-     */
-    public Point calculateKorgoolLocation() {
-        double x = korgoolArea.x + rand.nextDouble() * korgoolArea.width;
-        double y = korgoolArea.y + rand.nextDouble() * korgoolArea.height;
-
-        return new Point((int)x, (int)y);
     }
 
     private List<Location> generateLocations() {
