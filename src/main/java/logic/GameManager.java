@@ -35,6 +35,7 @@ public class GameManager {
             gameWindow.populateWithKorgools(buttonId, 9);
         }
         gameWindow.resetTuzes();
+        gameWindow.displayMessage("");
     }
 
     /**
@@ -61,6 +62,7 @@ public class GameManager {
         //updates game logic
         AnimationController.resetController(gameWindow);
         AnimationController.instance().start();
+        gameWindow.displayMessage("");
         populatePlayerBoard(core.getWhitePlayer(), wHoles, wTuz, wKazan);
         populatePlayerBoard(core.getBlackPlayer(), bHoles, bTuz, bKazan);
 
@@ -157,11 +159,17 @@ public class GameManager {
      * @param isWhiteTurn boolean indicating whether it is the white player's turn
      */
     private void endImpossibleGame(boolean isWhiteTurn) {
+        String prefix = isWhiteTurn ? "B" : "W";
+        for (int i = 1; i < 10; i++) {
+            AnimationController.instance().addEvent(AnimationController.EMPTY_HOLE, prefix + i);
+        }
         if (isWhiteTurn) {
             core.getAllKorgools(core.getBlackPlayer());
+            AnimationController.instance().addEvent(AnimationController.MOVE_KORGOOLS, AnimationController.LEFT_KAZAN, AnimationController.MOVE_ALL);
         }
         else {
             core.getAllKorgools(core.getWhitePlayer());
+            AnimationController.instance().addEvent(AnimationController.MOVE_KORGOOLS, AnimationController.RIGHT_KAZAN, AnimationController.MOVE_ALL);
         }
         BoardStatus endStatus = core.checkResultOnImpossible();
         checkEndStatus(endStatus);

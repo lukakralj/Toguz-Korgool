@@ -28,6 +28,7 @@ public class Hole extends OvalButton {
      * Construct an empty hole. To add korgools to it, use one of the functions.
      */
     public Hole(boolean isKazan) {
+        super();
         korgools = new ArrayList<>(32);
         rand = new Random();
         korgoolLocations = generateLocations();

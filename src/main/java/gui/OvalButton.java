@@ -14,6 +14,11 @@ import java.awt.geom.*;
  */
 public class OvalButton extends JButton implements MouseListener, MouseMotionListener {
 
+    public static final int SHAPE_OVAL = 0;
+    public static final int SHAPE_CAPSULE = 1;
+    public static final int VERTICAL = 2;
+    public static final int HORIZONTAL = 4;
+
     private Color colorNormal;
     private Color colorHighlighted;
     private Color colorBorderNormal;
@@ -22,35 +27,44 @@ public class OvalButton extends JButton implements MouseListener, MouseMotionLis
     private boolean borderHighlighted;
     private boolean backgroundHighlighted;
     private Color currentBackground;
+    private final int shape;
+    private final int orientation;
 
     /**
      * Construct a default oval button.
      */
     public OvalButton() {
-        this("");
+        this(SHAPE_OVAL, VERTICAL);
     }
 
     /**
      * Construct an oval button with this text.
      *
-     * @param text Text to display.
      */
-    public OvalButton(String text) {
-        this(text, Color.WHITE, Color.LIGHT_GRAY, Color.BLACK, Color.RED);
+    public OvalButton(int shape, int orientation) {
+        this(shape, orientation, Color.WHITE, Color.LIGHT_GRAY, Color.BLACK, Color.RED);
     }
 
     /**
      * Construct an oval button and specify its custom colour.
      *
-     * @param text Text to display.
+     * @param shape Shape of the button. Select one of the constants.
      * @param colorNormal The main color of the button.
      * @param colorHighlighted The color of the button when it is highlighted (hovered over etc.).
      * @param colorBorderNormal The main border color of the button.
      * @param colorBorderHighlighted The border color that will show whenever the button is marked as being
      *                               highlighted (will remain this color even after the mouse exits).
      */
-    public OvalButton(String text, Color colorNormal, Color colorHighlighted, Color colorBorderNormal, Color colorBorderHighlighted) {
-        super(text);
+    public OvalButton(int shape, int orientation, Color colorNormal, Color colorHighlighted, Color colorBorderNormal, Color colorBorderHighlighted) {
+        super();
+        if (shape != SHAPE_CAPSULE && shape != SHAPE_OVAL) {
+            throw new IllegalArgumentException("Invalid shape chosen for OvalButton.");
+        }
+        if (orientation != VERTICAL && orientation != HORIZONTAL) {
+            throw new IllegalArgumentException("Invalid orientation chosen for OvalButton.");
+        }
+        this.shape = shape;
+        this.orientation = orientation;
         this.colorNormal = colorNormal;
         this.currentBackground = colorNormal;
         this.colorHighlighted = colorHighlighted;
@@ -62,7 +76,7 @@ public class OvalButton extends JButton implements MouseListener, MouseMotionLis
         setBorderPainted(false);
         setFocusPainted(false);
         setContentAreaFilled(false);
-        // TODO: buttons get highlighted also when the click is outside the oval
+
         addMouseListener(this);
         addMouseMotionListener(this);
     }
@@ -166,8 +180,17 @@ public class OvalButton extends JButton implements MouseListener, MouseMotionLis
     }
 
     protected void holeClicked(ActionEvent e) {
-        if (isInOval(MouseInfo.getPointerInfo().getLocation())) {
+        if (isValidClickPosition(MouseInfo.getPointerInfo().getLocation())) {
             super.actionListener.actionPerformed(e);
+        }
+    }
+
+    protected boolean isValidClickPosition(Point screenPosition) {
+        if (shape == SHAPE_OVAL) {
+            return isInOval(screenPosition);
+        }
+        else {
+            return false;
         }
     }
 
@@ -202,25 +225,42 @@ public class OvalButton extends JButton implements MouseListener, MouseMotionLis
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D gr = (Graphics2D) g;
+        if (shape == SHAPE_OVAL) {
+            paintOval(gr);
+        }
+        else if (shape == SHAPE_CAPSULE) {
+
+        }
+    }
+
+    /**
+     * Paints oval with border on the button.
+     * @param g
+     */
+    private void paintOval(Graphics2D g) {
         Dimension d = getSize();
 
-        if (backgroundHighlighted) {
-            gr.setColor(colorHighlighted);
+        if (isEnabled() && backgroundHighlighted) {
+            g.setColor(colorHighlighted);
+        }
+        else if (isEnabled()){
+            g.setColor(currentBackground);
         }
         else {
-            gr.setColor(currentBackground);
+            g.setColor(colorNormal);
         }
 
-        gr.fillOval(0, 0, d.width, d.height);
 
-        Shape border = createBorder();
+        g.fillOval(0, 0, d.width, d.height);
+        Shape border = createOvalBorder();
+
         if (borderHighlighted) {
-            gr.setColor(colorBorderHighlighted);
+            g.setColor(colorBorderHighlighted);
         }
         else {
-            gr.setColor(colorBorderNormal);
+            g.setColor(colorBorderNormal);
         }
-        gr.fill(border);
+        g.fill(border);
     }
 
     /**
@@ -228,7 +268,7 @@ public class OvalButton extends JButton implements MouseListener, MouseMotionLis
      *
      * @return Border shape.
      */
-    private Shape createBorder() {
+    private Shape createOvalBorder() {
         double width = getSize().width;
         double height = getSize().height;
         Ellipse2D outer = new Ellipse2D.Double(0, 0, width, height);
@@ -242,13 +282,24 @@ public class OvalButton extends JButton implements MouseListener, MouseMotionLis
         return area;
     }
 
+    private Shape createCapsule(double x, double y, double width, double height) {
+
+
+
+        // if horizontal rotate 90 degrees
+        if (orientation == HORIZONTAL) {
+
+        }
+        return null;
+    }
+
     //==============================================
     // Needed for highlighting the button correctly.
     //==============================================
 
     @Override
     public void mousePressed(MouseEvent e) {
-        if (isInOval(e.getLocationOnScreen())) {
+        if (isValidClickPosition(e.getLocationOnScreen())) {
             currentBackground = colorHighlighted.darker();
         }
         repaint();
@@ -256,7 +307,7 @@ public class OvalButton extends JButton implements MouseListener, MouseMotionLis
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        if (isInOval(e.getLocationOnScreen())) {
+        if (isValidClickPosition(e.getLocationOnScreen())) {
             currentBackground = colorHighlighted;
         }
         else {
@@ -267,7 +318,7 @@ public class OvalButton extends JButton implements MouseListener, MouseMotionLis
 
     @Override
     public void mouseEntered(MouseEvent e) {
-        if (isInOval(e.getLocationOnScreen())) {
+        if (isValidClickPosition(e.getLocationOnScreen())) {
             currentBackground = colorHighlighted;
         }
         repaint();
@@ -282,7 +333,7 @@ public class OvalButton extends JButton implements MouseListener, MouseMotionLis
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        if (isInOval(e.getLocationOnScreen())) {
+        if (isValidClickPosition(e.getLocationOnScreen())) {
             currentBackground = colorHighlighted;
         }
         else {
@@ -294,11 +345,11 @@ public class OvalButton extends JButton implements MouseListener, MouseMotionLis
 
     @Override
     public void mouseClicked(MouseEvent e) {
-
+        System.out.println("===== NO ACTION: ovalButton mouse clicked.");
     }
 
     @Override
     public void mouseDragged(MouseEvent e) {
-
+        System.out.println("===== NO ACTION: ovalButton dragged.");
     }
 }
