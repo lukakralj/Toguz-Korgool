@@ -62,12 +62,24 @@ public class Hole extends OvalButton {
         for (int i = 0; i < korgools.size(); i++) {
             Korgool k = korgools.get(i);
             k.setSize(korgoolSize);
-            k.setLocation((int)Math.round((k.getLocation().x * coefW)), (int)Math.round((k.getLocation().y * coefH)));
+            Point newLoc = new Point((int)Math.round((k.getLocation().x * coefW)), (int)Math.round((k.getLocation().y * coefH)));
+            if (!isValidClickPosition(newLoc)) {
+                k.setLocation(getNextLocation(10 + i));
+            }
+            else {
+                k.setLocation(newLoc);
+            }
         }
 
         if (tuzKorgool != null) {
             tuzKorgool.setSize(korgoolSize);
-            tuzKorgool.setLocation((int)Math.round((tuzKorgool.getLocation().x * coefW)), (int)Math.round((tuzKorgool.getLocation().y * coefH)));
+            Point newLoc = new Point((int)Math.round((tuzKorgool.getLocation().x * coefW)), (int)Math.round((tuzKorgool.getLocation().y * coefH)));
+            if (!isValidClickPosition(newLoc)) {
+                tuzKorgool.setLocation(getNextLocation(10));
+            }
+            else {
+                tuzKorgool.setLocation(newLoc);
+            }
         }
     }
 
@@ -81,7 +93,7 @@ public class Hole extends OvalButton {
         Point next = getNextLocation(0);
         if (k.getName() != null && (k.getName().equals("rightTuzKorgool") || k.getName().equals("leftTuzKorgool"))) {
             tuzKorgool = k;
-            next = getNextLocation(165 - getNumberOfKorgools());
+            next = getNextLocation(180 - getNumberOfKorgools());
         }
         else {
             korgools.add(k);
@@ -196,12 +208,24 @@ public class Hole extends OvalButton {
 
         double sqrt2 = 1.4142135623730951;
 
-        double a = (double)getSize().width / 2;
-        double b = (double)getSize().height / 2;
+        double a;
+        double b;
+        if (shape == SHAPE_OVAL) {
+            a = (double)getSize().width / 2;
+            b = (double)getSize().height / 2;
+        }
+        else if (shape == SHAPE_CAPSULE && orientation == VERTICAL) {
+            a = (double)getSize().width / 2;
+            b = 0.5 * radius * getSize().height;
+        }
+        else {
+            a = 0.5 * radius * getSize().width;
+            b = (double)getSize().height / 2;
+        }
 
         double x = ((a*(2 - sqrt2)) / 2) + getBorderThickness();
         double y = ((b*(2 - sqrt2)) / 2) + getBorderThickness();
-
+        System.out.println("x = " + x + ", y = " + y);
         double newW = (double)getSize().width - 2*x;
         double newH = (double)getSize().height - 2*y;
 
@@ -217,8 +241,8 @@ public class Hole extends OvalButton {
     }
 
     private List<Location> generateLocations() {
-        List<Location> locations = new ArrayList<>(170);
-        for (int i = 0; i < 170; i++) {
+        List<Location> locations = new ArrayList<>(200);
+        for (int i = 0; i < 200; i++) {
             double x = rand.nextDouble();
             double y = rand.nextDouble();
             locations.add(new Location(x, y));

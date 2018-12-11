@@ -28,9 +28,9 @@ public class OvalButton extends JButton implements MouseListener, MouseMotionLis
     private boolean borderHighlighted;
     private boolean backgroundHighlighted;
     private Color currentBackground;
-    private final int shape;
-    private final int orientation;
-    private double radius;
+    protected final int shape;
+    protected final int orientation;
+    protected double radius;
 
     /**
      * Construct a default oval button.
@@ -67,7 +67,7 @@ public class OvalButton extends JButton implements MouseListener, MouseMotionLis
         }
         this.shape = shape;
         this.orientation = orientation;
-        radius = 0.50;
+        radius = 0.5;
         this.colorNormal = colorNormal;
         this.currentBackground = colorNormal;
         this.colorHighlighted = colorHighlighted;
