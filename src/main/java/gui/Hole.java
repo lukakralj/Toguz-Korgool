@@ -12,7 +12,7 @@ import java.util.Random;
  * or for their kazans.
  *
  * @author Luka Kralj
- * @version 07 December 2018
+ * @version 11 December 2018
  */
 public class Hole extends OvalButton {
 
@@ -50,6 +50,9 @@ public class Hole extends OvalButton {
         });
     }
 
+    /**
+     * Resizes and updates korgool locations to adapt to the new size of the hole.
+     */
     private void resizeKorgools() {
         double oldW = korgoolArea.width;
         double oldH = korgoolArea.height;
@@ -174,6 +177,11 @@ public class Hole extends OvalButton {
         return tuzKorgool != null;
     }
 
+    /**
+     * Removes tuz-marking korgool from the hole and returns it.
+     *
+     * @return Tuz-marking korgool, or null if it is not there.
+     */
     public Korgool releaseTuzKorgool() {
         Korgool toReturn = tuzKorgool;
         tuzKorgool = null;
@@ -225,7 +233,7 @@ public class Hole extends OvalButton {
 
         double x = ((a*(2 - sqrt2)) / 2) + getBorderThickness();
         double y = ((b*(2 - sqrt2)) / 2) + getBorderThickness();
-        System.out.println("x = " + x + ", y = " + y);
+
         double newW = (double)getSize().width - 2*x;
         double newH = (double)getSize().height - 2*y;
 
@@ -240,6 +248,11 @@ public class Hole extends OvalButton {
         korgoolArea = new Rectangle((int)x, (int)y, (int)(newW - diameter), (int)(newH - diameter));
     }
 
+    /**
+     * Generate relative values for the locations withing the hole.
+     *
+     * @return List of locations, where coordinates are [0,1).
+     */
     private List<Location> generateLocations() {
         List<Location> locations = new ArrayList<>(200);
         for (int i = 0; i < 200; i++) {
@@ -277,6 +290,9 @@ public class Hole extends OvalButton {
         g.drawString("" + korgools.size(), (int)(getSize().width * 0.08), (int)(getSize().height * 0.95));
     }
 
+    /**
+     * Used internally to store a more precise location - a pair of doubles.
+     */
     private class Location {
         double x;
         double y;

@@ -11,7 +11,7 @@ import java.awt.geom.Area;
  * an acton if it is clicked within the oval shape drawn on it.
  *
  * @author Luka Kralj
- * @version 07 December 2018
+ * @version 11 December 2018
  */
 public class OvalButton extends JButton implements MouseListener, MouseMotionListener {
 
@@ -230,6 +230,12 @@ public class OvalButton extends JButton implements MouseListener, MouseMotionLis
         return ((((x - s1)*(x - s1)) / (a*a)) + (((y - s2)*(y - s2)) / (b*b))) <= 1;
     }
 
+    /**
+     * Check if the specified point is withing the capsule of the button.
+     *
+     * @param p Point to check.
+     * @return
+     */
     private boolean isInCapsule(Point p) {
         double x = p.x;
         double y = p.y;
@@ -315,7 +321,8 @@ public class OvalButton extends JButton implements MouseListener, MouseMotionLis
 
     /**
      * Paints oval with border on the button.
-     * @param g
+     *
+     * @param g Graphic to paint the oval on.
      */
     private void paintOval(Graphics2D g) {
         Dimension d = getSize();
@@ -334,7 +341,7 @@ public class OvalButton extends JButton implements MouseListener, MouseMotionLis
     }
 
     /**
-     * Creates a border shape (like a ring).
+     * Creates an oval border shape (like a ring).
      *
      * @return Border shape.
      */
@@ -352,6 +359,11 @@ public class OvalButton extends JButton implements MouseListener, MouseMotionLis
         return area;
     }
 
+    /**
+     * Sets the main background color of the button according to its state.
+     *
+     * @param g Graphic to set the color for.
+     */
     private void setMainColor(Graphics g) {
         if (isEnabled() && backgroundHighlighted) {
             g.setColor(colorHighlighted);
@@ -364,6 +376,11 @@ public class OvalButton extends JButton implements MouseListener, MouseMotionLis
         }
     }
 
+    /**
+     * Paints a capsule shape with border to the button.
+     *
+     * @param g Graphic to paint the capsule on.
+     */
     private void paintCapsule(Graphics2D g) {
         Dimension d = getSize();
 
@@ -372,18 +389,24 @@ public class OvalButton extends JButton implements MouseListener, MouseMotionLis
         g.fill(mainCapsule);
 
         Shape border = createCapsuleBorder();
-
         if (borderHighlighted) {
             g.setColor(colorBorderHighlighted);
         }
         else {
             g.setColor(colorBorderNormal);
         }
-
         g.fill(border);
-
     }
 
+    /**
+     * Creates the capsule shape that corresponds to the current button state (vertical/horizontal).
+     *
+     * @param x x coordinate of the top left corner of the capsule.
+     * @param y x coordinate of the top left corner of the capsule.
+     * @param width Width of the capsule.
+     * @param height Height of the capsule.
+     * @return Capsule shape.
+     */
     private Shape createCapsule(double x, double y, double width, double height) {
         double r;
         Ellipse2D upper;
@@ -409,6 +432,11 @@ public class OvalButton extends JButton implements MouseListener, MouseMotionLis
         return capsule;
     }
 
+    /**
+     * Creates a capsule border shape.
+     *
+     * @return Border shape.
+     */
     private Shape createCapsuleBorder() {
         double width = getSize().width;
         double height = getSize().height;
