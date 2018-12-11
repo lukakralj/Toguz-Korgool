@@ -5,9 +5,6 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
-import java.io.*;
-import java.util.List;
-import logic.AnimationController;
 import logic.GameManager;
 
 /*
@@ -123,6 +120,10 @@ public class GameWindow extends JFrame {
      */
     public HashMap<String, Hole> getButtonMap() {
         return buttonMap;
+    }
+
+    public HashMap<String, Hole> getKazans() {
+        return kazans;
     }
 
     /**
@@ -267,7 +268,7 @@ public class GameWindow extends JFrame {
         switch (menuItemId) {
 			case "NewGame":
 				JOptionPane.showConfirmDialog(null, "Are you sure you want to start a new game?");
-				loadGame("src\\main\\java\\newGameFile1.csv","src\\main\\java\\newGameFile2.csv");
+				manager.loadGame("src\\main\\resources\\newGameFile1.csv","src\\main\\resources\\newGameFile2.csv");
                 break;
             case "CustomInput":
 				if(manager!=null){
@@ -276,99 +277,16 @@ public class GameWindow extends JFrame {
                 break;
             case "Save":
                 JOptionPane.showConfirmDialog(null, "Are you sure you want to save the game?");
-                saveGame();
+                manager.saveGame();
                 break;
             case "Load":
                 JOptionPane.showConfirmDialog(null, "Are you sure you want to load the latest save state?");
-                loadGame("src\\main\\java\\saveFile.csv","src\\main\\java\\saveFile2.csv");
+                manager.loadGame("src\\main\\resources\\saveFile.csv","src\\main\\resources\\saveFile2.csv","src\\main\\resources\\saveFile3.csv","src\\main\\resources\\saveFile4.csv");
                 break;
             case "Quit":
                 JOptionPane.showConfirmDialog(null, "Are you sure you want to quit?");
                 dispose();
         }
-    }
-
-    private PrintWriter getPrintWriter(String filetoOpen) throws FileNotFoundException{
-        File saveFile=new File(filetoOpen);
-        FileOutputStream fos=new FileOutputStream(saveFile);
-        PrintWriter pw=new PrintWriter(fos);
-        return pw;
-    }
-
-    private void closePrintWriter(PrintWriter pw){
-        pw.flush();
-        pw.close();
-    }
-
-    private void saveGame(){
-        try{
-            PrintWriter pw = getPrintWriter("src\\main\\java\\saveFile.csv");
-            for(Map.Entry<String,Hole> entries :buttonMap.entrySet()){
-                pw.println(entries.getKey()+","+entries.getValue().getNumberOfKorgools()+","+entries.getValue().isTuz());
-            }
-            closePrintWriter(pw);
-        }catch(Exception e){
-            e.printStackTrace();
-        }
-		
-		try{
-            PrintWriter pw = getPrintWriter("src\\main\\java\\saveFile2.csv");
-            for(Map.Entry<String,Hole> entries :kazans.entrySet()){
-                pw.println(entries.getKey()+","+entries.getValue().getNumberOfKorgools());
-            }
-            closePrintWriter(pw);
-        }catch(Exception e){
-            e.printStackTrace();
-        }
-    }
-
-    private void loadGame(String file1, String file2){
-        AnimationController.resetController(this);
-        AnimationController.instance().start();
-        try{
-            File toRead=new File(file1);
-            FileInputStream fis=new FileInputStream(toRead);
-    
-            Scanner sc=new Scanner(fis);
-    
-            String placeholder = "";
-            resetTuzes();
-            List<String> tuzes = new ArrayList<>();
-            while(sc.hasNextLine()){
-                placeholder=sc.nextLine();
-                StringTokenizer st = new StringTokenizer(placeholder,",",false);
-                String holeId = st.nextToken();
-                Hole button = buttonMap.get(holeId);
-                populateWithKorgools(button.getName(), Integer.valueOf(st.nextToken()));
-				if(st.nextToken().equals("true")){
-					tuzes.add(holeId);
-				}
-            }
-            for (String id : tuzes) {
-                setTuz(id);
-            }
-            fis.close();
-        }catch(Exception e){
-            e.printStackTrace();
-        }
-		
-		try{
-            File toRead=new File(file2);
-            FileInputStream fis=new FileInputStream(toRead);
-    
-            Scanner sc=new Scanner(fis);
-    
-            String placeholder = "";
-            while(sc.hasNextLine()){
-                placeholder=sc.nextLine();
-                StringTokenizer st = new StringTokenizer(placeholder,",",false);
-                populateWithKorgools(st.nextToken(), Integer.valueOf(st.nextToken()));
-            }
-            fis.close();
-        }catch(Exception e){
-            e.printStackTrace();
-        }
-
     }
 
     /**
@@ -389,7 +307,7 @@ public class GameWindow extends JFrame {
         else {
             hole = buttonMap.get(holeId);
         }
-        // TODO: would it be faster to only create the new once/delete the excess???
+
         hole.emptyHole();
         hole.createAndAdd(numOfKorgools);
         hole.repaint();
