@@ -13,6 +13,8 @@ import java.awt.event.MouseEvent;
 public class Korgool extends OvalButton {
 
     private Hole parentHole;
+    private boolean isInDrag;
+    private Point startDrag;
 
     /**
      * Construct a korgool.
@@ -72,11 +74,23 @@ public class Korgool extends OvalButton {
     @Override
     public void mousePressed(MouseEvent e) {
         parentHole.mousePressed(e);
+        isInDrag = true;
+        startDrag = e.getPoint();
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
         parentHole.mouseReleased(e);
+        if (isInDrag) {
+            Point endPoint = e.getPoint();
+            isInDrag = false;
+            if (Math.abs(endPoint.x - startDrag.x) < 10 && Math.abs(endPoint.y - startDrag.y) < 10) {
+                parentHole.holeClicked(new ActionEvent(e.getSource(), e.getID(), e.paramString()));
+            }
+            else {
+                System.out.println("===== NO ACTION: korgool dragged too far (in release).");;
+            }
+        }
     }
 
     @Override
@@ -87,6 +101,7 @@ public class Korgool extends OvalButton {
     @Override
     public void mouseExited(MouseEvent e) {
         parentHole.mouseMoved(e);
+        isInDrag = false;
     }
 
     @Override
@@ -96,11 +111,17 @@ public class Korgool extends OvalButton {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        parentHole.holeClicked(new ActionEvent(e.getSource(), e.getID(), e.paramString()));
+        if (!isInDrag) {
+            parentHole.holeClicked(new ActionEvent(e.getSource(), e.getID(), e.paramString()));
+        }
     }
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        System.out.println("===== NO ACTION: korgool dragged.");
+        if (!isValidClickPosition(e.getLocationOnScreen())) {
+            // mouse exited
+            isInDrag = false;
+            System.out.println("===== NO ACTION: korgool dragged too far.");
+        }
     }
 }
