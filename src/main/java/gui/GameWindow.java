@@ -336,7 +336,7 @@ public class GameWindow extends JFrame {
      */
     public void setTuz(String holeId) {
         String name;
-        if (holeId.startsWith("W")) { //white player claimed tuz
+        if (holeId.startsWith("B")) { //white player claimed tuz
             name = "right";
             rightTuz.emptyHole();
         }

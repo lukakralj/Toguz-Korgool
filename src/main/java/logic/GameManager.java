@@ -87,6 +87,7 @@ public class GameManager {
         if (bTuz != -1) {
             gameWindow.setTuz("W" + bTuz); // set black tuz
         }
+        core.printBoard();
     }
 
 
