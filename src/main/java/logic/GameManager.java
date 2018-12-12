@@ -101,7 +101,8 @@ public class GameManager {
      */
     private void populatePlayerBoard(Player player, int[] holes, int tuz, int kazan) {
         player.setHoles(holes);
-        player.setTuz(tuz - 1);
+        tuz = (tuz == -1) ? tuz : tuz - 1;
+        player.setTuz(tuz);
         player.setKazan(kazan);
     }
 
