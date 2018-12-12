@@ -18,7 +18,7 @@ import logic.GameManager;
 public class CustomInputWindow extends JDialog {
 
     private Color backgroundColour;
-    private ButtonGroup radioOptionsBlack = new ButtonGroup(), radioOptionsWhite = new ButtonGroup();
+    private ButtonGroup radioOptionsBlackSide = new ButtonGroup(), radioOptionsWhiteSide = new ButtonGroup();
     private HashMap<String, JSpinner> spinnerMap = new HashMap<>();
     private HashMap<String, JRadioButton> radioButtonMap = new HashMap<>();
     private int selectedTuzWhite, selectedTuzBlack, numberOfKorgools, blackKazanCount, whiteKazanCount;
@@ -90,10 +90,10 @@ public class CustomInputWindow extends JDialog {
         for (int i = 9; i > 0; --i) inputArea.add(inputCell("B" + i));
         inputArea.add(Box.createHorizontalGlue());
         inputArea.add(inputCell("BlackKazan"));
-        inputArea.add(new JLabel("<html><p style=\"text-align:center\">No White<br>Tuz Selection</p></html>"));
+        inputArea.add(new JLabel("<html><p style=\"text-align:center\">No Black<br>Tuz Selection</p></html>"));
         for (int i = 0; i < 4; ++i) inputArea.add(Box.createHorizontalGlue());
         inputArea.add(inputCell("WhiteKazan"));
-        inputArea.add(new JLabel("<html><p style=\"text-align:center\">No Black<br>Tuz Selection</p></html>"));
+        inputArea.add(new JLabel("<html><p style=\"text-align:center\">No White<br>Tuz Selection</p></html>"));
         for (int i = 1; i < 10; ++i) inputArea.add(inputCell("W" + i));
         getContentPane().add(inputArea, BorderLayout.CENTER);
         radioButtonMap.get("R_BlackKazan").setSelected(true);
@@ -226,10 +226,14 @@ public class CustomInputWindow extends JDialog {
         JRadioButton radio = new JRadioButton();
         radio.setName("R_" + componentId);
         radio.setBackground(backgroundColour);
-        if (componentId.startsWith("B"))
-            radioOptionsBlack.add(radio);
+        if (componentId.equals("BlackKazan"))
+            radioOptionsWhiteSide.add(radio);
+        else if (componentId.equals("WhiteKazan"))
+            radioOptionsBlackSide.add(radio);
+        else if (componentId.startsWith("B"))
+            radioOptionsBlackSide.add(radio);
         else if (componentId.startsWith("W"))
-            radioOptionsWhite.add(radio);
+            radioOptionsWhiteSide.add(radio);
         radio.setActionCommand(componentId);
         radio.addActionListener(e -> updateSelectedTuz(e.getActionCommand()));
         radioButtonMap.put(radio.getName(), radio);
@@ -245,9 +249,9 @@ public class CustomInputWindow extends JDialog {
      */
     private void updateSelectedTuz(String radioButtonId) {
         if (radioButtonId.equals("BlackKazan"))
-            selectedTuzWhite = -1;
-        else if (radioButtonId.equals("WhiteKazan"))
             selectedTuzBlack = -1;
+        else if (radioButtonId.equals("WhiteKazan"))
+            selectedTuzWhite = -1;
         else if (radioButtonId.startsWith("W"))
             selectedTuzBlack = Integer.parseInt(radioButtonId.substring(1));
         else if (radioButtonId.startsWith("B"))
