@@ -92,7 +92,7 @@ public class GameManager {
         }
 
         if (wTuz != -1) {
-            gameWindow.setTuz("B" + (9 - wTuz)); // set white tuz
+            gameWindow.setTuz("B" + (10 - wTuz)); // set white tuz
         }
         if (bTuz != -1) {
             gameWindow.setTuz("W" + bTuz); // set black tuz
