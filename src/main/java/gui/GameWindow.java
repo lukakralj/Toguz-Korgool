@@ -359,5 +359,13 @@ public class GameWindow extends JFrame {
     public Hole getRightTuz() {
         return rightTuz;
     }
+	
+	public void setButtonMap(HashMap<String, Hole> buttonMap1){
+		buttonMap=buttonMap1;
+	}
+	
+	public void setKazans(HashMap<String, Hole> kazan1){
+		kazans=kazan1;
+	}
 
 }
