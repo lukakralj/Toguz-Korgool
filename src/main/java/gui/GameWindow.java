@@ -4,7 +4,11 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
+import javax.imageio.ImageIO;
 import logic.GameManager;
 
 /*
@@ -14,7 +18,10 @@ import logic.GameManager;
  */
 public class GameWindow extends JFrame {
 
-    private static final Color BACKGROUND_COLOR = Color.LIGHT_GRAY, TOP_PANEL_COLOR = Color.GRAY;
+    private static final Color WHITE_ZONE_COLOUR = new Color(0, 0, 0, 0);
+    private static final Color WHITE_ZONE_COLOUR_HIGHLIGHTED = new Color(0, 0, 0, 32);
+    private static final Color BLACK_ZONE_COLOUR = new Color(0, 0, 0, 128);
+    private static final Color BLACK_ZONE_COLOUR_HIGHLIGHTED = new Color(0, 0, 0, 160);
     private HashMap<String, Hole> buttonMap;
     private Hole kazanRight, kazanLeft;
     private Hole rightTuz, leftTuz;
@@ -23,12 +30,19 @@ public class GameWindow extends JFrame {
     private HashMap<String, Hole> kazans;
     private GameManager manager;
     private JLabel infoLabel;
+    private BufferedImage backgroundImage;
 
     /**
      * Construct the game window
      */
     public GameWindow(GameManager managerIn) {
-        root = new JPanel();
+        loadBackgroundImage();
+        root = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                g.drawImage(backgroundImage, 0, 0, null);
+            }
+        };
         manager = managerIn;
         setFrameProperties();
         buttonMap = new HashMap<>();
@@ -90,11 +104,19 @@ public class GameWindow extends JFrame {
         setResizable(true);
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int minW = (int) (screenSize.getWidth() * 0.7) + 50;
-        int minH = (int) (screenSize.getHeight() * 0.75) + 70;
+        int minH = (int) (screenSize.getHeight() * 0.75) + 80;
         setPreferredSize(new Dimension(minW, minH));
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        root.setBackground(BACKGROUND_COLOR);
+        root.setBackground(WHITE_ZONE_COLOUR);
         root.setLayout(new BorderLayout());
+    }
+
+    private void loadBackgroundImage() {
+        try {
+            backgroundImage = ImageIO.read(new File("src/main/resources/light_wood.jpeg"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -117,7 +139,7 @@ public class GameWindow extends JFrame {
         }
         JMenuBar menuBar = new JMenuBar();
         menuBar.add(FileMenu);
-        menuBar.setBackground(BACKGROUND_COLOR);
+        menuBar.setBackground(WHITE_ZONE_COLOUR);
         setJMenuBar(menuBar);
     }
 
@@ -139,7 +161,7 @@ public class GameWindow extends JFrame {
     private void setUpTopPanel() {
         JPanel topPanel = new JPanel();
         topPanel.setBorder(new EmptyBorder(10, 10, 10, 10));//Set Padding around the Top Panel
-        topPanel.setBackground(TOP_PANEL_COLOR);
+        topPanel.setBackground(WHITE_ZONE_COLOUR);
         GridLayout topButtons = new GridLayout(0, 9, 10, 10);//Set padding around invidual buttons
         topPanel.setLayout(topButtons);
         fillPanelWithButtons(topPanel, "B");
@@ -153,7 +175,7 @@ public class GameWindow extends JFrame {
     private void setUpLowerPanel() {
         JPanel lowerPanel = new JPanel();
         lowerPanel.setBorder(new EmptyBorder(10, 10, 10, 10));//Set Padding around the Bottom Panel
-        lowerPanel.setBackground(BACKGROUND_COLOR);
+        lowerPanel.setBackground(WHITE_ZONE_COLOUR);
         GridLayout bottomButtons = new GridLayout(0, 9, 10, 10);//Set padding around individual buttons
         lowerPanel.setLayout(bottomButtons);
         fillPanelWithButtons(lowerPanel, "W");
@@ -176,7 +198,14 @@ public class GameWindow extends JFrame {
             button.addActionListener(e -> holeOnClickAction(button.getName()));
             if (color.equals("B")) {
                 button.setEnabled(false);
+                button.setColorNormal(BLACK_ZONE_COLOUR);
+                button.setColorHighlighted(BLACK_ZONE_COLOUR_HIGHLIGHTED);
+            } else {
+                button.setColorNormal(WHITE_ZONE_COLOUR);
+                button.setColorHighlighted(WHITE_ZONE_COLOUR_HIGHLIGHTED);
             }
+
+
             panel.add(button);
         }
     }
@@ -193,10 +222,14 @@ public class GameWindow extends JFrame {
         Hole tuz;
         if (side.equals("left")) {
             leftTuz = new Hole(OvalButton.SHAPE_OVAL, OvalButton.VERTICAL, true);
+            leftTuz.setColorNormal(BLACK_ZONE_COLOUR);
+            leftTuz.setColorHighlighted(BLACK_ZONE_COLOUR_HIGHLIGHTED);
             tuz = leftTuz;
         }
         else {
             rightTuz = new Hole(OvalButton.SHAPE_OVAL, OvalButton.VERTICAL, true);
+            rightTuz.setColorNormal(WHITE_ZONE_COLOUR);
+            rightTuz.setColorHighlighted(WHITE_ZONE_COLOUR_HIGHLIGHTED);
             tuz = rightTuz;
         }
 
@@ -206,9 +239,10 @@ public class GameWindow extends JFrame {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         tuz.setPreferredSize(new Dimension((int) (screenSize.getWidth() * 0.10), 200));
         JPanel panel = new JPanel(new GridLayout(3, 1));
-        panel.add(new JPanel());
+        panel.setBackground(WHITE_ZONE_COLOUR);
+        panel.add(Box.createVerticalGlue());
         panel.add(tuz);
-        panel.add(new JPanel());
+        panel.add(Box.createVerticalGlue());
         panel.setPreferredSize(new Dimension((int) (screenSize.getWidth() * 0.10), 200));
         return panel;
     }
@@ -219,19 +253,24 @@ public class GameWindow extends JFrame {
      */
     private void setUpKazans() {
         JPanel kazanPanel = new JPanel(new BorderLayout());
-        kazanPanel.setBackground(BACKGROUND_COLOR);
+        kazanPanel.setBackground(WHITE_ZONE_COLOUR);
         kazanPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
         kazanLeft = new Hole(OvalButton.SHAPE_CAPSULE, OvalButton.HORIZONTAL, true);
-        kazanLeft.setColorBorderNormal(new Color(160,82,45));
+        kazanLeft.setColorBorderNormal(Color.BLACK);
+        kazanLeft.setColorNormal(BLACK_ZONE_COLOUR);
+        kazanLeft.setColorHighlighted(BLACK_ZONE_COLOUR_HIGHLIGHTED);
         kazanLeft.setName("leftKazan");
         kazanLeft.setEnabled(false);
         kazanLeft.setPreferredSize(new Dimension((int) (screenSize.getWidth() * 0.2), 300));
         kazanLeft.setEnabled(false);
 
+
         kazanRight = new Hole(OvalButton.SHAPE_CAPSULE, OvalButton.HORIZONTAL,true);
-        kazanRight.setColorBorderNormal(new Color(160,82,45));
+        kazanRight.setColorBorderNormal(Color.BLACK);
+        kazanRight.setColorNormal(WHITE_ZONE_COLOUR);
+        kazanRight.setColorHighlighted(WHITE_ZONE_COLOUR_HIGHLIGHTED);
         kazanRight.setName("rightKazan");
         kazanRight.setEnabled(false);
         kazanRight.setPreferredSize(new Dimension((int) (screenSize.getWidth() * 0.2), 300));
@@ -245,6 +284,7 @@ public class GameWindow extends JFrame {
         infoLabel.setFont(new Font("Monaco", Font.BOLD, 20));
         infoLabel.setHorizontalAlignment(SwingConstants.CENTER);
         infoLabel.setVerticalAlignment(SwingConstants.CENTER);
+        infoLabel.setBackground(Color.WHITE);
 
         kazanPanel.add(kazanLeft, BorderLayout.WEST);
         kazanPanel.add(infoLabel, BorderLayout.CENTER);
@@ -280,7 +320,7 @@ public class GameWindow extends JFrame {
                 break;
             case "CustomInput":
 				if(manager!=null){
-					new CustomInputWindow(BACKGROUND_COLOR, manager);
+                    new CustomInputWindow(Color.LIGHT_GRAY, manager);
 				}
                 break;
             case "Save":
