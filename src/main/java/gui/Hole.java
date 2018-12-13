@@ -12,7 +12,7 @@ import java.util.Random;
  * or for their kazans.
  *
  * @author Luka Kralj
- * @version 07 December 2018
+ * @version 11 December 2018
  */
 public class Hole extends OvalButton {
 
@@ -27,7 +27,8 @@ public class Hole extends OvalButton {
     /**
      * Construct an empty hole. To add korgools to it, use one of the functions.
      */
-    public Hole(boolean isKazan) {
+    public Hole(int shape, int capsule, boolean isKazan) {
+        super(shape, capsule);
         korgools = new ArrayList<>(32);
         rand = new Random();
         korgoolLocations = generateLocations();
@@ -49,6 +50,9 @@ public class Hole extends OvalButton {
         });
     }
 
+    /**
+     * Resizes and updates korgool locations to adapt to the new size of the hole.
+     */
     private void resizeKorgools() {
         double oldW = korgoolArea.width;
         double oldH = korgoolArea.height;
@@ -61,12 +65,24 @@ public class Hole extends OvalButton {
         for (int i = 0; i < korgools.size(); i++) {
             Korgool k = korgools.get(i);
             k.setSize(korgoolSize);
-            k.setLocation((int)Math.round((k.getLocation().x * coefW)), (int)Math.round((k.getLocation().y * coefH)));
+            Point newLoc = new Point((int)Math.round((k.getLocation().x * coefW)), (int)Math.round((k.getLocation().y * coefH)));
+            if (!isValidClickPosition(newLoc)) {
+                k.setLocation(getNextLocation(10 + i));
+            }
+            else {
+                k.setLocation(newLoc);
+            }
         }
 
         if (tuzKorgool != null) {
             tuzKorgool.setSize(korgoolSize);
-            tuzKorgool.setLocation((int)Math.round((tuzKorgool.getLocation().x * coefW)), (int)Math.round((tuzKorgool.getLocation().y * coefH)));
+            Point newLoc = new Point((int)Math.round((tuzKorgool.getLocation().x * coefW)), (int)Math.round((tuzKorgool.getLocation().y * coefH)));
+            if (!isValidClickPosition(newLoc)) {
+                tuzKorgool.setLocation(getNextLocation(10));
+            }
+            else {
+                tuzKorgool.setLocation(newLoc);
+            }
         }
     }
 
@@ -80,7 +96,7 @@ public class Hole extends OvalButton {
         Point next = getNextLocation(0);
         if (k.getName() != null && (k.getName().equals("rightTuzKorgool") || k.getName().equals("leftTuzKorgool"))) {
             tuzKorgool = k;
-            next = getNextLocation(165 - getNumberOfKorgools());
+            next = getNextLocation(180 - getNumberOfKorgools());
         }
         else {
             korgools.add(k);
@@ -161,6 +177,11 @@ public class Hole extends OvalButton {
         return tuzKorgool != null;
     }
 
+    /**
+     * Removes tuz-marking korgool from the hole and returns it.
+     *
+     * @return Tuz-marking korgool, or null if it is not there.
+     */
     public Korgool releaseTuzKorgool() {
         Korgool toReturn = tuzKorgool;
         tuzKorgool = null;
@@ -195,8 +216,20 @@ public class Hole extends OvalButton {
 
         double sqrt2 = 1.4142135623730951;
 
-        double a = (double)getSize().width / 2;
-        double b = (double)getSize().height / 2;
+        double a;
+        double b;
+        if (shape == SHAPE_OVAL) {
+            a = (double)getSize().width / 2;
+            b = (double)getSize().height / 2;
+        }
+        else if (shape == SHAPE_CAPSULE && orientation == VERTICAL) {
+            a = (double)getSize().width / 2;
+            b = 0.5 * radius * getSize().height;
+        }
+        else {
+            a = 0.5 * radius * getSize().width;
+            b = (double)getSize().height / 2;
+        }
 
         double x = ((a*(2 - sqrt2)) / 2) + getBorderThickness();
         double y = ((b*(2 - sqrt2)) / 2) + getBorderThickness();
@@ -215,9 +248,14 @@ public class Hole extends OvalButton {
         korgoolArea = new Rectangle((int)x, (int)y, (int)(newW - diameter), (int)(newH - diameter));
     }
 
+    /**
+     * Generate relative values for the locations withing the hole.
+     *
+     * @return List of locations, where coordinates are [0,1).
+     */
     private List<Location> generateLocations() {
-        List<Location> locations = new ArrayList<>(170);
-        for (int i = 0; i < 170; i++) {
+        List<Location> locations = new ArrayList<>(200);
+        for (int i = 0; i < 200; i++) {
             double x = rand.nextDouble();
             double y = rand.nextDouble();
             locations.add(new Location(x, y));
@@ -252,6 +290,9 @@ public class Hole extends OvalButton {
         g.drawString("" + korgools.size(), (int)(getSize().width * 0.08), (int)(getSize().height * 0.95));
     }
 
+    /**
+     * Used internally to store a more precise location - a pair of doubles.
+     */
     private class Location {
         double x;
         double y;

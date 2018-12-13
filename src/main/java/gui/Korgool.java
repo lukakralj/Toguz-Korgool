@@ -2,18 +2,19 @@ package gui;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 
 /**
  * This class represents korgools in the game.
  *
  * @author Luka Kralj
- * @version 07 December 2018
+ * @version 11 December 2018
  */
 public class Korgool extends OvalButton {
 
     private Hole parentHole;
+    private boolean isInDrag;
+    private Point startDrag;
 
     /**
      * Construct a korgool.
@@ -52,7 +53,7 @@ public class Korgool extends OvalButton {
      * @param borderThickness How thick do we want the korgool border to be.
      */
     public Korgool(Hole parentHole, Color color, int borderThickness) {
-        super("", color, Color.yellow, Color.BLACK, Color.yellow); // if we see yellow color something went wrong
+        super(SHAPE_OVAL, VERTICAL, color, Color.yellow, Color.BLACK, Color.yellow); // if we see yellow color something went wrong
         this.parentHole = parentHole;
         setBorderThickness(borderThickness);
     }
@@ -73,11 +74,23 @@ public class Korgool extends OvalButton {
     @Override
     public void mousePressed(MouseEvent e) {
         parentHole.mousePressed(e);
+        isInDrag = true;
+        startDrag = e.getPoint();
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
         parentHole.mouseReleased(e);
+        if (isInDrag) {
+            Point endPoint = e.getPoint();
+            isInDrag = false;
+            if (Math.abs(endPoint.x - startDrag.x) < 10 && Math.abs(endPoint.y - startDrag.y) < 10) {
+                parentHole.holeClicked(new ActionEvent(e.getSource(), e.getID(), e.paramString()));
+            }
+            else {
+                System.out.println("===== NO ACTION: korgool dragged too far (in release).");;
+            }
+        }
     }
 
     @Override
@@ -88,6 +101,7 @@ public class Korgool extends OvalButton {
     @Override
     public void mouseExited(MouseEvent e) {
         parentHole.mouseMoved(e);
+        isInDrag = false;
     }
 
     @Override
@@ -97,11 +111,17 @@ public class Korgool extends OvalButton {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        parentHole.holeClicked(new ActionEvent(e.getSource(), e.getID(), e.paramString()));
+        if (!isInDrag) {
+            parentHole.holeClicked(new ActionEvent(e.getSource(), e.getID(), e.paramString()));
+        }
     }
 
     @Override
     public void mouseDragged(MouseEvent e) {
-
+        if (!isValidClickPosition(e.getLocationOnScreen())) {
+            // mouse exited
+            isInDrag = false;
+            System.out.println("===== NO ACTION: korgool dragged too far.");
+        }
     }
 }

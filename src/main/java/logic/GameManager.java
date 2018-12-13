@@ -2,19 +2,11 @@ package logic;
 
 import gui.GameWindow;
 import gui.Hole;
-import gui.OvalButton;
 import java.util.Random;
 import java.util.Set;
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import java.awt.*;
-import java.awt.event.*;
 import java.util.*;
 import java.io.*;
 import java.util.List;
-
-import logic.AnimationController;
-import logic.GameManager;
 
 /**
  * Main class for the Team Platypus Agile Project
@@ -45,6 +37,7 @@ public class GameManager {
             gameWindow.populateWithKorgools(buttonId, 9);
         }
         gameWindow.resetTuzes();
+        gameWindow.displayMessage("");
     }
 
     /**
@@ -71,6 +64,7 @@ public class GameManager {
         //updates game logic
         AnimationController.resetController(gameWindow);
         AnimationController.instance().start();
+        gameWindow.displayMessage("");
         populatePlayerBoard(core.getWhitePlayer(), wHoles, wTuz, wKazan);
         populatePlayerBoard(core.getBlackPlayer(), bHoles, bTuz, bKazan);
 
@@ -93,6 +87,7 @@ public class GameManager {
         if (bTuz != -1) {
             gameWindow.setTuz("W" + bTuz); // set black tuz
         }
+        core.printBoard();
     }
 
 
@@ -106,7 +101,8 @@ public class GameManager {
      */
     private void populatePlayerBoard(Player player, int[] holes, int tuz, int kazan) {
         player.setHoles(holes);
-        player.setTuz(tuz - 1);
+        tuz = (tuz == -1) ? tuz : tuz - 1;
+        player.setTuz(tuz);
         player.setKazan(kazan);
     }
 
@@ -184,7 +180,7 @@ public class GameManager {
     public void saveGame(){
         try{
             PrintWriter pw = getPrintWriter("src\\main\\resources\\saveFile.csv");
-            for(Map.Entry<String,Hole> entries :gameWindow.getButtonMap().entrySet()){
+            for(Map.Entry<String,Hole> entries : gameWindow.getButtonMap().entrySet()){
                 pw.println(entries.getKey()+","+entries.getValue().getNumberOfKorgools()+","+entries.getValue().isTuz());
             }
             closePrintWriter(pw);
@@ -194,7 +190,7 @@ public class GameManager {
 		
 		try{
             PrintWriter pw = getPrintWriter("src\\main\\resources\\saveFile2.csv");
-            for(Map.Entry<String,Hole> entries :gameWindow.getKazans().entrySet()){
+            for(Map.Entry<String,Hole> entries : gameWindow.getKazans().entrySet()){
                 pw.println(entries.getKey()+","+entries.getValue().getNumberOfKorgools());
             }
             closePrintWriter(pw);
@@ -343,11 +339,17 @@ public class GameManager {
      * @param isWhiteTurn boolean indicating whether it is the white player's turn
      */
     private void endImpossibleGame(boolean isWhiteTurn) {
+        String prefix = isWhiteTurn ? "B" : "W";
+        for (int i = 1; i < 10; i++) {
+            AnimationController.instance().addEvent(AnimationController.EMPTY_HOLE, prefix + i);
+        }
         if (isWhiteTurn) {
             core.getAllKorgools(core.getBlackPlayer());
+            AnimationController.instance().addEvent(AnimationController.MOVE_KORGOOLS, AnimationController.LEFT_KAZAN, AnimationController.MOVE_ALL);
         }
         else {
             core.getAllKorgools(core.getWhitePlayer());
+            AnimationController.instance().addEvent(AnimationController.MOVE_KORGOOLS, AnimationController.RIGHT_KAZAN, AnimationController.MOVE_ALL);
         }
         BoardStatus endStatus = core.checkResultOnImpossible();
         checkEndStatus(endStatus);

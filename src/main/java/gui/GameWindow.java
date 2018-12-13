@@ -5,10 +5,6 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
-import java.io.*;
-import java.util.List;
-
-import logic.AnimationController;
 import logic.GameManager;
 
 /*
@@ -74,6 +70,11 @@ public class GameWindow extends JFrame {
         root.setSize(newW, newH);
     }
 
+    /**
+     * Get layered pane which is needed for animations.
+     *
+     * @return
+     */
     public JLayeredPane getLayeredPane() {
         return layeredPane;
     }
@@ -161,7 +162,7 @@ public class GameWindow extends JFrame {
      */
     private void fillPanelWithButtons(JPanel panel, String color) {
         for (int i = 1; i < 10; ++i) {
-            Hole button = new Hole(false);
+            Hole button = new Hole(OvalButton.SHAPE_CAPSULE, OvalButton.VERTICAL, false);
             button.setName(color + i);
             buttonMap.put(button.getName(), button);
             button.setPreferredSize(new Dimension(30, 200));
@@ -184,11 +185,11 @@ public class GameWindow extends JFrame {
     private JPanel createSingleMarker(String side) {
         Hole tuz;
         if (side.equals("left")) {
-            leftTuz = new Hole(true);
+            leftTuz = new Hole(OvalButton.SHAPE_OVAL, OvalButton.VERTICAL, true);
             tuz = leftTuz;
         }
         else {
-            rightTuz = new Hole(true);
+            rightTuz = new Hole(OvalButton.SHAPE_OVAL, OvalButton.VERTICAL, true);
             tuz = rightTuz;
         }
 
@@ -214,14 +215,14 @@ public class GameWindow extends JFrame {
         kazanPanel.setBackground(BACKGROUND_COLOR);
         kazanPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
 
-        kazanLeft = new Hole(true);
+        kazanLeft = new Hole(OvalButton.SHAPE_CAPSULE, OvalButton.HORIZONTAL, true);
         kazanLeft.setColorBorderNormal(new Color(160,82,45));
         kazanLeft.setName("leftKazan");
         kazanLeft.setEnabled(false);
         kazanLeft.setPreferredSize(new Dimension(400,300));
         kazanLeft.setEnabled(false);
 
-        kazanRight = new Hole(true);
+        kazanRight = new Hole(OvalButton.SHAPE_CAPSULE, OvalButton.HORIZONTAL,true);
         kazanRight.setColorBorderNormal(new Color(160,82,45));
         kazanRight.setName("rightKazan");
         kazanRight.setEnabled(false);
@@ -306,12 +307,15 @@ public class GameWindow extends JFrame {
         else {
             hole = buttonMap.get(holeId);
         }
-        // TODO: would it be faster to only create the new once/delete the excess???
+
         hole.emptyHole();
         hole.createAndAdd(numOfKorgools);
         hole.repaint();
     }
 
+    /**
+     * Place two new korgools in the tuz markers.
+     */
     public void resetTuzes() {
         leftTuz.emptyHole();
         rightTuz.emptyHole();
@@ -325,9 +329,14 @@ public class GameWindow extends JFrame {
         rightTuz.addKorgool(right);
     }
 
+    /**
+     * Remove korgool from tuz marker and place it to the hole specified. No animations will be triggered.
+     *
+     * @param holeId Id of the hole we are marking as a tuz.
+     */
     public void setTuz(String holeId) {
         String name;
-        if (holeId.startsWith("W")) { //white player claimed tuz
+        if (holeId.startsWith("B")) { //white player claimed tuz
             name = "right";
             rightTuz.emptyHole();
         }
@@ -340,22 +349,43 @@ public class GameWindow extends JFrame {
         buttonMap.get(holeId).addKorgool(k);
     }
 
+    /**
+     * Display message in the middle of the board.
+     *
+     * @param message Message to display.
+     */
     public void displayMessage(String message) {
         infoLabel.setText(message);
     }
-	
+
+    /**
+     *
+     * @return Kazan of the black player.
+     */
 	public Hole getKazanLeft() {
         return kazanLeft;
     }
-	
+
+    /**
+     *
+     * @return Kazan of the left player.
+     */
 	public Hole getKazanRight() {
         return kazanRight;
     }
 
+    /**
+     *
+     * @return Tuz marker hole for the black player.
+     */
     public Hole getLeftTuz() {
         return leftTuz;
     }
 
+    /**
+     *
+     * @return Tuz marker hole for the white player.
+     */
     public Hole getRightTuz() {
         return rightTuz;
     }
