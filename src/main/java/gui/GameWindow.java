@@ -9,6 +9,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import javax.imageio.ImageIO;
+
+import javafx.scene.layout.TilePane;
 import logic.GameManager;
 
 /*
@@ -18,10 +20,6 @@ import logic.GameManager;
  */
 public class GameWindow extends JFrame {
 
-    private static final Color WHITE_ZONE_COLOUR = new Color(0, 0, 0, 0);
-    private static final Color WHITE_ZONE_COLOUR_HIGHLIGHTED = new Color(0, 0, 0, 32);
-    private static final Color BLACK_ZONE_COLOUR = new Color(0, 0, 0, 128);
-    private static final Color BLACK_ZONE_COLOUR_HIGHLIGHTED = new Color(0, 0, 0, 160);
     private HashMap<String, Hole> buttonMap;
     private Hole kazanRight, kazanLeft;
     private Hole rightTuz, leftTuz;
@@ -30,19 +28,12 @@ public class GameWindow extends JFrame {
     private HashMap<String, Hole> kazans;
     private GameManager manager;
     private JLabel infoLabel;
-    private BufferedImage backgroundImage;
 
     /**
      * Construct the game window
      */
     public GameWindow(GameManager managerIn) {
-        loadBackgroundImage();
-        root = new JPanel() {
-            @Override
-            protected void paintComponent(Graphics g) {
-                g.drawImage(backgroundImage, 0, 0, null);
-            }
-        };
+        root = new JPanel();
         manager = managerIn;
         setFrameProperties();
         buttonMap = new HashMap<>();
@@ -107,16 +98,7 @@ public class GameWindow extends JFrame {
         int minH = (int) (screenSize.getHeight() * 0.75) + 80;
         setPreferredSize(new Dimension(minW, minH));
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        root.setBackground(WHITE_ZONE_COLOUR);
         root.setLayout(new BorderLayout());
-    }
-
-    private void loadBackgroundImage() {
-        try {
-            backgroundImage = ImageIO.read(new File("src/main/resources/light_wood.jpeg"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     /**
@@ -139,7 +121,6 @@ public class GameWindow extends JFrame {
         }
         JMenuBar menuBar = new JMenuBar();
         menuBar.add(FileMenu);
-        menuBar.setBackground(WHITE_ZONE_COLOUR);
         setJMenuBar(menuBar);
     }
 
@@ -159,9 +140,9 @@ public class GameWindow extends JFrame {
      * and then add an ActionListener to each individual button.
      */
     private void setUpTopPanel() {
-        JPanel topPanel = new JPanel();
+        JPanel topPanel = new TiledPanel(TiledPanel.BLACK);
         topPanel.setBorder(new EmptyBorder(10, 10, 10, 10));//Set Padding around the Top Panel
-        topPanel.setBackground(WHITE_ZONE_COLOUR);
+        topPanel.setOpaque(false);
         GridLayout topButtons = new GridLayout(0, 9, 10, 10);//Set padding around invidual buttons
         topPanel.setLayout(topButtons);
         fillPanelWithButtons(topPanel, "B");
@@ -173,9 +154,9 @@ public class GameWindow extends JFrame {
      * and then add an ActionListner to each individual button.
      */
     private void setUpLowerPanel() {
-        JPanel lowerPanel = new JPanel();
+        JPanel lowerPanel = new TiledPanel(TiledPanel.WHITE);
         lowerPanel.setBorder(new EmptyBorder(10, 10, 10, 10));//Set Padding around the Bottom Panel
-        lowerPanel.setBackground(WHITE_ZONE_COLOUR);
+        lowerPanel.setOpaque(false);
         GridLayout bottomButtons = new GridLayout(0, 9, 10, 10);//Set padding around individual buttons
         lowerPanel.setLayout(bottomButtons);
         fillPanelWithButtons(lowerPanel, "W");
@@ -198,13 +179,7 @@ public class GameWindow extends JFrame {
             button.addActionListener(e -> holeOnClickAction(button.getName()));
             if (color.equals("B")) {
                 button.setEnabled(false);
-                button.setColorNormal(BLACK_ZONE_COLOUR);
-                button.setColorHighlighted(BLACK_ZONE_COLOUR_HIGHLIGHTED);
-            } else {
-                button.setColorNormal(WHITE_ZONE_COLOUR);
-                button.setColorHighlighted(WHITE_ZONE_COLOUR_HIGHLIGHTED);
             }
-
 
             panel.add(button);
         }
@@ -222,14 +197,10 @@ public class GameWindow extends JFrame {
         Hole tuz;
         if (side.equals("left")) {
             leftTuz = new Hole(OvalButton.SHAPE_OVAL, OvalButton.VERTICAL, true);
-            leftTuz.setColorNormal(BLACK_ZONE_COLOUR);
-            leftTuz.setColorHighlighted(BLACK_ZONE_COLOUR_HIGHLIGHTED);
             tuz = leftTuz;
         }
         else {
             rightTuz = new Hole(OvalButton.SHAPE_OVAL, OvalButton.VERTICAL, true);
-            rightTuz.setColorNormal(WHITE_ZONE_COLOUR);
-            rightTuz.setColorHighlighted(WHITE_ZONE_COLOUR_HIGHLIGHTED);
             tuz = rightTuz;
         }
 
@@ -238,8 +209,15 @@ public class GameWindow extends JFrame {
         tuz.setBorder(new EmptyBorder(10, 10, 10, 10));
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         tuz.setPreferredSize(new Dimension((int) (screenSize.getWidth() * 0.10), 200));
-        JPanel panel = new JPanel(new GridLayout(3, 1));
-        panel.setBackground(WHITE_ZONE_COLOUR);
+        JPanel panel;
+        if (side.equals("left")) {
+            panel = new TiledPanel(TiledPanel.BLACK);
+        }
+        else {
+            panel = new TiledPanel(TiledPanel.WHITE);
+        }
+        panel.setLayout(new GridLayout(3, 1));
+        panel.setOpaque(false);
         panel.add(Box.createVerticalGlue());
         panel.add(tuz);
         panel.add(Box.createVerticalGlue());
@@ -253,42 +231,51 @@ public class GameWindow extends JFrame {
      */
     private void setUpKazans() {
         JPanel kazanPanel = new JPanel(new BorderLayout());
-        kazanPanel.setBackground(WHITE_ZONE_COLOUR);
-        kazanPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
+        kazanPanel.setOpaque(false);
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
+        JPanel kazanLeftPanel = new TiledPanel(TiledPanel.BLACK);
+        kazanLeftPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
+        kazanLeftPanel.setLayout(new BorderLayout());
+        kazanLeftPanel.setOpaque(false);
+        kazanLeftPanel.setPreferredSize(new Dimension((int) (screenSize.getWidth() * 0.2), 300));
         kazanLeft = new Hole(OvalButton.SHAPE_CAPSULE, OvalButton.HORIZONTAL, true);
         kazanLeft.setColorBorderNormal(Color.BLACK);
-        kazanLeft.setColorNormal(BLACK_ZONE_COLOUR);
-        kazanLeft.setColorHighlighted(BLACK_ZONE_COLOUR_HIGHLIGHTED);
         kazanLeft.setName("leftKazan");
         kazanLeft.setEnabled(false);
         kazanLeft.setPreferredSize(new Dimension((int) (screenSize.getWidth() * 0.2), 300));
-        kazanLeft.setEnabled(false);
+        kazanLeftPanel.add(kazanLeft, BorderLayout.CENTER);
 
-
+        JPanel kazanRightPanel = new TiledPanel(TiledPanel.WHITE);
+        kazanRightPanel.setOpaque(false);
+        kazanRightPanel.setLayout(new BorderLayout());
+        kazanRightPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
+        kazanRightPanel.setPreferredSize(new Dimension((int) (screenSize.getWidth() * 0.2), 300));
         kazanRight = new Hole(OvalButton.SHAPE_CAPSULE, OvalButton.HORIZONTAL,true);
         kazanRight.setColorBorderNormal(Color.BLACK);
-        kazanRight.setColorNormal(WHITE_ZONE_COLOUR);
-        kazanRight.setColorHighlighted(WHITE_ZONE_COLOUR_HIGHLIGHTED);
         kazanRight.setName("rightKazan");
         kazanRight.setEnabled(false);
         kazanRight.setPreferredSize(new Dimension((int) (screenSize.getWidth() * 0.2), 300));
-        kazanRight.setEnabled(false);
+        kazanRightPanel.add(kazanRight, BorderLayout.CENTER);
 
         kazans.put(kazanRight.getName(), kazanRight);
         kazans.put(kazanLeft.getName(), kazanLeft);
 
+        JPanel infoPanel = new TiledPanel(TiledPanel.HALFSIES);
+        infoPanel.setLayout(new BorderLayout());
+        infoPanel.setOpaque(false);
         infoLabel = new JLabel();
         infoLabel.setPreferredSize(new Dimension((int) (screenSize.getWidth() * 0.40), (int) (screenSize.getHeight() * 0.25)));
         infoLabel.setFont(new Font("Monaco", Font.BOLD, 20));
         infoLabel.setHorizontalAlignment(SwingConstants.CENTER);
         infoLabel.setVerticalAlignment(SwingConstants.CENTER);
+        infoLabel.setOpaque(false);
         infoLabel.setBackground(Color.WHITE);
+        infoPanel.add(infoLabel, BorderLayout.CENTER);
 
-        kazanPanel.add(kazanLeft, BorderLayout.WEST);
-        kazanPanel.add(infoLabel, BorderLayout.CENTER);
-        kazanPanel.add(kazanRight, BorderLayout.EAST);
+        kazanPanel.add(kazanLeftPanel, BorderLayout.WEST);
+        kazanPanel.add(infoPanel, BorderLayout.CENTER);
+        kazanPanel.add(kazanRightPanel, BorderLayout.EAST);
         root.add(kazanPanel, BorderLayout.CENTER);
     }
 
