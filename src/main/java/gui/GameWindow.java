@@ -65,8 +65,11 @@ public class GameWindow extends JFrame {
     }
 
     private void resizeWindow() {
-        int newW = getContentPane().getSize().width < 1401 ? 1401 : getContentPane().getSize().width;
-        int newH = getContentPane().getSize().height < 677 ? 677 : getContentPane().getSize().height;
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int minW = (int) (screenSize.getWidth() * 0.7);
+        int minH = (int) (screenSize.getHeight() * 0.75);
+        int newW = getContentPane().getSize().width < minW ? minW : getContentPane().getSize().width;
+        int newH = getContentPane().getSize().height < minH ? minH : getContentPane().getSize().height;
         root.setSize(newW, newH);
     }
 
@@ -85,7 +88,10 @@ public class GameWindow extends JFrame {
     private void setFrameProperties() {
         setTitle("Toguz Korgol");
         setResizable(true);
-        setPreferredSize(new Dimension(1501, 790));
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int minW = (int) (screenSize.getWidth() * 0.7) + 50;
+        int minH = (int) (screenSize.getHeight() * 0.75) + 70;
+        setPreferredSize(new Dimension(minW, minH));
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         root.setBackground(BACKGROUND_COLOR);
         root.setLayout(new BorderLayout());
@@ -165,7 +171,8 @@ public class GameWindow extends JFrame {
             Hole button = new Hole(OvalButton.SHAPE_CAPSULE, OvalButton.VERTICAL, false);
             button.setName(color + i);
             buttonMap.put(button.getName(), button);
-            button.setPreferredSize(new Dimension(30, 200));
+            Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+            button.setPreferredSize(new Dimension(30, (int) (screenSize.getHeight() * 0.2)));
             button.addActionListener(e -> holeOnClickAction(button.getName()));
             if (color.equals("B")) {
                 button.setEnabled(false);
@@ -196,13 +203,13 @@ public class GameWindow extends JFrame {
         tuz.setName(side + "Tuz");
         tuz.setEnabled(false);
         tuz.setBorder(new EmptyBorder(10, 10, 10, 10));
-        tuz.setPreferredSize(new Dimension(200, 200));
-
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        tuz.setPreferredSize(new Dimension((int) (screenSize.getWidth() * 0.10), 200));
         JPanel panel = new JPanel(new GridLayout(3, 1));
         panel.add(new JPanel());
         panel.add(tuz);
         panel.add(new JPanel());
-        panel.setMinimumSize(new Dimension(200, 200));
+        panel.setPreferredSize(new Dimension((int) (screenSize.getWidth() * 0.10), 200));
         return panel;
     }
 
@@ -214,26 +221,27 @@ public class GameWindow extends JFrame {
         JPanel kazanPanel = new JPanel(new BorderLayout());
         kazanPanel.setBackground(BACKGROUND_COLOR);
         kazanPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
         kazanLeft = new Hole(OvalButton.SHAPE_CAPSULE, OvalButton.HORIZONTAL, true);
         kazanLeft.setColorBorderNormal(new Color(160,82,45));
         kazanLeft.setName("leftKazan");
         kazanLeft.setEnabled(false);
-        kazanLeft.setPreferredSize(new Dimension(400,300));
+        kazanLeft.setPreferredSize(new Dimension((int) (screenSize.getWidth() * 0.2), 300));
         kazanLeft.setEnabled(false);
 
         kazanRight = new Hole(OvalButton.SHAPE_CAPSULE, OvalButton.HORIZONTAL,true);
         kazanRight.setColorBorderNormal(new Color(160,82,45));
         kazanRight.setName("rightKazan");
         kazanRight.setEnabled(false);
-        kazanRight.setPreferredSize(new Dimension(400,300));
+        kazanRight.setPreferredSize(new Dimension((int) (screenSize.getWidth() * 0.2), 300));
         kazanRight.setEnabled(false);
 
         kazans.put(kazanRight.getName(), kazanRight);
         kazans.put(kazanLeft.getName(), kazanLeft);
 
         infoLabel = new JLabel();
-        infoLabel.setPreferredSize(new Dimension(300, 300));
+        infoLabel.setPreferredSize(new Dimension((int) (screenSize.getWidth() * 0.40), (int) (screenSize.getHeight() * 0.25)));
         infoLabel.setFont(new Font("Monaco", Font.BOLD, 20));
         infoLabel.setHorizontalAlignment(SwingConstants.CENTER);
         infoLabel.setVerticalAlignment(SwingConstants.CENTER);
