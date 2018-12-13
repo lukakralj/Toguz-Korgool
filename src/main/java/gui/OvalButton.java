@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.*;
 import java.awt.geom.Area;
+import java.awt.image.BufferedImage;
 
 /**
  * This class represents an oval button. This means that the button will only trigger
@@ -13,7 +14,7 @@ import java.awt.geom.Area;
  * @author Luka Kralj
  * @version 11 December 2018
  */
-public class OvalButton extends JButton implements MouseListener, MouseMotionListener {
+public abstract class OvalButton extends JButton implements MouseListener, MouseMotionListener {
 
     public static final int SHAPE_OVAL = 0;
     public static final int SHAPE_CAPSULE = 1;
@@ -327,8 +328,16 @@ public class OvalButton extends JButton implements MouseListener, MouseMotionLis
     private void paintOval(Graphics2D g) {
         Dimension d = getSize();
 
-        setMainColor(g);
-        g.fillOval(0, 0, d.width, d.height);
+        BufferedImage img = getBackgroundImage();
+        if (img == null) {
+            setMainColor(g);
+            g.fillOval(0, 0, d.width, d.height);
+        }
+        else {
+            g.setClip(new Ellipse2D.Double(0,0,d.width,d.height));
+            g.drawImage(img, 0,0,getWidth(), getHeight(),this);
+        }
+
         Shape border = createOvalBorder();
 
         if (borderHighlighted) {
@@ -377,6 +386,13 @@ public class OvalButton extends JButton implements MouseListener, MouseMotionLis
     }
 
     /**
+     *
+     * @return Background image that we want to set as the background; null if we do not want
+     *          any background - background color will be used in this case.
+     */
+    protected abstract BufferedImage getBackgroundImage();
+
+    /**
      * Paints a capsule shape with border to the button.
      *
      * @param g Graphic to paint the capsule on.
@@ -385,8 +401,15 @@ public class OvalButton extends JButton implements MouseListener, MouseMotionLis
         Dimension d = getSize();
 
         Shape mainCapsule = createCapsule(0, 0, d.width, d.height);
-        setMainColor(g);
-        g.fill(mainCapsule);
+        BufferedImage img = getBackgroundImage();
+        if (img == null) {
+            setMainColor(g);
+            g.fill(mainCapsule);
+        }
+        else {
+            g.setClip(mainCapsule);
+            g.drawImage(img, 0,0,getWidth(), getHeight(),this);
+        }
 
         Shape border = createCapsuleBorder();
         if (borderHighlighted) {

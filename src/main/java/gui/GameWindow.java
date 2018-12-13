@@ -20,6 +20,9 @@ import logic.GameManager;
  */
 public class GameWindow extends JFrame {
 
+    private static BufferedImage lightHole;
+    private static BufferedImage darkHole;
+
     private HashMap<String, Hole> buttonMap;
     private Hole kazanRight, kazanLeft;
     private Hole rightTuz, leftTuz;
@@ -29,10 +32,14 @@ public class GameWindow extends JFrame {
     private GameManager manager;
     private JLabel infoLabel;
 
+
     /**
      * Construct the game window
      */
     public GameWindow(GameManager managerIn) {
+        if (lightHole == null || darkHole == null) {
+            loadImages();
+        }
         root = new JPanel();
         manager = managerIn;
         setFrameProperties();
@@ -67,6 +74,15 @@ public class GameWindow extends JFrame {
 
 	public GameWindow() {
         this(null);
+    }
+
+    public static void loadImages() {
+        try {
+            darkHole = ImageIO.read(new File("src/main/resources/dark_hole.jpg"));
+            lightHole = ImageIO.read(new File("src/main/resources/light_hole.jpg"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void resizeWindow() {
@@ -170,8 +186,15 @@ public class GameWindow extends JFrame {
      * @param color A single digit string to define the color of the added image
      */
     private void fillPanelWithButtons(JPanel panel, String color) {
+        BufferedImage img;
+        if (color.equals("W")) {
+            img = lightHole;
+        }
+        else {
+            img = darkHole;
+        }
         for (int i = 1; i < 10; ++i) {
-            Hole button = new Hole(OvalButton.SHAPE_CAPSULE, OvalButton.VERTICAL, false);
+            Hole button = new Hole(OvalButton.SHAPE_CAPSULE, OvalButton.VERTICAL, false, img);
             button.setName(color + i);
             buttonMap.put(button.getName(), button);
             Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -196,11 +219,11 @@ public class GameWindow extends JFrame {
     private JPanel createSingleMarker(String side) {
         Hole tuz;
         if (side.equals("left")) {
-            leftTuz = new Hole(OvalButton.SHAPE_OVAL, OvalButton.VERTICAL, true);
+            leftTuz = new Hole(OvalButton.SHAPE_OVAL, OvalButton.VERTICAL, true, darkHole);
             tuz = leftTuz;
         }
         else {
-            rightTuz = new Hole(OvalButton.SHAPE_OVAL, OvalButton.VERTICAL, true);
+            rightTuz = new Hole(OvalButton.SHAPE_OVAL, OvalButton.VERTICAL, true, lightHole);
             tuz = rightTuz;
         }
 
@@ -239,7 +262,7 @@ public class GameWindow extends JFrame {
         kazanLeftPanel.setLayout(new BorderLayout());
         kazanLeftPanel.setOpaque(false);
         kazanLeftPanel.setPreferredSize(new Dimension((int) (screenSize.getWidth() * 0.2), 300));
-        kazanLeft = new Hole(OvalButton.SHAPE_CAPSULE, OvalButton.HORIZONTAL, true);
+        kazanLeft = new Hole(OvalButton.SHAPE_CAPSULE, OvalButton.HORIZONTAL, true, darkHole);
         kazanLeft.setColorBorderNormal(Color.BLACK);
         kazanLeft.setName("leftKazan");
         kazanLeft.setEnabled(false);
@@ -251,7 +274,7 @@ public class GameWindow extends JFrame {
         kazanRightPanel.setLayout(new BorderLayout());
         kazanRightPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
         kazanRightPanel.setPreferredSize(new Dimension((int) (screenSize.getWidth() * 0.2), 300));
-        kazanRight = new Hole(OvalButton.SHAPE_CAPSULE, OvalButton.HORIZONTAL,true);
+        kazanRight = new Hole(OvalButton.SHAPE_CAPSULE, OvalButton.HORIZONTAL,true, lightHole);
         kazanRight.setColorBorderNormal(Color.BLACK);
         kazanRight.setName("rightKazan");
         kazanRight.setEnabled(false);

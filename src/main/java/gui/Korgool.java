@@ -3,6 +3,7 @@ package gui;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 
 /**
  * This class represents korgools in the game.
@@ -56,6 +57,11 @@ public class Korgool extends OvalButton {
         super(SHAPE_OVAL, VERTICAL, color, Color.yellow, Color.BLACK, Color.yellow); // if we see yellow color something went wrong
         this.parentHole = parentHole;
         setBorderThickness(borderThickness);
+    }
+
+    @Override
+    public BufferedImage getBackgroundImage() {
+        return null;
     }
 
     /**

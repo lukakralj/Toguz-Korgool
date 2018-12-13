@@ -12,8 +12,8 @@ public class TiledPanel extends JPanel {
     public static final int WHITE = 1;
     public static final int HALFSIES = 2;
 
-    private static BufferedImage darkImg;
-    private static BufferedImage lightImg;
+    public static BufferedImage darkImg;
+    public static BufferedImage lightImg;
 
     private BufferedImage image;
 
@@ -72,10 +72,10 @@ public class TiledPanel extends JPanel {
         }
     }
 
-    private static void loadBackgroundImage() {
+    public static void loadBackgroundImage() {
         try {
-            darkImg = ImageIO.read(new File("src/main/resources/dark.jpg"));
-            lightImg = ImageIO.read(new File("src/main/resources/light.jpg"));
+            darkImg = ImageIO.read(new File("src/main/resources/dark_background.jpg"));
+            lightImg = ImageIO.read(new File("src/main/resources/light_background.jpg"));
         } catch (IOException e) {
             e.printStackTrace();
         }

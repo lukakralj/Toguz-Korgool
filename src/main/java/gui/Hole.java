@@ -3,6 +3,7 @@ package gui;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -22,17 +23,19 @@ public class Hole extends OvalButton {
     private Korgool tuzKorgool;
     private Random rand;
     private Rectangle korgoolArea;
+    private BufferedImage holeImage;
     private static Dimension korgoolSize;
 
     /**
      * Construct an empty hole. To add korgools to it, use one of the functions.
      */
-    public Hole(int shape, int capsule, boolean isKazan) {
+    public Hole(int shape, int capsule, boolean isKazan, BufferedImage holeImage) {
         super(shape, capsule);
         korgools = new ArrayList<>(32);
         rand = new Random();
         korgoolLocations = generateLocations();
         korgoolArea = new Rectangle(0,0,10,10);
+        this.holeImage = holeImage;
         korgoolSize = new Dimension(10, 10);
         setLayout(null);
         this.isKazan = isKazan;
@@ -84,6 +87,11 @@ public class Hole extends OvalButton {
                 tuzKorgool.setLocation(newLoc);
             }
         }
+    }
+
+    @Override
+    public BufferedImage getBackgroundImage() {
+        return holeImage;
     }
 
     /**
