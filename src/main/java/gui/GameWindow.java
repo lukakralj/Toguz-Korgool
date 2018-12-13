@@ -107,7 +107,7 @@ public class GameWindow extends JFrame {
      * Set the properties of the window
      */
     private void setFrameProperties() {
-        setTitle("Toguz Korgol");
+        setTitle("Toguz Korgool");
         setResizable(true);
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int minW = (int) (screenSize.getWidth() * 0.7) + 50;
