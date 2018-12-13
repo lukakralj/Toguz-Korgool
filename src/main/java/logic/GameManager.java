@@ -154,19 +154,29 @@ public class GameManager {
         }
         return hole;
     }
-
+	/**
+	*	@return A printwriter object for the given filepath
+	*/
     private PrintWriter getPrintWriter(String filetoOpen) throws FileNotFoundException{
         File saveFile=new File(filetoOpen);
         FileOutputStream fos=new FileOutputStream(saveFile);
         PrintWriter pw=new PrintWriter(fos);
         return pw;
     }
-
+	
+	/**
+	*	Closes the given printwriter
+	*/
     private void closePrintWriter(PrintWriter pw){
         pw.flush();
         pw.close();
     }
 
+	/**
+	*	Saves the current state of the board to four csv files. saveFile1.csv
+	*	and saveFile2.csv are responsible for saving the GUI components, while
+	*	saveFile3.csv and saveFile4.csv save the back end components
+	*/
     public void saveGame(){
         try{
             PrintWriter pw = getPrintWriter("src\\main\\resources\\saveFile.csv");
@@ -219,14 +229,17 @@ public class GameManager {
         }
     }
 
+	/**
+	*	The base load game method used for loading a the GUI components according to
+	*	the content in saveFile1.csv and saveFile2.csv
+	*/
     public void loadGame(String file1, String file2){
         AnimationController.resetController(gameWindow);
         AnimationController.instance().start();
         try{
-            File toRead=new File(file1);
-            FileInputStream fis=new FileInputStream(toRead);
+            FileInputStream fileToOpen=new FileInputStream(new File(file1));
     
-            Scanner sc=new Scanner(fis);
+            Scanner sc=new Scanner(fileToOpen);
     
             String placeholder = "";
             gameWindow.resetTuzes();
@@ -244,16 +257,15 @@ public class GameManager {
             for (String id : tuzes) {
                 gameWindow.setTuz(id);
             }
-            fis.close();
+            fileToOpen.close();
         }catch(Exception e){
             e.printStackTrace();
         }
 		
 		try{
-            File toRead=new File(file2);
-            FileInputStream fis=new FileInputStream(toRead);
+            FileInputStream fileToOpen=new FileInputStream(new File(file2));
     
-            Scanner sc=new Scanner(fis);
+            Scanner sc=new Scanner(fileToOpen);
     
             String placeholder = "";
             while(sc.hasNextLine()){
@@ -261,12 +273,17 @@ public class GameManager {
                 StringTokenizer st = new StringTokenizer(placeholder,",",false);
                 gameWindow.populateWithKorgools(st.nextToken(), Integer.valueOf(st.nextToken()));
             }
-            fis.close();
+            fileToOpen.close();
         }catch(Exception e){
             e.printStackTrace();
         }
     }
 
+	/**
+	*	An overloaded load game method while makes use of the previous method and
+	*	also resets the backend according to the contents of saveFile3.csv and
+	*	saveFile4.csv
+	*/
     public void loadGame(String file1, String file2, String file3, String file4){
         int[] wHoles = new int[9];
         int[] bHoles = new int[9];
@@ -277,10 +294,9 @@ public class GameManager {
         loadGame(file1, file2);
 
         try{
-            File toRead=new File(file3);
-            FileInputStream fis=new FileInputStream(toRead);
+            FileInputStream fileToOpen=new FileInputStream(new File(file3));
     
-            Scanner sc=new Scanner(fis);
+            Scanner sc=new Scanner(fileToOpen);
     
             for(int i=0;i<9;i++){
                 wHoles[i]=Integer.valueOf(sc.nextLine());
@@ -290,16 +306,15 @@ public class GameManager {
 
             wKazan=Integer.valueOf(sc.nextLine());
 
-            fis.close();
+            fileToOpen.close();
         }catch(Exception e){
             e.printStackTrace();
         }
 
         try{
-            File toRead=new File(file4);
-            FileInputStream fis=new FileInputStream(toRead);
+            FileInputStream fileToOpen=new FileInputStream(new File(file4));
     
-            Scanner sc=new Scanner(fis);
+            Scanner sc=new Scanner(fileToOpen);
     
             for(int i=0;i<9;i++){
                 bHoles[i]=Integer.valueOf(sc.nextLine());
@@ -309,7 +324,7 @@ public class GameManager {
 
             bKazan=Integer.valueOf(sc.nextLine());
 
-            fis.close();
+            fileToOpen.close();
         }catch(Exception e){
             e.printStackTrace();
         }
