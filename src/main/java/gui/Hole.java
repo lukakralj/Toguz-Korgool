@@ -44,7 +44,7 @@ public class Hole extends OvalButton {
         setLayout(null);
         this.textOnTop = textOnTop;
         textColor = null;
-        textLabel = new JLabel();
+        textLabel = new InfoLabel(new ImageIcon(holeImage));
         textLabel.setHorizontalAlignment(SwingConstants.CENTER);
         textLabel.setVerticalAlignment(SwingConstants.CENTER);
         textLabel.setOpaque(true);
@@ -315,7 +315,7 @@ public class Hole extends OvalButton {
         if (textColor == null) {
             return;
         }
-        
+
         int labelDimen = (int)(getSize().height * 0.125);
         textLabel.setFont(new Font("Monaco", Font.BOLD, labelDimen));
         textLabel.setSize(new Dimension(labelDimen, labelDimen));
@@ -341,6 +341,27 @@ public class Hole extends OvalButton {
         private Location(double x, double y) {
             this.x = x;
             this.y = y;
+        }
+    }
+
+    private class InfoLabel extends JLabel {
+
+        private JLabel text;
+
+        private InfoLabel(ImageIcon icon) {
+            super(icon);
+            setLayout(new BorderLayout());
+            text = new JLabel();
+            text.setSize(new Dimension(20, 20));
+            add(text, BorderLayout.CENTER);
+        }
+
+        @Override
+        public void setText(String text) {
+            if (this.text == null) {
+                return;
+            }
+            this.text.setText(text);
         }
     }
 
