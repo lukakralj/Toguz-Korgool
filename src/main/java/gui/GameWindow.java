@@ -22,6 +22,8 @@ public class GameWindow extends JFrame {
 
     private static BufferedImage lightHole;
     private static BufferedImage darkHole;
+    private static BufferedImage blueKorgool;
+    private static BufferedImage redKorgool;
 
     private HashMap<String, Hole> buttonMap;
     private Hole kazanRight, kazanLeft;
@@ -80,6 +82,8 @@ public class GameWindow extends JFrame {
         try {
             darkHole = ImageIO.read(new File("src/main/resources/dark_hole.jpg"));
             lightHole = ImageIO.read(new File("src/main/resources/light_hole.jpg"));
+            blueKorgool = ImageIO.read(new File("src/main/resources/blue_korgool.png"));
+            redKorgool = ImageIO.read(new File("src/main/resources/red_korgool.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -367,7 +371,7 @@ public class GameWindow extends JFrame {
         }
 
         hole.emptyHole();
-        hole.createAndAdd(numOfKorgools);
+        hole.createAndAdd(numOfKorgools, blueKorgool);
         hole.repaint();
     }
 
@@ -378,11 +382,11 @@ public class GameWindow extends JFrame {
         leftTuz.emptyHole();
         rightTuz.emptyHole();
 
-        Korgool left = new Korgool(leftTuz, Color.RED);
+        Korgool left = new Korgool(leftTuz, redKorgool);
         left.setName("leftTuzKorgool");
         leftTuz.addKorgool(left);
 
-        Korgool right = new Korgool(rightTuz, Color.RED);
+        Korgool right = new Korgool(rightTuz, redKorgool);
         right.setName("rightTuzKorgool");
         rightTuz.addKorgool(right);
     }
@@ -402,7 +406,7 @@ public class GameWindow extends JFrame {
             name = "left";
             leftTuz.emptyHole();
         }
-        Korgool k = new Korgool(buttonMap.get(holeId), Color.RED);
+        Korgool k = new Korgool(buttonMap.get(holeId), redKorgool);
         k.setName(name + "TuzKorgool");
         buttonMap.get(holeId).addKorgool(k);
     }

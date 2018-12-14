@@ -25,6 +25,7 @@ public class Hole extends OvalButton {
     private Rectangle korgoolArea;
     private BufferedImage holeImage;
     private static Dimension korgoolSize;
+    private Color textColor;
 
     /**
      * Construct an empty hole. To add korgools to it, use one of the functions.
@@ -38,6 +39,7 @@ public class Hole extends OvalButton {
         this.holeImage = holeImage;
         korgoolSize = new Dimension(10, 10);
         setLayout(null);
+        textColor = Color.BLACK;
         this.isKazan = isKazan;
         // Update korgools size and location only when the hole is moved/resized.
         addComponentListener(new ComponentAdapter() {
@@ -89,6 +91,14 @@ public class Hole extends OvalButton {
         }
     }
 
+    /**
+     * Set color of the text (showing numbers).
+     * @param color Text color.
+     */
+    public void setTextColor(Color color) {
+        textColor = color;
+    }
+
     @Override
     public BufferedImage getBackgroundImage() {
         return holeImage;
@@ -132,9 +142,9 @@ public class Hole extends OvalButton {
      *
      * @param numOfKorgools Number of new korgools that we want to add to this hole.
      */
-    public void createAndAdd(int numOfKorgools) {
+    public void createAndAdd(int numOfKorgools, BufferedImage img) {
         for (int i = 0; i < numOfKorgools; i++) {
-            addKorgool(new Korgool(this));
+            addKorgool(new Korgool(this, img));
         }
     }
 
@@ -294,7 +304,7 @@ public class Hole extends OvalButton {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        g.setColor(Color.BLACK);
+        g.setColor(Color.WHITE);
         g.drawString("" + korgools.size(), (int)(getSize().width * 0.08), (int)(getSize().height * 0.95));
     }
 
