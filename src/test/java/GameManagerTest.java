@@ -46,6 +46,14 @@ public class GameManagerTest {
     private int[] drawSetupB = {1,0,0,0,0,0,0,0,0};
     private int[] drawSetupKazans = {79, 81};
 
+    private int[] moveImpossibleBSetupW = {0,0,0,0,0,0,0,0,0};
+    private int[] moveImpossibleBSetupB = {9,9,9,9,9,9,9,9,9};
+    private int[] moveImpossibleBSetupKazans = {40, 41};
+
+    private int[] moveImpossibleWSetupW = {9,8,7,6,5,4,3,2,0};
+    private int[] moveImpossibleWSetupB = {0,0,0,0,0,0,0,0,0};
+    private int[] moveImpossibleWSetupKazans = {59, 59};
+
 
     @Before
     public void openWindow() {
@@ -129,6 +137,16 @@ public class GameManagerTest {
     public void testBlackWins() {
         gameManager.setRandomSeed();
         testEndGame(8, "Black player won!", B_WON, blackWinsSetupW, blackWinsSetupB, blackWinsSetupKazans[0], blackWinsSetupKazans[1]);
+    }
+
+    @Test
+    public void testBlackWinsAfterMoveImpossible() {
+        testEndGame(9, "Black player won!", B_WON, moveImpossibleBSetupW, moveImpossibleBSetupB, moveImpossibleBSetupKazans[0], moveImpossibleBSetupKazans[1]);
+    }
+
+    @Test
+    public void testWhiteWinsAfterMoveImpossible() {
+        testEndGame(8, "White player won!", W_WON, moveImpossibleWSetupW, moveImpossibleWSetupB, moveImpossibleWSetupKazans[0], moveImpossibleWSetupKazans[1]);
     }
 
     /**
