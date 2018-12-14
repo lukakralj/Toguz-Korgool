@@ -459,4 +459,7 @@ public class GameWindow extends JFrame {
         return rightTuz;
     }
 
+    public String getMessage() {
+        return infoLabel.getText();
+    }
 }

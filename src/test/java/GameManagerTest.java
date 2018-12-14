@@ -1,18 +1,18 @@
+import static junit.framework.TestCase.assertTrue;
+import static logic.BoardStatus.*;
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import gui.GameWindow;
 import gui.Hole;
 import logic.AnimationController;
+import logic.BoardStatus;
 import logic.GameManager;
 import logic.Player;
 import org.junit.Before;
 import org.junit.Test;
 import com.athaydes.automaton.Swinger;
-import static org.junit.Assert.*;
-import static com.athaydes.automaton.assertion.AutomatonMatcher.hasText;
 import com.athaydes.automaton.Speed;
 
-import java.lang.reflect.Array;
-import java.util.Arrays;
 import java.util.HashMap;
 
 
@@ -32,7 +32,12 @@ public class GameManagerTest {
     private int[][] expectedKazans ={{0,0}, {10,0}, {14,3}, {15,4}, {16,4}, {17,21}, {18,30}, {18,30}, {19,31}, {19,31}, {21,33}, {40,34}, {41,44}, {41,45}, {43,45}, {45,45}, {46,46}, {49,48}, {49,48}, {49,48}, {50,51}, {52,52}, {53,53}, {55,59}, {65,59}, {69,59},{69,59},{69,59},{70,60}};
     private int[][] expectedHolesW = {{2,11,11,11,11,11,10,10,10}, {3,2,13,13,13,12,11,11,11}, {4,0,13,1,14,13,12,12,12}, {5,0,14,2,2,15,14,14,14}, {5,0,1,3,3,16,15,15,15}, {6,0,2,4,2,18,17,0,15}, {0,0,3,5,3,1,18,1,16}, {0,0,3,1,4,2,19,2,16}, {1,0,4,2,2,4,21,4,17},{1,0,4,2,2,1,22,5,18}, {3,0,6,4,4,3,23,6,1}, {4,0,6,4,4,3,23,1,2}, {6,0,0,5,5,4,2,3,4}, {1,0,1,6,6,5,2,3,4}, {1,0,1,6,6,5,2,1,5}, {1,0,1,6,6,5,2,1,1}, {0,0,1,6,6,5,2,1,1}, {2,0,3,8,8,7,3,2,1}, {2,0,3,1,9,8,4,3,2}, {2,0,3,1,1,9,5,4,3}, {3,0,0,2,2,9,5,4,3}, {4,0,1,2,2,9,5,1,4}, {5,0,2,3,3,9,5,0,5}, {0,0,2,3,3,1,6,1,6}, {0,0,2,3,3,1,1,2,7}, {0,0,2,3,3,1,1,2,1}, {0,0,2,3,3,1,1,2,0},{1,0,2,1,4,2,1,2,0}, {2,0,1,2,4,2,1,2,0}};
     private int[][] expectedHolesB = {{10,10,1,9,9,9,9,9,9}, {11,11,2,1,9,9,0,10,10}, {12,12,0,3,11,11,2,12,1}, {14,1,0,4,12,12,3,14,3}, {14,1,0,5,13,14,5,16,1}, {15,2,0,6,1,14,5,16,1}, {17,1,0,7,2,15,6,17,2}, {17,1,0,8,1,15,6,17,2}, {18,2,0,9,2,16,7,1,2}, {19,1,0,9,2,16,7,1,2}, {21,3,0,1,3,17,8,2,3}, {22,4,0,2,4,1,1,3,4}, {24,1,0,3,5,2,2,5,6}, {24,1,0,4,6,3,3,6,1}, {24,1,0,5,7,1,3,6,0}, {25,0,0,5,7,0,4,7,1}, {25,1,0,6,8,1,5,1,1}, {2,2,0,7,9,2,6,2,1}, {3,1,0,7,9,2,6,3,2}, {3,1,0,7,10,4,8,1,3}, {4,2,0,1,10,4,8,1,3}, {1,2,0,1,10,4,8,0,4}, {2,3,0,2,1,4,8,0,4}, {1,3,0,2,0,5,9,1,5}, {1,3,0,3,1,6,1,3,1}, {1,3,0,1,1,7,2,4,2}, {1,3,0,1,2,8,3,1,3},{0,3,0,1,2,8,3,1,3}, {1,4,0,2,3,1,3,1,3}};
-
+    private int[] whiteWinsSetupW = {1,0,0,2,0,2,1,5,0};
+    private int[] whiteWinsSetupB = {0,1,3,0,0,0,3,1,0};
+    private int[] whiteWinsSetupKazans = {78, 65};
+    private int[] drawSetupW = {0,0,0,0,0,0,0,0,1};
+    private int[] drawSetupB = {1,0,0,0,0,0,0,0,0};
+    private int[] drawSetupKazans = {79, 81};
 
     @Before
     public void openWindow() {
@@ -94,6 +99,42 @@ public class GameManagerTest {
                 compareTuzes();
             }
         }
+    }
+
+    /**
+     * Test scenario when white player wins
+     */
+    @Test
+    public void testEndGame() {
+        testEndGame(8, "White player won!", W_WON, whiteWinsSetupW, whiteWinsSetupB, whiteWinsSetupKazans[0], whiteWinsSetupKazans[1]);
+    }
+
+    /**
+     * Test draw scenario
+     */
+    @Test
+    public void testDraw() {
+        testEndGame(9, "It's a tie!", DRAW, drawSetupW, drawSetupB, drawSetupKazans[0], drawSetupKazans[1]);
+    }
+
+    /**
+     * Helper function checking state after making the desired move.
+     * Uses custom input to set up the board before the move.
+     * @param moveW the move white player will make
+     * @param message end message that should be displayed
+     * @param endStatus end status that board should have
+     * @param holesW white player's hole values just before the move
+     * @param holesB black player's hole values just before the move
+     * @param kazanW white player's kazan value just before the move
+     * @param kazanB black player's kazan value just before the move
+     */
+    private void testEndGame(int moveW, String message, BoardStatus endStatus, int[] holesW, int[] holesB, int kazanW, int kazanB) {
+        Swinger.setDEFAULT(Speed.FAST);
+        gameManager.populateInitialBoard(holesW, holesB, 3, 2, kazanW, kazanB);
+        swinger.pause(500);
+        swinger.clickOn("name:W" + moveW).pause(3000);
+        assertEquals(endStatus, gameManager.getCore().testCheckResult());
+        assertEquals(message, gameWindow.getMessage());
     }
 
     /**
