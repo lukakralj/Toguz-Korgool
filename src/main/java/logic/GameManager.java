@@ -8,6 +8,8 @@ import java.util.Set;
 
 /**
  * Main class for the Team Platypus Agile Project
+ * @author Kayla Phillips Sanchez
+ * @version 14 December 2018
  *
  */
 public class GameManager {
