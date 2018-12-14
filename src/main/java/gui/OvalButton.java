@@ -12,9 +12,9 @@ import java.awt.image.BufferedImage;
  * an acton if it is clicked within the oval shape drawn on it.
  *
  * @author Luka Kralj
- * @version 11 December 2018
+ * @version 14 December 2018
  */
-public abstract class OvalButton extends JButton implements MouseListener, MouseMotionListener {
+public class OvalButton extends JButton implements MouseListener, MouseMotionListener {
 
     public static final int SHAPE_OVAL = 0;
     public static final int SHAPE_CAPSULE = 1;
@@ -386,11 +386,16 @@ public abstract class OvalButton extends JButton implements MouseListener, Mouse
     }
 
     /**
-     *
-     * @return Background image that we want to set as the background; null if we do not want
-     *          any background - background color will be used in this case.
+     * Should return the image that we want to set as the background. This image will be
+     * rendered within the oval/capsule shape of the button, but not outside of it.
+     * Return null if you do not want image as the background. In this case a background color
+     * will be used.
+     * 
+     * @return Image for the oval/capsule, or null to use a background color.
      */
-    protected abstract BufferedImage getBackgroundImage();
+    protected BufferedImage getBackgroundImage() {
+	return null;
+    }
 
     /**
      * Paints a capsule shape with border to the button.
