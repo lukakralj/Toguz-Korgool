@@ -1,10 +1,13 @@
 package gui;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -18,6 +21,8 @@ import java.util.Random;
  */
 public class Hole extends OvalButton {
 
+    private static Dimension korgoolSize;
+
     private List<Korgool> korgools;
     private boolean isKazan;
     private List<Location> korgoolLocations;
@@ -25,7 +30,6 @@ public class Hole extends OvalButton {
     private Random rand;
     private Rectangle korgoolArea;
     private BufferedImage holeImage;
-    private static Dimension korgoolSize;
     private JLabel textLabel;
     private Color textColor;
     private boolean textOnTop;
@@ -97,6 +101,14 @@ public class Hole extends OvalButton {
             else {
                 tuzKorgool.setLocation(newLoc);
             }
+        }
+        int labelDimen = (int)(getSize().height * 0.08);
+        textLabel.setSize(new Dimension(labelDimen*2, labelDimen));
+        if (textOnTop) {
+            textLabel.setLocation(getWidth()/2 - textLabel.getWidth()/2, getBorderThickness());
+        }
+        else {
+            textLabel.setLocation(getWidth()/2 - textLabel.getWidth()/2, getHeight() - textLabel.getHeight() - getBorderThickness());
         }
     }
 
@@ -316,16 +328,6 @@ public class Hole extends OvalButton {
             return;
         }
 
-        int labelDimen = (int)(getSize().height * 0.125);
-        textLabel.setFont(new Font("Monaco", Font.BOLD, labelDimen));
-        textLabel.setSize(new Dimension(labelDimen, labelDimen));
-        if (textOnTop) {
-            textLabel.setLocation(getWidth() - labelDimen, 0);
-        }
-        else {
-            textLabel.setLocation(getWidth() - labelDimen, getHeight() - labelDimen);
-        }
-
         String s = "<html><font color='rgb(" + textColor.getRed() + "," + textColor.getGreen() + "," + textColor.getBlue() + ")'>" + korgools.size() + "</font></html>";
         textLabel.setText(s);
 
@@ -352,9 +354,20 @@ public class Hole extends OvalButton {
             super(icon);
             setLayout(new BorderLayout());
             text = new JLabel();
-            text.setSize(new Dimension(20, 20));
+            text.setHorizontalAlignment(SwingConstants.CENTER);
+            text.setVerticalAlignment(SwingConstants.CENTER);
             add(text, BorderLayout.CENTER);
+
+            addComponentListener(new ComponentAdapter() {
+                @Override
+                public void componentResized(ComponentEvent e) {
+                    text.setFont(new Font("Monaco", Font.BOLD, getHeight()));
+                    text.setSize(getSize());
+                }
+            });
         }
+
+
 
         @Override
         public void setText(String text) {
