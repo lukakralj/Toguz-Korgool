@@ -203,11 +203,7 @@ public class GameManager {
             int[] wHoles = core.getWhitePlayer().getHoles();
             int wTuz = core.getWhitePlayer().getTuz();
             int wKazan = core.getWhitePlayer().getKazan();
-            for(int i=0;i<wHoles.length;i++){
-                pw.println(wHoles[i]);
-            }
-            pw.println(wTuz);
-            pw.println(wKazan);
+            insertBackEndData(pw, wHoles, wTuz, wKazan);
             closePrintWriter(pw);
         }catch(Exception e){
             e.printStackTrace();
@@ -218,16 +214,20 @@ public class GameManager {
             int[] bHoles = core.getBlackPlayer().getHoles();
             int bTuz = core.getBlackPlayer().getTuz();
             int bKazan = core.getBlackPlayer().getKazan();
-            for(int i=0;i<bHoles.length;i++){
-                pw.println(bHoles[i]);
-            }
-            pw.println(bTuz);
-            pw.println(bKazan);
+            insertBackEndData(pw, bHoles, bTuz, bKazan);
             closePrintWriter(pw);
         }catch(Exception e){
             e.printStackTrace();
         }
     }
+	
+	private void insertBackEndData(PrintWriter pw, int[] holes, int tuz, int kazan){
+		for(int i=0;i<holes.length;i++){
+            pw.println(holes[i]);
+        }
+        pw.println(tuz);
+        pw.println(kazan);
+	}
 
 	/**
 	*	The base load game method used for loading a the GUI components according to
