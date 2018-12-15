@@ -358,6 +358,9 @@ public class AnimationController extends Thread {
         }
     }
 
+    /**
+     * Used internally to store a more precise location - a pair of doubles.
+     */
     private class Location {
         double x;
         double y;

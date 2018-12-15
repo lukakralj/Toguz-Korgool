@@ -7,6 +7,13 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * This class enables background tiling of images. It is used for the main panels
+ * that together form a nice board background.
+ *
+ * @author Luka Kralj
+ * @version 15 December 2018
+ */
 public class TiledPanel extends JPanel {
     public static final int BLACK = 0;
     public static final int WHITE = 1;
@@ -19,6 +26,11 @@ public class TiledPanel extends JPanel {
 
     private BufferedImage image;
 
+    /**
+     * Create new panel.
+     *
+     * @param color Use constants to select type of the background.
+     */
     public TiledPanel(int color) {
         if (darkImg == null || lightImg == null) {
             loadBackgroundImage();
@@ -77,7 +89,10 @@ public class TiledPanel extends JPanel {
         }
     }
 
-    public static void loadBackgroundImage() {
+    /**
+     * Loads all images.
+     */
+    private static void loadBackgroundImage() {
         try {
             darkImg = ImageIO.read(new File("src/main/resources/dark_background.jpg"));
             lightImg = ImageIO.read(new File("src/main/resources/light_background.jpg"));

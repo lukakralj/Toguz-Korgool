@@ -1,13 +1,10 @@
 package gui;
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -17,7 +14,7 @@ import java.util.Random;
  * or for their kazans.
  *
  * @author Luka Kralj
- * @version 11 December 2018
+ * @version 15 December 2018
  */
 public class Hole extends OvalButton {
 
@@ -306,6 +303,9 @@ public class Hole extends OvalButton {
         return new Point((int)x, (int)y);
     }
 
+    /**
+     * Decoupling method. Korgools are calling this method to redispatch click events
+     */
     protected void holeClicked(ActionEvent e) {
         if (isValidClickPosition(MouseInfo.getPointerInfo().getLocation())) {
             super.actionListener.actionPerformed(e);

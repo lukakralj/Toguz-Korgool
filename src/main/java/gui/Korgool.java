@@ -9,7 +9,7 @@ import java.awt.image.BufferedImage;
  * This class represents korgools in the game.
  *
  * @author Luka Kralj
- * @version 11 December 2018
+ * @version 14 December 2018
  */
 public class Korgool extends OvalButton {
 

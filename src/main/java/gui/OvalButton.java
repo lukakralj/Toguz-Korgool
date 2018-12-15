@@ -195,6 +195,12 @@ public class OvalButton extends JButton implements MouseListener, MouseMotionLis
         });
     }
 
+    /**
+     * Check if the position is withing the borders of the current shape of the button.
+     *
+     * @param screenPosition Position we want to check. It must be a position on the screen - not component dependent.
+     * @return True if this point is withing the shape of the button, false otherwise.
+     */
     protected boolean isValidClickPosition(Point screenPosition) {
         if (shape == SHAPE_OVAL) {
             return isInOval(screenPosition);

@@ -240,6 +240,9 @@ public class GameWindow extends JFrame {
         }
     }
 
+    /**
+     * Create and add holes for red tuz-marking korgools.
+     */
     private void setUpTuzMarkers() {
         JPanel left = createSingleMarker("left");
         JPanel right = createSingleMarker("right");
@@ -248,6 +251,12 @@ public class GameWindow extends JFrame {
         root.add(right, BorderLayout.EAST);
     }
 
+    /**
+     * Creates one hole for a red tuz-marking korgool.
+     *
+     * @param side Should be "left" or "right".
+     * @return
+     */
     private JPanel createSingleMarker(String side) {
         Hole tuz;
         if (side.equals("left")) {
