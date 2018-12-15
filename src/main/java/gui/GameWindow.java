@@ -11,6 +11,7 @@ import java.util.*;
 import javax.imageio.ImageIO;
 
 import javafx.scene.layout.TilePane;
+import logic.AnimationController;
 import logic.GameManager;
 
 /*
@@ -33,6 +34,7 @@ public class GameWindow extends JFrame {
     private HashMap<String, Hole> kazans;
     private GameManager manager;
     private JLabel infoLabel;
+    private JSlider slider;
 
 
     /**
@@ -96,6 +98,7 @@ public class GameWindow extends JFrame {
         int newW = getContentPane().getSize().width < minW ? minW : getContentPane().getSize().width;
         int newH = getContentPane().getSize().height < minH ? minH : getContentPane().getSize().height;
         root.setSize(newW, newH);
+        slider.setPreferredSize(new Dimension(root.getSize().width/2, 40));
     }
 
     /**
@@ -174,13 +177,33 @@ public class GameWindow extends JFrame {
      * and then add an ActionListner to each individual button.
      */
     private void setUpLowerPanel() {
-        JPanel lowerPanel = new TiledPanel(TiledPanel.WHITE);
-        lowerPanel.setBorder(new EmptyBorder(10, 10, 10, 10));//Set Padding around the Bottom Panel
-        lowerPanel.setOpaque(false);
+        JPanel buttonsPanel = new TiledPanel(TiledPanel.WHITE);
+        buttonsPanel.setBorder(new EmptyBorder(10, 10, 10, 10));//Set Padding around the Bottom Panel
+        buttonsPanel.setOpaque(false);
         GridLayout bottomButtons = new GridLayout(0, 9, 10, 10);//Set padding around individual buttons
-        lowerPanel.setLayout(bottomButtons);
-        fillPanelWithButtons(lowerPanel, "W");
-        root.add(lowerPanel, BorderLayout.SOUTH);
+        buttonsPanel.setLayout(bottomButtons);
+        fillPanelWithButtons(buttonsPanel, "W");
+
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.add(buttonsPanel, BorderLayout.CENTER);
+
+        JPanel sliderPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JLabel sliderInfo = new JLabel("Speed of animtions:");
+        sliderPanel.add(sliderInfo);
+
+        slider = new JSlider(1, 2000, 250);
+        slider.addChangeListener(e -> AnimationController.setRunTime(slider.getValue()));
+        Hashtable<Integer, Component> labels = new Hashtable<>();
+        labels.put(1, new JLabel("Lightning"));
+        labels.put(250, new JLabel("Default"));
+        labels.put(2000, new JLabel("Relax - it'll take a while"));
+        slider.setLabelTable(labels);
+        slider.setPaintLabels(true);
+        slider.setFont(new Font("Monaco", Font.BOLD, 10));
+        sliderPanel.add(slider);
+
+        panel.add(sliderPanel, BorderLayout.SOUTH);
+        root.add(panel, BorderLayout.SOUTH);
     }
 
     /**
