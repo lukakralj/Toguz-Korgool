@@ -191,14 +191,18 @@ public class GameWindow extends JFrame {
      */
     private void fillPanelWithButtons(JPanel panel, String color) {
         BufferedImage img;
+        Color col;
         if (color.equals("W")) {
             img = lightHole;
+            col = Color.BLACK;
         }
         else {
             img = darkHole;
+            col = Color.WHITE;
         }
         for (int i = 1; i < 10; ++i) {
             Hole button = new Hole(OvalButton.SHAPE_CAPSULE, OvalButton.VERTICAL, false, img);
+            button.setTextColor(col);
             button.setName(color + i);
             buttonMap.put(button.getName(), button);
             Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -267,6 +271,7 @@ public class GameWindow extends JFrame {
         kazanLeftPanel.setOpaque(false);
         kazanLeftPanel.setPreferredSize(new Dimension((int) (screenSize.getWidth() * 0.2), 300));
         kazanLeft = new Hole(OvalButton.SHAPE_CAPSULE, OvalButton.HORIZONTAL, true, darkHole);
+        kazanLeft.setTextColor(Color.WHITE);
         kazanLeft.setColorBorderNormal(Color.BLACK);
         kazanLeft.setName("leftKazan");
         kazanLeft.setEnabled(false);
@@ -279,6 +284,7 @@ public class GameWindow extends JFrame {
         kazanRightPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
         kazanRightPanel.setPreferredSize(new Dimension((int) (screenSize.getWidth() * 0.2), 300));
         kazanRight = new Hole(OvalButton.SHAPE_CAPSULE, OvalButton.HORIZONTAL,true, lightHole);
+        kazanRight.setTextColor(Color.BLACK);
         kazanRight.setColorBorderNormal(Color.BLACK);
         kazanRight.setName("rightKazan");
         kazanRight.setEnabled(false);

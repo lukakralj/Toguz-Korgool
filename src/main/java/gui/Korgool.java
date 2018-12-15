@@ -110,7 +110,7 @@ public class Korgool extends OvalButton {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-       
+
     }
 
     @Override

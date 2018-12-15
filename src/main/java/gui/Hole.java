@@ -31,6 +31,8 @@ public class Hole extends OvalButton {
     private Rectangle korgoolArea;
     private BufferedImage holeImage;
     private Color textColor;
+    private Font font;
+    private Point textLoc;
 
     /**
      * Construct an empty hole. To add korgools to it, use one of the functions.
@@ -44,7 +46,9 @@ public class Hole extends OvalButton {
         this.holeImage = holeImage;
         korgoolSize = new Dimension(10, 10);
         setLayout(null);
-        textColor = Color.BLACK;
+        textColor = null;
+        font = new Font("Monaco", Font.BOLD, 10);
+        textLoc = new Point();
         this.isKazan = isKazan;
         // Update korgools size and location only when the hole is moved/resized.
         addComponentListener(new ComponentAdapter() {
@@ -94,6 +98,8 @@ public class Hole extends OvalButton {
                 tuzKorgool.setLocation(newLoc);
             }
         }
+        font = new Font("Monaco", Font.BOLD, (int)(getHeight() * 0.08));
+        repaint();
     }
 
     /**
@@ -277,8 +283,8 @@ public class Hole extends OvalButton {
      * @return List of locations, where coordinates are [0,1).
      */
     private List<Location> generateLocations() {
-        List<Location> locations = new ArrayList<>(200);
-        for (int i = 0; i < 200; i++) {
+        List<Location> locations = new ArrayList<>(1024);
+        for (int i = 0; i < 1024; i++) {
             double x = rand.nextDouble();
             double y = rand.nextDouble();
             locations.add(new Location(x, y));
@@ -315,8 +321,26 @@ public class Hole extends OvalButton {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        g.setColor(Color.WHITE);
-        g.drawString("" + korgools.size(), (int)(getSize().width * 0.08), (int)(getSize().height * 0.95));
+        if (textColor == null) {
+            return;
+        }
+        g.setFont(font);
+        g.setColor(textColor);
+        String toDraw = "" + korgools.size();
+        if (textColor.equals(Color.BLACK)) {
+            // white holes
+            if (isKazan) {
+                textLoc = new Point(0, getHeight());
+            }
+            else {
+                textLoc = new Point((getWidth() - g.getFontMetrics().stringWidth(toDraw)),font.getSize());
+            }
+        }
+        else {
+            // black holes
+            textLoc = new Point((getWidth() - g.getFontMetrics().stringWidth(toDraw)), getHeight());
+        }
+        g.drawString(toDraw, textLoc.x, textLoc.y);
     }
 
     /**
