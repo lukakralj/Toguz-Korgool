@@ -227,6 +227,10 @@ public class GameManager {
         }
     }
 	
+	/**
+	*	Internal method to update the write the values in the given hole, tuz and
+	*	kazan into the save file with the print writer
+	*/
 	private void insertBackEndData(PrintWriter pw, int[] holes, int tuz, int kazan){
 		for(int i=0;i<holes.length;i++){
             pw.println(holes[i]);
