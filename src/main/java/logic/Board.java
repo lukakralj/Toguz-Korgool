@@ -266,7 +266,7 @@ public class Board {
      * Add all the korgools in the player's holes into the player's kazaan.
      * Sets player's holes to 0.
      */
-     public void getAllKorgools(Player player) {
+     public void takeAllKorgools(Player player) {
         for (int valueInHole : player.getHoles()) {
             player.setKazan(player.getKazan() + valueInHole);
         }
