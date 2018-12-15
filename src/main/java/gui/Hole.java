@@ -1,6 +1,5 @@
 package gui;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
@@ -30,14 +29,12 @@ public class Hole extends OvalButton {
     private Random rand;
     private Rectangle korgoolArea;
     private BufferedImage holeImage;
-    private JLabel textLabel;
     private Color textColor;
-    private boolean textOnTop;
 
     /**
      * Construct an empty hole. To add korgools to it, use one of the functions.
      */
-    public Hole(int shape, int capsule, boolean isKazan, BufferedImage holeImage, boolean textOnTop) {
+    public Hole(int shape, int capsule, boolean isKazan, BufferedImage holeImage) {
         super(shape, capsule);
         korgools = new ArrayList<>(32);
         rand = new Random();
@@ -46,13 +43,7 @@ public class Hole extends OvalButton {
         this.holeImage = holeImage;
         korgoolSize = new Dimension(10, 10);
         setLayout(null);
-        this.textOnTop = textOnTop;
-        textColor = null;
-        textLabel = new InfoLabel(new ImageIcon(holeImage));
-        textLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        textLabel.setVerticalAlignment(SwingConstants.CENTER);
-        textLabel.setOpaque(true);
-        add(textLabel);
+        textColor = Color.BLACK;
         this.isKazan = isKazan;
         // Update korgools size and location only when the hole is moved/resized.
         addComponentListener(new ComponentAdapter() {
@@ -101,14 +92,6 @@ public class Hole extends OvalButton {
             else {
                 tuzKorgool.setLocation(newLoc);
             }
-        }
-        int labelDimen = (int)(getSize().height * 0.08);
-        textLabel.setSize(new Dimension(labelDimen*2, labelDimen));
-        if (textOnTop) {
-            textLabel.setLocation(getWidth()/2 - textLabel.getWidth()/2, getBorderThickness());
-        }
-        else {
-            textLabel.setLocation(getWidth()/2 - textLabel.getWidth()/2, getHeight() - textLabel.getHeight() - getBorderThickness());
         }
     }
 
@@ -324,13 +307,9 @@ public class Hole extends OvalButton {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        if (textColor == null) {
-            return;
-        }
 
-        String s = "<html><font color='rgb(" + textColor.getRed() + "," + textColor.getGreen() + "," + textColor.getBlue() + ")'>" + korgools.size() + "</font></html>";
-        textLabel.setText(s);
-
+        g.setColor(Color.WHITE);
+        g.drawString("" + korgools.size(), (int)(getSize().width * 0.08), (int)(getSize().height * 0.95));
     }
 
     /**
