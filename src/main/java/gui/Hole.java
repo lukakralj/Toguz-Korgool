@@ -325,36 +325,4 @@ public class Hole extends OvalButton {
         }
     }
 
-    private class InfoLabel extends JLabel {
-
-        private JLabel text;
-
-        private InfoLabel(ImageIcon icon) {
-            super(icon);
-            setLayout(new BorderLayout());
-            text = new JLabel();
-            text.setHorizontalAlignment(SwingConstants.CENTER);
-            text.setVerticalAlignment(SwingConstants.CENTER);
-            add(text, BorderLayout.CENTER);
-
-            addComponentListener(new ComponentAdapter() {
-                @Override
-                public void componentResized(ComponentEvent e) {
-                    text.setFont(new Font("Monaco", Font.BOLD, getHeight()));
-                    text.setSize(getSize());
-                }
-            });
-        }
-
-
-
-        @Override
-        public void setText(String text) {
-            if (this.text == null) {
-                return;
-            }
-            this.text.setText(text);
-        }
-    }
-
 }

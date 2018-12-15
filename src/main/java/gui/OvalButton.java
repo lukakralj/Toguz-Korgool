@@ -189,6 +189,7 @@ public class OvalButton extends JButton implements MouseListener, MouseMotionLis
     public void addActionListener(ActionListener l) {
         super.addActionListener(e -> {
             if (isValidClickPosition(MouseInfo.getPointerInfo().getLocation())) {
+                System.out.println("====action event: " + System.currentTimeMillis());
                 l.actionPerformed(e);
             }
         });
@@ -347,6 +348,7 @@ public class OvalButton extends JButton implements MouseListener, MouseMotionLis
             g.setColor(colorBorderNormal);
         }
         g.fill(border);
+        g.setClip(0,0,getWidth(),getHeight());
     }
 
     /**
@@ -394,7 +396,7 @@ public class OvalButton extends JButton implements MouseListener, MouseMotionLis
      * @return Image for the oval/capsule, or null to use a background color.
      */
     protected BufferedImage getBackgroundImage() {
-	return null;
+	    return null;
     }
 
     /**
@@ -424,6 +426,7 @@ public class OvalButton extends JButton implements MouseListener, MouseMotionLis
             g.setColor(colorBorderNormal);
         }
         g.fill(border);
+        g.setClip(0,0,getWidth(),getHeight());
     }
 
     /**
