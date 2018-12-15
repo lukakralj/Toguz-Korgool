@@ -2,6 +2,7 @@ package gui;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.image.BufferedImage;
@@ -297,6 +298,12 @@ public class Hole extends OvalButton {
         double y = korgoolArea.y + next.y * korgoolArea.height;
 
         return new Point((int)x, (int)y);
+    }
+
+    protected void holeClicked(ActionEvent e) {
+        if (isValidClickPosition(MouseInfo.getPointerInfo().getLocation())) {
+            super.actionListener.actionPerformed(e);
+        }
     }
 
     /**

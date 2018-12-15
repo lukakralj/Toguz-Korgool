@@ -195,12 +195,6 @@ public class OvalButton extends JButton implements MouseListener, MouseMotionLis
         });
     }
 
-    protected void holeClicked(ActionEvent e) {
-        if (isValidClickPosition(MouseInfo.getPointerInfo().getLocation())) {
-            super.actionListener.actionPerformed(e);
-        }
-    }
-
     protected boolean isValidClickPosition(Point screenPosition) {
         if (shape == SHAPE_OVAL) {
             return isInOval(screenPosition);

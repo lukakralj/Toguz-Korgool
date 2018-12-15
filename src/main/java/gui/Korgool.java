@@ -110,9 +110,7 @@ public class Korgool extends OvalButton {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        if (!isInDrag) {
-            parentHole.holeClicked(new ActionEvent(e.getSource(), e.getID(), e.paramString()));
-        }
+       
     }
 
     @Override
