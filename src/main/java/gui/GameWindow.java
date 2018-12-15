@@ -189,7 +189,7 @@ public class GameWindow extends JFrame {
 
         JPanel sliderPanel = new TiledPanel(TiledPanel.NEUTRAL);
         sliderPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
-        JLabel sliderInfo = new JLabel("<html><font size='3' color='white' face='Monaco'>Speed of animtions:</font></html>");
+        JLabel sliderInfo = new JLabel("<html><font size='3' color='white' face='Monaco'>Speed of animations:</font></html>");
         sliderPanel.add(sliderInfo);
 
         slider = new JSlider(1, 2000, 250);
