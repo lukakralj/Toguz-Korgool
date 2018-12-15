@@ -119,6 +119,7 @@ public class GameWindow extends JFrame {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int minW = (int) (screenSize.getWidth() * 0.7) + 50;
         int minH = (int) (screenSize.getHeight() * 0.75) + 80;
+        //int minH = (int) (screenSize.getHeight() * 0.75) + 50;
         setPreferredSize(new Dimension(minW, minH));
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         root.setLayout(new BorderLayout());
@@ -126,7 +127,7 @@ public class GameWindow extends JFrame {
 
     /**
      * Helper function to set up the menu bar.
-     * <p>
+     *
      * Sets up the menu from a an array of strings and adds an
      * ActionListener to each item in the menu.
      */
@@ -229,7 +230,7 @@ public class GameWindow extends JFrame {
             button.setName(color + i);
             buttonMap.put(button.getName(), button);
             Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-            button.setPreferredSize(new Dimension(30, (int) (screenSize.getHeight() * 0.2)));
+            button.setPreferredSize(new Dimension(30, (int)(screenSize.getHeight() * 0.2)));
             button.addActionListener(e -> holeOnClickAction(button.getName()));
             if (color.equals("B")) {
                 button.setEnabled(false);
@@ -261,6 +262,7 @@ public class GameWindow extends JFrame {
         tuz.setEnabled(false);
         tuz.setBorder(new EmptyBorder(10, 10, 10, 10));
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+
         tuz.setPreferredSize(new Dimension((int) (screenSize.getWidth() * 0.10), 200));
         JPanel panel;
         if (side.equals("left")) {
@@ -274,6 +276,7 @@ public class GameWindow extends JFrame {
         panel.add(tuz);
         panel.add(Box.createVerticalGlue());
         panel.setPreferredSize(new Dimension((int) (screenSize.getWidth() * 0.10), 200));
+
         return panel;
     }
 
@@ -318,7 +321,7 @@ public class GameWindow extends JFrame {
         infoPanel.setLayout(new BorderLayout());
         infoPanel.setOpaque(false);
         infoLabel = new JLabel();
-        infoLabel.setPreferredSize(new Dimension((int) (screenSize.getWidth() * 0.40), (int) (screenSize.getHeight() * 0.25)));
+        infoLabel.setPreferredSize(new Dimension((int)(screenSize.getWidth() * 0.40), (int)(screenSize.getHeight() * 0.25)));
         infoLabel.setFont(new Font("Monaco", Font.BOLD, 20));
         infoLabel.setHorizontalAlignment(SwingConstants.CENTER);
         infoLabel.setVerticalAlignment(SwingConstants.CENTER);
@@ -504,4 +507,7 @@ public class GameWindow extends JFrame {
     }
 
 
+    public String getMessage() {
+        return infoLabel.getText();
+    }
 }

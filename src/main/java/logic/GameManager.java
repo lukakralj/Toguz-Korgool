@@ -10,17 +10,22 @@ import java.util.List;
 
 /**
  * Main class for the Team Platypus Agile Project
+ * @author Kayla Phillips Sanchez
+ * @version 14 December 2018
  *
  */
 public class GameManager {
 
     private GameWindow gameWindow;
     private Board core;
+    private AnimationController anim;
+    private Random random;
 
     /**
      * Construct the game manager
      */
     public GameManager() {
+        random = new Random();
         gameWindow = new GameWindow(this);
         AnimationController.resetController(gameWindow);
         AnimationController.instance().start();
@@ -139,8 +144,7 @@ public class GameManager {
      *
      *  @return the hole chosen by the machine
      */
-    private int machineChooseHole() {
-        Random random = new Random();
+    public int machineChooseHole() {
         boolean foundNumber = false;
         int hole = -1;
         while (!foundNumber) {
@@ -148,8 +152,10 @@ public class GameManager {
             if (hole >= core.getWhitePlayer().getTuz()) {         // if random number >= white Tuz
                 hole += 1;                        // we increase by 1 to cover the full range 0-8 (except the tuz)
             }
+            System.out.println("Bot chose hole of index " + hole);
             if (core.getBlackPlayer().getHoleAt(hole) != 0) {
                 foundNumber = true;
+                System.out.println("Bot CHOSE FINAL hole of index " + hole);
             }
         }
         return hole;
@@ -362,11 +368,11 @@ public class GameManager {
             AnimationController.instance().addEvent(AnimationController.EMPTY_HOLE, prefix + i);
         }
         if (isWhiteTurn) {
-            core.getAllKorgools(core.getBlackPlayer());
+            core.takeAllKorgools(core.getBlackPlayer());
             AnimationController.instance().addEvent(AnimationController.MOVE_KORGOOLS, AnimationController.LEFT_KAZAN, AnimationController.MOVE_ALL);
         }
         else {
-            core.getAllKorgools(core.getWhitePlayer());
+            core.takeAllKorgools(core.getWhitePlayer());
             AnimationController.instance().addEvent(AnimationController.MOVE_KORGOOLS, AnimationController.RIGHT_KAZAN, AnimationController.MOVE_ALL);
         }
         BoardStatus endStatus = core.checkResultOnImpossible();
@@ -418,6 +424,23 @@ public class GameManager {
 
     public Hole getKazanRight() {
         return gameWindow.getKazanRight();
+    }
+
+
+    /**
+     * Sets random seed to make bot's behaviour predictable.
+     * Used for testing
+     */
+    public void setRandomSeed() {
+        random.setSeed(3);
+    }
+
+    /**
+     * Getter only used for testing
+     * @return board of the game
+     */
+    public Board getCore() {
+        return core;
     }
 }
 
