@@ -131,9 +131,9 @@ public class GameWindow extends JFrame {
      * ActionListener to each item in the menu.
      */
     private void setUpMenu() {
-        String[] FileMenuItems = {"CustomInput", "NewGame", "Save", "Load", "Quit"};
+        String[] FileMenuItems = {"New Game", "Save Game", "Load Game", "Custom Input", "Quit Game"};
         JMenu FileMenu = new JMenu("File");
-		FileMenu.setName("filemenu");
+        FileMenu.setName("fileMenu");
         FileMenu.setFont(FileMenu.getFont().deriveFont(16F));
         for (String menuItem : FileMenuItems) {
             JMenuItem item = new JMenuItem(menuItem);
@@ -327,6 +327,7 @@ public class GameWindow extends JFrame {
         infoLabel.setVerticalAlignment(SwingConstants.CENTER);
         infoLabel.setOpaque(false);
         infoLabel.setBackground(Color.WHITE);
+        infoLabel.setName("infoLabel");
         infoPanel.add(infoLabel, BorderLayout.CENTER);
 
         kazanPanel.add(kazanLeftPanel, BorderLayout.WEST);
@@ -357,24 +358,22 @@ public class GameWindow extends JFrame {
      */
     private void menuOnClickAction(String menuItemId) {
         switch (menuItemId) {
-			case "NewGame":
+            case "New Game":
 				JOptionPane.showConfirmDialog(null, "Are you sure you want to start a new game?");
 				manager.loadGame("src\\main\\resources\\newGameFile1.csv","src\\main\\resources\\newGameFile2.csv");
                 break;
-            case "CustomInput":
-				if(manager!=null){
-                    new CustomInputWindow(Color.LIGHT_GRAY, manager);
-				}
+            case "Custom Input":
+                if (manager != null) new CustomInputWindow(manager);
                 break;
-            case "Save":
+            case "Save Game":
                 JOptionPane.showConfirmDialog(null, "Are you sure you want to save the game?");
                 manager.saveGame();
                 break;
-            case "Load":
+            case "Load Game":
                 JOptionPane.showConfirmDialog(null, "Are you sure you want to load the latest save state?");
                 manager.loadGame("src\\main\\resources\\saveFile.csv","src\\main\\resources\\saveFile2.csv","src\\main\\resources\\saveFile3.csv","src\\main\\resources\\saveFile4.csv");
                 break;
-            case "Quit":
+            case "Quit Game":
                 JOptionPane.showConfirmDialog(null, "Are you sure you want to quit?");
                 dispose();
         }
@@ -480,13 +479,6 @@ public class GameWindow extends JFrame {
     public Hole getRightTuz() {
         return rightTuz;
     }
-	
-	public void setButtonMap(HashMap<String, Hole> buttonMap1){
-		buttonMap=buttonMap1;
-	}
-	
-	public void setKazans(HashMap<String, Hole> kazan1){
-		kazans=kazan1;
-	}
+
 
 }

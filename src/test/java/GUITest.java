@@ -1,9 +1,10 @@
+import com.athaydes.automaton.Speed;
 import gui.GameWindow;
 import gui.Hole;
 import logic.AnimationController;
 import logic.GameManager;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
+
 import static org.junit.Assert.*;
 import com.athaydes.automaton.Swinger;
 import static com.athaydes.automaton.assertion.AutomatonMatcher.hasText;
@@ -12,228 +13,119 @@ import static com.athaydes.automaton.assertion.AutomatonMatcher.hasText;
 /**
  * Class that contains tests for the GUI.
  *
- * @version 1.1
  */
 public class GUITest {
+	private GameWindow testWindow;
+	private Swinger swinger;
 
-
-    @Before
-    public void start() {
-        // Speed up animations.
-        AnimationController.setRunTime(5);
-    }
-
-    /**
-     * Test that the GUI sets up correctly without crashing
-     */
-    @Test
-    public void GUISetup(){
-        new GameManager();
-    }
-
-    /**
-     * Test that the hashmap is correctly initialised to a size of 18
-     */
-    @Test
-    public void TestHashMapHasCorrectSize(){
-        GameWindow gamewindow = new GameWindow();
-        assertEquals("Hashmap incorrectly initialised",18,gamewindow.getButtonMap().size());
-    }
-	
-    /**
-     * Test that the hasmap of Buttons contains the correct contents
-     */
-    @Test
-    public void TestHashMapContents(){
-        GameWindow gamewindow = new GameWindow();
-        assertEquals("Hashmap has incorrect contents","B1",gamewindow.getButtonMap().get("B1").getName());
-        assertEquals("Hashmap has incorrect contents","B9",gamewindow.getButtonMap().get("B9").getName());//edge case
-        assertEquals("Hashmap has incorrect contents","B3",gamewindow.getButtonMap().get("B3").getName());
-        assertEquals("Hashmap has incorrect contents","B5",gamewindow.getButtonMap().get("B5").getName());
-        assertEquals("Hashmap has incorrect contents","B7",gamewindow.getButtonMap().get("B7").getName());
-        assertEquals("Hashmap has incorrect contents","W1",gamewindow.getButtonMap().get("W1").getName());
-        assertEquals("Hashmap has incorrect contents","W9",gamewindow.getButtonMap().get("W9").getName());//edge case
-        assertEquals("Hashmap has incorrect contents","W4",gamewindow.getButtonMap().get("W4").getName());
-    }
-	
-	/**
-	* Test that the first and second button can be pressed without the application crashing
-	*/
-	@Test
-	public void testCorrectButtonInteraction() {
-		GameManager m = new GameManager();
-		Swinger swinger = Swinger.getUserWith(m.getWindow());
-		swinger.pause(1000).clickOn("name:W1")
-		.pause(1000).clickOn("name:W2");
-		swinger.pause(100);
+	@Before
+	public void setUp() {
+		// Speed up animations.
+		testWindow = new GameWindow(null);
+		AnimationController.setRunTime(5);
+		swinger = Swinger.getUserWith(testWindow);
+		swinger.pause(250);
+		Swinger.setDEFAULT(Speed.VERY_FAST);
 	}
-	
+
+	@After
+	public void tearDown() {
+		swinger.pause(250);
+		testWindow = null;
+	}
+
+
 	/**
-	 * Test that only numbers are present in the Kazans and that
-	 * any numbers stored are always positive
+	 * Test that the GUI sets up correctly without crashing.
 	 */
 	@Test
-	public void testLegitimateValsInKazans() {
-		GameManager m = new GameManager();
-		Swinger swinger = Swinger.getUserWith(m.getWindow());
-		swinger.pause(1000).clickOn("name:W1")
-		.pause(1000).clickOn("name:W2")
-		.pause(1000).clickOn("name:W3");
-		Hole kazan = m.getKazanLeft();
-		int actual = kazan.getNumberOfKorgools();
-		assertEquals(0, actual);
-		swinger.pause(150);
+	public void GUISetup(){
+		assertNotNull(testWindow);
 	}
-	
+
 	/**
-	 * Test that the menu can be clicked on without the application crashing
+	 * Test that the hashmap is correctly initialised to a size of 18.
+	 */
+	@Test
+	public void TestHashMapHasCorrectSize(){
+		assertEquals("Hashmap incorrectly initialised", 18, testWindow.getButtonMap().size());
+	}
+
+	/**
+	 * Test that the hasmap of Buttons contains the correct contents.
+	 */
+	@Test
+	public void TestHashMapContents(){
+		assertEquals("Hashmap has incorrect contents", "B1", testWindow.getButtonMap().get("B1").getName());
+		assertEquals("Hashmap has incorrect contents", "B9", testWindow.getButtonMap().get("B9").getName());//edge case
+		assertEquals("Hashmap has incorrect contents", "B3", testWindow.getButtonMap().get("B3").getName());
+		assertEquals("Hashmap has incorrect contents", "B5", testWindow.getButtonMap().get("B5").getName());
+		assertEquals("Hashmap has incorrect contents", "B7", testWindow.getButtonMap().get("B7").getName());
+		assertEquals("Hashmap has incorrect contents", "W1", testWindow.getButtonMap().get("W1").getName());
+		assertEquals("Hashmap has incorrect contents", "W9", testWindow.getButtonMap().get("W9").getName());//edge case
+		assertEquals("Hashmap has incorrect contents", "W4", testWindow.getButtonMap().get("W4").getName());
+	}
+
+	/**
+	 * Test that user can press all of the white side buttons.
+	 */
+	@Test
+	public void testCorrectButtonInteraction() {
+		swinger.pause(250).clickOn("name:W9");
+		swinger.pause(250).clickOn("name:W8");
+		swinger.pause(250).clickOn("name:W7");
+		swinger.pause(250).clickOn("name:W6");
+		swinger.pause(250).clickOn("name:W5");
+		swinger.pause(250).clickOn("name:W4");
+		swinger.pause(250).clickOn("name:W3");
+		swinger.pause(250).clickOn("name:W2");
+		swinger.pause(250).clickOn("name:W1");
+	}
+
+
+	/**
+	 * Test that the menu can be clicked on without the application crashing.
 	 */
 	@Test
 	public void testMenuInteraction() {
-		GameManager m = new GameManager();
-		Swinger swinger = Swinger.getUserWith(m.getWindow());
-		swinger.pause(1000).clickOn("name:filemenu");
+		swinger.pause(250).clickOn("name:fileMenu");
 		swinger.pause(150);
 	}
-	
-	//**
-    //* Test that the "Make this move" button works as expected
-	 //*/
-	/*@Test
-	public void testButtonInteraction() {
-		GameManager m = new GameManager();
-		Swinger swinger = Swinger.getUserWith(m.getWindow());
-		swinger.pause(1000).clickOn("name:NEXT");
-		swinger.pause(150);
-		Hole txt2 = m.getKazanRight();
-		String actual = txt2.getText();
-		System.out.println(actual);
-		assertTrue(actual.contains("Make move button pressed")); // TODO: this test is outdated
-		swinger.pause(150);
-	}*/
 
 	/**
-	 * Test that the 1st button works as intended and gives the correct value in the right kazan
+	 * Test setting the Tuz on either side, and resetting the Tuzes.
 	 */
 	@Test
-	public void TestW1Correct() {
-		GameManager m = new GameManager();
-		Swinger swinger = Swinger.getUserWith(m.getWindow());
-		swinger.pause(1000).clickOn("name:W1")
-		.pause(1000);
-		Hole kazan = m.getKazanRight();
-        int actual = kazan.getNumberOfKorgools();
-        assertEquals(0, actual);
-		swinger.pause(150);
+	public void testSetAndResetTuz() {
+		testWindow.setTuz("W1");
+		testWindow.setTuz("B1");
+		testWindow.resetTuzes();
 	}
-	
+
 	/**
-	 * Test that the 2nd button works as intended and gives the correct value in the right kazan
+	 * Test that the central info label works as intended.
 	 */
 	@Test
-	public void TestW2Correct() {
-		GameManager m = new GameManager();
-		Swinger swinger = Swinger.getUserWith(m.getWindow());
-		swinger.pause(1000).clickOn("name:W2")
-		.pause(1000);
-		Hole kazan = m.getKazanRight();
-        int actual = kazan.getNumberOfKorgools();
-        assertEquals(10, actual);
-		swinger.pause(150);
+	public void testDisplay() {
+		testWindow.displayMessage("test");
+		assertThat(swinger.getAt("name:infoLabel"), hasText("test"));
 	}
-	
+
 	/**
-	 * Test that the 5th button works as intended and gives the correct value in the right kazan
+	 * Test populating each Hole/Kazan with Korgools
 	 */
 	@Test
-	public void TestW5Correct() {
-		GameManager m = new GameManager();
-		Swinger swinger = Swinger.getUserWith(m.getWindow());
-		swinger.pause(1000).clickOn("name:W5")
-		.pause(1000);
-		Hole kazan = m.getKazanRight();
-        int actual = kazan.getNumberOfKorgools();
-        assertEquals(10, actual);
-		swinger.pause(150);
+	public void testPopulatingWithKorgools() {
+		for (int i = 1; i < 10; ++i) {
+			testWindow.populateWithKorgools("B" + i, 1);
+			testWindow.populateWithKorgools("W" + i, 1);
+		}
+		testWindow.populateWithKorgools("leftKazan", 1);
+		Assert.assertEquals(testWindow.getKazanLeft().getNumberOfKorgools(), 1);
+		testWindow.populateWithKorgools("left", 1);
+		testWindow.populateWithKorgools("rightKazan", 1);
+		Assert.assertEquals(testWindow.getKazanRight().getNumberOfKorgools(), 1);
+		testWindow.populateWithKorgools("right", 1);
 	}
-	
-	/**
-	 * Test that the 8th button works as intended and gives the correct value in the right kazan
-	 */
-	@Test
-	public void TestW8Correct() {
-		GameManager m = new GameManager();
-		Swinger swinger = Swinger.getUserWith(m.getWindow());
-		swinger.pause(1000).clickOn("name:W8")
-		.pause(1000);
-		Hole kazan = m.getKazanRight();
-        int actual = kazan.getNumberOfKorgools();
-        assertEquals(10, actual);
-		swinger.pause(100);
-		swinger.pause(100);
-	}
-	
-	/**
-	 * Test that the last button works as intended and gives the correct value in the right kazan
-	 */
-	@Test
-	public void TestW9Correct() {
-		GameManager m = new GameManager();
-		Swinger swinger = Swinger.getUserWith(m.getWindow());
-		swinger.pause(1000).clickOn("name:W9")
-		.pause(1000);
-		Hole kazan = m.getKazanRight();
-        int actual = kazan.getNumberOfKorgools();
-        assertEquals(10, actual);
-		swinger.pause(100);
-		swinger.pause(100);
-	}
-	
-	/**
-	 * Test that clicking on the 2nd and then the third button works as intended.
-	 * 
-	 * Note that since the AI behaviour is random, we cannot assume anything about
-	 * the precise value in the right kazan other than it is greater than or equal
-	 * to 10
-	 */
-	@Test
-	public void TestW2W3Sequence() {
-		GameManager m = new GameManager();
-		Swinger swinger = Swinger.getUserWith(m.getWindow());
-		swinger.pause(1000).clickOn("name:W2")
-		.pause(1000).clickOn("name:W3")
-		.pause(1000);
-		Hole kazan = m.getKazanRight();
-		int actual = kazan.getNumberOfKorgools();
-		assertTrue(actual >= 10);
-		swinger.pause(100);
-	}
-	
-	/**
-	 * Test that clicking on every button in a row works as intended to simulate an
-	 * actual game. 
-	 * 
-	 * Note that since the AI behaviour is random, we cannot assume anything 
-	 * about the precise value in the right kazan other than it is greater than or equal
-	 * to 10
-	 */
-	@Test
-	public void TestFullSequence() {
-		GameManager m = new GameManager();
-		Swinger swinger = Swinger.getUserWith(m.getWindow());
-		swinger.pause(1000).clickOn("name:W1")
-		.pause(1000).clickOn("name:W2")
-		.pause(1000).clickOn("name:W3")
-		.pause(1000).clickOn("name:W4")
-		.pause(1000).clickOn("name:W5")
-		.pause(1000).clickOn("name:W6")
-		.pause(1000).clickOn("name:W7")
-		.pause(1000).clickOn("name:W8")
-		.pause(1000).clickOn("name:W9")
-		.pause(1000);
-		Hole kazan = m.getKazanRight();
-		int actual = kazan.getNumberOfKorgools();
-		assertTrue(actual >= 10);
-		swinger.pause(100);
-	}
+
 }

@@ -17,7 +17,7 @@ import logic.GameManager;
  */
 public class CustomInputWindow extends JDialog {
 
-    private Color backgroundColour;
+    private static final Color BG_COLOUR = Color.LIGHT_GRAY;
     private ButtonGroup radioOptionsBlackSide = new ButtonGroup(), radioOptionsWhiteSide = new ButtonGroup();
     private HashMap<String, JSpinner> spinnerMap = new HashMap<>();
     private HashMap<String, JRadioButton> radioButtonMap = new HashMap<>();
@@ -31,16 +31,14 @@ public class CustomInputWindow extends JDialog {
     /**
      * Constructs an object of type CustomInputWindow.
      *
-     * @param backgroundColourIn the background colour inherited from the parent window.
      * @param managerIn          the game manager associated with the parent window.
      */
-    public CustomInputWindow(Color backgroundColourIn, GameManager managerIn) {
+    public CustomInputWindow(GameManager managerIn) {
         selectedTuzBlack = selectedTuzWhite = -1;
         numberOfKorgools = 0;
         for (int i = 0; i < 9; ++i) blackHoleContents[i] = 9;
         for (int i = 0; i < 9; ++i) whiteHoleContents[i] = 9;
         manager = managerIn;
-        this.backgroundColour = backgroundColourIn;
         if (manager == null) setModal(false);
         else setModal(true);
         initialSetUp();
@@ -51,7 +49,7 @@ public class CustomInputWindow extends JDialog {
      * Default constructor (No game manager, default colour.)
      */
     public CustomInputWindow() {
-        this(Color.lightGray, null);
+        this(null);
     }
 
     /**
@@ -61,7 +59,7 @@ public class CustomInputWindow extends JDialog {
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(true);
         setTitle("Apply Custom Input");
-        getContentPane().setBackground(backgroundColour);
+        getContentPane().setBackground(BG_COLOUR);
         setPreferredSize(new Dimension(1024, 576));
         setUpTopBar();
         setUpInputArea();
@@ -85,7 +83,7 @@ public class CustomInputWindow extends JDialog {
      */
     private void setUpInputArea() {
         JPanel inputArea = new JPanel(new GridLayout(0, 9));
-        inputArea.setBackground(backgroundColour);
+        inputArea.setBackground(BG_COLOUR);
         inputArea.setBorder(new EmptyBorder(10, 10, 10, 10));
         for (int i = 9; i > 0; --i) inputArea.add(inputCell("B" + i));
         inputArea.add(Box.createHorizontalGlue());
@@ -133,7 +131,7 @@ public class CustomInputWindow extends JDialog {
      */
     private JTextPane createOutputLog() {
         JTextPane outputLog = new JTextPane();
-        outputLog.setBackground(backgroundColour);
+        outputLog.setBackground(BG_COLOUR);
         outputLog.setEditable(false);
         outputLog.setName("outputLog");
         StyledDocument doc = outputLog.getStyledDocument();
@@ -170,7 +168,7 @@ public class CustomInputWindow extends JDialog {
     private JPanel inputCell(String componentId) {
         JPanel inputCell = new JPanel(new BorderLayout());
         inputCell.setName("C_" + componentId);
-        inputCell.setBackground(backgroundColour);
+        inputCell.setBackground(BG_COLOUR);
         inputCell.add(createRadioButton(componentId), BorderLayout.EAST);
         inputCell.add(createSpinner(componentId), BorderLayout.CENTER);
         inputCell.add(new JLabel(generateCellTitle(componentId), SwingConstants.CENTER), BorderLayout.NORTH);
@@ -225,7 +223,7 @@ public class CustomInputWindow extends JDialog {
     private JRadioButton createRadioButton(String componentId) {
         JRadioButton radio = new JRadioButton();
         radio.setName("R_" + componentId);
-        radio.setBackground(backgroundColour);
+        radio.setBackground(BG_COLOUR);
         if (componentId.equals("BlackKazan"))
             radioOptionsWhiteSide.add(radio);
         else if (componentId.equals("WhiteKazan"))
