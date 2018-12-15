@@ -187,19 +187,20 @@ public class GameWindow extends JFrame {
         JPanel panel = new JPanel(new BorderLayout());
         panel.add(buttonsPanel, BorderLayout.CENTER);
 
-        JPanel sliderPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        JLabel sliderInfo = new JLabel("Speed of animtions:");
+        JPanel sliderPanel = new TiledPanel(TiledPanel.NEUTRAL);
+        sliderPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+        JLabel sliderInfo = new JLabel("<html><font size='3' color='white' face='Monaco'>Speed of animtions:</font></html>");
         sliderPanel.add(sliderInfo);
 
         slider = new JSlider(1, 2000, 250);
         slider.addChangeListener(e -> AnimationController.setRunTime(slider.getValue()));
         Hashtable<Integer, Component> labels = new Hashtable<>();
-        labels.put(1, new JLabel("Lightning"));
-        labels.put(250, new JLabel("Default"));
-        labels.put(2000, new JLabel("Relax - it'll take a while"));
+        labels.put(1, new JLabel("<html><font size='3' color='white' face='Monaco'>Lightning</font></html>"));
+        labels.put(250, new JLabel("<html><font size='3' color='white' face='Monaco'>Default</font></html>"));
+        labels.put(2000, new JLabel("<html><font size='3' color='white' face='Monaco'>Relax - it'll take a while</font></html>"));
         slider.setLabelTable(labels);
+        slider.setOpaque(false);
         slider.setPaintLabels(true);
-        slider.setFont(new Font("Monaco", Font.BOLD, 10));
         sliderPanel.add(slider);
 
         panel.add(sliderPanel, BorderLayout.SOUTH);

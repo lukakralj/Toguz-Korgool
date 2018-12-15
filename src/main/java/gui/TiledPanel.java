@@ -11,9 +11,11 @@ public class TiledPanel extends JPanel {
     public static final int BLACK = 0;
     public static final int WHITE = 1;
     public static final int HALFSIES = 2;
+    public static final int NEUTRAL = 4;
 
     public static BufferedImage darkImg;
     public static BufferedImage lightImg;
+    public static BufferedImage neutral;
 
     private BufferedImage image;
 
@@ -29,6 +31,9 @@ public class TiledPanel extends JPanel {
         }
         else if (color == HALFSIES) {
             image = null;
+        }
+        else if (color == NEUTRAL) {
+            image = neutral;
         }
     }
 
@@ -76,6 +81,7 @@ public class TiledPanel extends JPanel {
         try {
             darkImg = ImageIO.read(new File("src/main/resources/dark_background.jpg"));
             lightImg = ImageIO.read(new File("src/main/resources/light_background.jpg"));
+            neutral = ImageIO.read(new File("src/main/resources/dark_hole.jpg"));
         } catch (IOException e) {
             e.printStackTrace();
         }
