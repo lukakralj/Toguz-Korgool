@@ -385,7 +385,7 @@ public class GameWindow extends JFrame {
                 break;
             case "Quit Game":
                 int quitGameResult = JOptionPane.showConfirmDialog(this, "Are you sure you want to quit?");
-                if (quitGameResult == JOptionPane.YES_OPTION) dispose();
+                if (quitGameResult == JOptionPane.YES_OPTION) System.exit(0);
         }
     }
 
@@ -491,14 +491,14 @@ public class GameWindow extends JFrame {
         return "" +
                 "<html><div style='width: " + 400 + "px;'>" +
                 "<p>Players move alternately. A move consists of taking stones from a hole and distributing them to other holes. On his/her turn, a player takes all the stones of one of his holes, which is not a tuz (see below), and distributes them anticlockwise, one by one, into the following holes. The first stone must be dropped into the hole which was just emptied. However, if the move began from a hole which contained only one stone, this stone is put into the next hole.</p>"
-                + "<p><br>If the last stone falls into a hole on the opponent's side, and this hole then contains an even number of stones, these stones are captured and stored in the player's kazna. If the last stone falls into a hole of the opponent, which then has three stones, the hole is marked as a \"tuz\" (\"salt\" in Kyrgyz). There are a few restrictions on creating a tuz:</p>" +
+                + "<p><br>If the last stone falls into a hole on the opponent's side, and this hole then contains an even number of stones, these stones are captured and stored in the player's kazan. If the last stone falls into a hole of the opponent, which then has three stones, the hole is marked as a \"tuz\" (\"salt\" in Kyrgyz). There are a few restrictions on creating a tuz:</p>" +
                 "<ol>" +
                 "<li>A player may create only one tuz in each game.</li>" +
                 "<li>The last hole of the opponent (his ninth or rightmost hole) cannot be turned into a tuz.</li>" +
                 "<li>A tuz cannot be made if it is symmetrical to the opponent's one (for instance, if the opponent's third hole is a tuz, you cannot turn your third hole into one). It is permitted to make such a move, but it wouldn't create a tuz.</li>" +
                 "</ol>" +
-                "<p>The stones that fall into a tuz are captured by its owner. He may transfer its contents at any time to his kazna. The game ends when a player can't move at his turn because all the holes on his side, which are not tuz, are empty.</p>" +
-                "<p><br>When the game is over, the remaining stones which are not yet in a kazna or in a tuz are won by the player on whose side they are. The winner is the player who, at the end of the game, has captured more stones in their tuz and their kazna. When each player has 81 stones, the game is a draw.</p>" +
+                "<p>The stones that fall into a tuz are captured by its owner. He may transfer its contents at any time to his kazan. The game ends when a player can't move at his turn because all the holes on his side, which are not tuz, are empty.</p>" +
+                "<p><br>When the game is over, the remaining stones which are not yet in a kazan or in a tuz are won by the player on whose side they are. The winner is the player who, at the end of the game, has captured more stones in their tuz and their kazan. When each player has 81 stones, the game is a draw.</p>" +
                 ""
                 + "</div></html>";
     }

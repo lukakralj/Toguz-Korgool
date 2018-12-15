@@ -234,28 +234,38 @@ public class GameManager {
 	*	the content in saveFile1.csv and saveFile2.csv
 	*/
     public void loadGame(String file1, String file2){
-        AnimationController.resetController(gameWindow);
-        AnimationController.instance().start();
+        int[] wHoles = new int[9];
+        int[] bHoles = new int[9];
+        int wTuz = -1;
+        int bTuz = -1;
+        int wKazan = 0;
+        int bKazan = 0;
         try{
             FileInputStream fileToOpen=new FileInputStream(new File(file1));
     
             Scanner sc=new Scanner(fileToOpen);
     
             String placeholder = "";
-            gameWindow.resetTuzes();
-            List<String> tuzes = new ArrayList<>();
             while(sc.hasNextLine()){
                 placeholder=sc.nextLine();
                 StringTokenizer st = new StringTokenizer(placeholder,",",false);
                 String holeId = st.nextToken();
-                Hole button = gameWindow.getButtonMap().get(holeId);
-                gameWindow.populateWithKorgools(button.getName(), Integer.valueOf(st.nextToken()));
+                int value = Integer.valueOf(st.nextToken());
+                int i = Integer.parseInt(holeId.substring(1)) - 1;
+                if (holeId.startsWith("W")) {
+                    wHoles[i] = value;
+                }
+                else {
+                    bHoles[8 - i] = value;
+                }
 				if(st.nextToken().equals("true")){
-					tuzes.add(holeId);
+                    if (holeId.startsWith("W")) {
+                        bTuz = 8 - i;
+                    }
+                    else {
+                        wTuz = i;
+                    }
 				}
-            }
-            for (String id : tuzes) {
-                gameWindow.setTuz(id);
             }
             fileToOpen.close();
         }catch(Exception e){
@@ -271,12 +281,20 @@ public class GameManager {
             while(sc.hasNextLine()){
                 placeholder=sc.nextLine();
                 StringTokenizer st = new StringTokenizer(placeholder,",",false);
-                gameWindow.populateWithKorgools(st.nextToken(), Integer.valueOf(st.nextToken()));
+                String kazanId = st.nextToken();
+                int kazanVal = Integer.valueOf(st.nextToken());
+                if (kazanId.startsWith("left")) {
+                    wKazan = kazanVal;
+                }
+                else {
+                    bKazan = kazanVal;
+                }
             }
             fileToOpen.close();
         }catch(Exception e){
             e.printStackTrace();
         }
+        populateInitialBoard(wHoles, bHoles, wTuz, bTuz, wKazan, bKazan);
     }
 
 	/**
