@@ -350,11 +350,11 @@ public class GameManager {
             AnimationController.instance().addEvent(AnimationController.EMPTY_HOLE, prefix + i);
         }
         if (isWhiteTurn) {
-            core.getAllKorgools(core.getBlackPlayer());
+            core.takeAllKorgools(core.getBlackPlayer());
             AnimationController.instance().addEvent(AnimationController.MOVE_KORGOOLS, AnimationController.LEFT_KAZAN, AnimationController.MOVE_ALL);
         }
         else {
-            core.getAllKorgools(core.getWhitePlayer());
+            core.takeAllKorgools(core.getWhitePlayer());
             AnimationController.instance().addEvent(AnimationController.MOVE_KORGOOLS, AnimationController.RIGHT_KAZAN, AnimationController.MOVE_ALL);
         }
         BoardStatus endStatus = core.checkResultOnImpossible();
