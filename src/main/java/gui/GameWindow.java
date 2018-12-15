@@ -5,10 +5,6 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
-import java.io.*;
-import java.util.List;
-
-import logic.AnimationController;
 import logic.GameManager;
 
 /*
@@ -77,6 +73,11 @@ public class GameWindow extends JFrame {
         root.setSize(newW, newH);
     }
 
+    /**
+     * Get layered pane which is needed for animations.
+     *
+     * @return
+     */
     public JLayeredPane getLayeredPane() {
         return layeredPane;
     }
@@ -127,6 +128,10 @@ public class GameWindow extends JFrame {
         return buttonMap;
     }
 
+    public HashMap<String, Hole> getKazans() {
+        return kazans;
+    }
+
     /**
      * Function to set up 9 buttons on the top panel, put them in a HashMap
      * and then add an ActionListener to each individual button.
@@ -163,7 +168,7 @@ public class GameWindow extends JFrame {
      */
     private void fillPanelWithButtons(JPanel panel, String color) {
         for (int i = 1; i < 10; ++i) {
-            Hole button = new Hole(false);
+            Hole button = new Hole(OvalButton.SHAPE_CAPSULE, OvalButton.VERTICAL, false);
             button.setName(color + i);
             buttonMap.put(button.getName(), button);
             Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -187,11 +192,11 @@ public class GameWindow extends JFrame {
     private JPanel createSingleMarker(String side) {
         Hole tuz;
         if (side.equals("left")) {
-            leftTuz = new Hole(true);
+            leftTuz = new Hole(OvalButton.SHAPE_OVAL, OvalButton.VERTICAL, true);
             tuz = leftTuz;
         }
         else {
-            rightTuz = new Hole(true);
+            rightTuz = new Hole(OvalButton.SHAPE_OVAL, OvalButton.VERTICAL, true);
             tuz = rightTuz;
         }
 
@@ -218,14 +223,14 @@ public class GameWindow extends JFrame {
         kazanPanel.setBackground(BACKGROUND_COLOR);
         kazanPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        kazanLeft = new Hole(true);
+        kazanLeft = new Hole(OvalButton.SHAPE_CAPSULE, OvalButton.HORIZONTAL, true);
         kazanLeft.setColorBorderNormal(new Color(160,82,45));
         kazanLeft.setName("leftKazan");
         kazanLeft.setEnabled(false);
         kazanLeft.setPreferredSize(new Dimension((int)(screenSize.getWidth() * 0.2),300));
         kazanLeft.setEnabled(false);
 
-        kazanRight = new Hole(true);
+        kazanRight = new Hole(OvalButton.SHAPE_CAPSULE, OvalButton.HORIZONTAL,true);
         kazanRight.setColorBorderNormal(new Color(160,82,45));
         kazanRight.setName("rightKazan");
         kazanRight.setEnabled(false);
@@ -271,7 +276,7 @@ public class GameWindow extends JFrame {
         switch (menuItemId) {
 			case "NewGame":
 				JOptionPane.showConfirmDialog(null, "Are you sure you want to start a new game?");
-				loadGame("src\\main\\java\\newGameFile1.csv","src\\main\\java\\newGameFile2.csv");
+				manager.loadGame("src\\main\\resources\\newGameFile1.csv","src\\main\\resources\\newGameFile2.csv");
                 break;
             case "CustomInput":
 				if(manager!=null){
@@ -280,111 +285,16 @@ public class GameWindow extends JFrame {
                 break;
             case "Save":
                 JOptionPane.showConfirmDialog(null, "Are you sure you want to save the game?");
-                saveGame();
+                manager.saveGame();
                 break;
             case "Load":
                 JOptionPane.showConfirmDialog(null, "Are you sure you want to load the latest save state?");
-                loadGame("src\\main\\java\\saveFile.csv","src\\main\\java\\saveFile2.csv");
+                manager.loadGame("src\\main\\resources\\saveFile.csv","src\\main\\resources\\saveFile2.csv","src\\main\\resources\\saveFile3.csv","src\\main\\resources\\saveFile4.csv");
                 break;
             case "Quit":
                 JOptionPane.showConfirmDialog(null, "Are you sure you want to quit?");
                 dispose();
         }
-    }
-
-    private PrintWriter getPrintWriter(String filetoOpen) throws FileNotFoundException{
-        File saveFile=new File(filetoOpen);
-        FileOutputStream fos=new FileOutputStream(saveFile);
-        PrintWriter pw=new PrintWriter(fos);
-        return pw;
-    }
-
-    private void closePrintWriter(PrintWriter pw){
-        pw.flush();
-        pw.close();
-    }
-
-    private void saveGame(){
-        try{
-            PrintWriter pw = getPrintWriter("src\\main\\java\\saveFile.csv");
-            for(Map.Entry<String,Hole> entries :buttonMap.entrySet()){
-                pw.println(entries.getKey()+","+entries.getValue().getNumberOfKorgools()+","+entries.getValue().isTuz());
-            }
-            closePrintWriter(pw);
-        }catch(Exception e){
-            e.printStackTrace();
-        }
-		
-		try{
-            PrintWriter pw = getPrintWriter("src\\main\\java\\saveFile2.csv");
-            for(Map.Entry<String,Hole> entries :kazans.entrySet()){
-                pw.println(entries.getKey()+","+entries.getValue().getNumberOfKorgools());
-            }
-            closePrintWriter(pw);
-        }catch(Exception e){
-            e.printStackTrace();
-        }
-    }
-
-    private void loadGame(String file1, String file2){
-        AnimationController.resetController(this);
-        AnimationController.instance().start();
-        try{
-            File toRead=new File(file1);
-            FileInputStream fis=new FileInputStream(toRead);
-    
-            Scanner sc=new Scanner(fis);
-    
-            String placeholder = "";
-            resetTuzes();
-            List<String> tuzes = new ArrayList<>();
-            while(sc.hasNextLine()){
-                placeholder=sc.nextLine();
-                StringTokenizer st = new StringTokenizer(placeholder,",",false);
-                String holeId = st.nextToken();
-                Hole button = buttonMap.get(holeId);
-                populateWithKorgools(button.getName(), Integer.valueOf(st.nextToken()));
-				if(st.nextToken().equals("true")){
-					tuzes.add(holeId);
-				}
-            }
-            for (String id : tuzes) {
-                setTuz(id);
-            }
-            fis.close();
-        }catch(Exception e){
-            e.printStackTrace();
-        }
-		
-		try{
-            File toRead=new File(file2);
-            FileInputStream fis=new FileInputStream(toRead);
-    
-            Scanner sc=new Scanner(fis);
-    
-            String placeholder = "";
-            while(sc.hasNextLine()){
-                placeholder=sc.nextLine();
-                StringTokenizer st = new StringTokenizer(placeholder,",",false);
-                populateWithKorgools(st.nextToken(), Integer.valueOf(st.nextToken()));
-            }
-            fis.close();
-        }catch(Exception e){
-            e.printStackTrace();
-        }
-		/*
-		int[] wHoles = new int[9];
-		int[] bHoles = new int[9];
-		int wKazan = kazans.get("kazanRight").getNumberOfKorgools();
-		int bKazan = kazans.get("kazanLeft").getNumberOfKorgools();
-		for(int i=0; i<9; i++){
-			wHoles[i]=buttonMap.get("W"+i).getNumberOfKorgools();
-		}
-		for(int i=0; i<9; i++){
-			bHoles[i]=buttonMap.get("B"+i).getNumberOfKorgools();
-		}
-		manager.populateInitialBoard(wHoles,bHoles,-1,-1,wKazan,bKazan);
-		*/
     }
 
     /**
@@ -405,12 +315,15 @@ public class GameWindow extends JFrame {
         else {
             hole = buttonMap.get(holeId);
         }
-        // TODO: would it be faster to only create the new once/delete the excess???
+
         hole.emptyHole();
         hole.createAndAdd(numOfKorgools);
         hole.repaint();
     }
 
+    /**
+     * Place two new korgools in the tuz markers.
+     */
     public void resetTuzes() {
         leftTuz.emptyHole();
         rightTuz.emptyHole();
@@ -424,9 +337,14 @@ public class GameWindow extends JFrame {
         rightTuz.addKorgool(right);
     }
 
+    /**
+     * Remove korgool from tuz marker and place it to the hole specified. No animations will be triggered.
+     *
+     * @param holeId Id of the hole we are marking as a tuz.
+     */
     public void setTuz(String holeId) {
         String name;
-        if (holeId.startsWith("W")) { //white player claimed tuz
+        if (holeId.startsWith("B")) { //white player claimed tuz
             name = "right";
             rightTuz.emptyHole();
         }
@@ -439,25 +357,54 @@ public class GameWindow extends JFrame {
         buttonMap.get(holeId).addKorgool(k);
     }
 
+    /**
+     * Display message in the middle of the board.
+     *
+     * @param message Message to display.
+     */
     public void displayMessage(String message) {
         infoLabel.setText(message);
     }
-	
+
+    /**
+     *
+     * @return Kazan of the black player.
+     */
 	public Hole getKazanLeft() {
         return kazanLeft;
     }
-	
+
+    /**
+     *
+     * @return Kazan of the left player.
+     */
 	public Hole getKazanRight() {
         return kazanRight;
     }
 
+    /**
+     *
+     * @return Tuz marker hole for the black player.
+     */
     public Hole getLeftTuz() {
         return leftTuz;
     }
 
+    /**
+     *
+     * @return Tuz marker hole for the white player.
+     */
     public Hole getRightTuz() {
         return rightTuz;
     }
+	
+	public void setButtonMap(HashMap<String, Hole> buttonMap1){
+		buttonMap=buttonMap1;
+	}
+	
+	public void setKazans(HashMap<String, Hole> kazan1){
+		kazans=kazan1;
+	}
 
     public String getMessage() {
         return infoLabel.getText();

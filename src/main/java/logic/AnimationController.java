@@ -258,8 +258,8 @@ public class AnimationController extends Thread {
         for (int i = 0; i < toMove.size(); i++) {
             animKorgools.add(
                     new AnimKorgool(toMove.get(i), toMove.get(i).getLocation(),
-                            new Point((hole.getLocationOnScreen().x - animateFor.getContentPane().getLocationOnScreen().x) + hole.getNextLocation(i).x,
-                                    (hole.getLocationOnScreen().y - animateFor.getContentPane().getLocationOnScreen().y) + hole.getNextLocation(i).y))
+                            new Point((hole.getLocationOnScreen().x - paneLoc.x) + hole.getNextLocation(i).x,
+                                    (hole.getLocationOnScreen().y - paneLoc.y) + hole.getNextLocation(i).y))
             );
         }
         performMove(animKorgools, hole);

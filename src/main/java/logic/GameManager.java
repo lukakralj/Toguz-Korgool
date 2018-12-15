@@ -2,9 +2,11 @@ package logic;
 
 import gui.GameWindow;
 import gui.Hole;
-import gui.OvalButton;
 import java.util.Random;
 import java.util.Set;
+import java.util.*;
+import java.io.*;
+import java.util.List;
 
 /**
  * Main class for the Team Platypus Agile Project
@@ -40,6 +42,7 @@ public class GameManager {
             gameWindow.populateWithKorgools(buttonId, 9);
         }
         gameWindow.resetTuzes();
+        gameWindow.displayMessage("");
     }
 
     /**
@@ -66,6 +69,7 @@ public class GameManager {
         //updates game logic
         AnimationController.resetController(gameWindow);
         AnimationController.instance().start();
+        gameWindow.displayMessage("");
         populatePlayerBoard(core.getWhitePlayer(), wHoles, wTuz, wKazan);
         populatePlayerBoard(core.getBlackPlayer(), bHoles, bTuz, bKazan);
 
@@ -83,11 +87,12 @@ public class GameManager {
         }
 
         if (wTuz != -1) {
-            gameWindow.setTuz("B" + (9 - wTuz)); // set white tuz
+            gameWindow.setTuz("B" + (10 - wTuz)); // set white tuz
         }
         if (bTuz != -1) {
             gameWindow.setTuz("W" + bTuz); // set black tuz
         }
+        core.printBoard();
     }
 
 
@@ -101,7 +106,8 @@ public class GameManager {
      */
     private void populatePlayerBoard(Player player, int[] holes, int tuz, int kazan) {
         player.setHoles(holes);
-        player.setTuz(tuz - 1);
+        tuz = (tuz == -1) ? tuz : tuz - 1;
+        player.setTuz(tuz);
         player.setKazan(kazan);
     }
 
@@ -154,6 +160,182 @@ public class GameManager {
         }
         return hole;
     }
+	/**
+	*	@return A printwriter object for the given filepath
+	*/
+    private PrintWriter getPrintWriter(String filetoOpen) throws FileNotFoundException{
+        File saveFile=new File(filetoOpen);
+        FileOutputStream fos=new FileOutputStream(saveFile);
+        PrintWriter pw=new PrintWriter(fos);
+        return pw;
+    }
+	
+	/**
+	*	Closes the given printwriter
+	*/
+    private void closePrintWriter(PrintWriter pw){
+        pw.flush();
+        pw.close();
+    }
+
+	/**
+	*	Saves the current state of the board to four csv files. saveFile1.csv
+	*	and saveFile2.csv are responsible for saving the GUI components, while
+	*	saveFile3.csv and saveFile4.csv save the back end components
+	*/
+    public void saveGame(){
+        try{
+            PrintWriter pw = getPrintWriter("src\\main\\resources\\saveFile.csv");
+            for(Map.Entry<String,Hole> entries : gameWindow.getButtonMap().entrySet()){
+                pw.println(entries.getKey()+","+entries.getValue().getNumberOfKorgools()+","+entries.getValue().isTuz());
+            }
+            closePrintWriter(pw);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+		
+		try{
+            PrintWriter pw = getPrintWriter("src\\main\\resources\\saveFile2.csv");
+            for(Map.Entry<String,Hole> entries : gameWindow.getKazans().entrySet()){
+                pw.println(entries.getKey()+","+entries.getValue().getNumberOfKorgools());
+            }
+            closePrintWriter(pw);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+        try{
+            PrintWriter pw = getPrintWriter("src\\main\\resources\\saveFile3.csv");
+            int[] wHoles = core.getWhitePlayer().getHoles();
+            int wTuz = core.getWhitePlayer().getTuz();
+            int wKazan = core.getWhitePlayer().getKazan();
+            for(int i=0;i<wHoles.length;i++){
+                pw.println(wHoles[i]);
+            }
+            pw.println(wTuz);
+            pw.println(wKazan);
+            closePrintWriter(pw);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+        try{
+            PrintWriter pw = getPrintWriter("src\\main\\resources\\saveFile4.csv");
+            int[] bHoles = core.getBlackPlayer().getHoles();
+            int bTuz = core.getBlackPlayer().getTuz();
+            int bKazan = core.getBlackPlayer().getKazan();
+            for(int i=0;i<bHoles.length;i++){
+                pw.println(bHoles[i]);
+            }
+            pw.println(bTuz);
+            pw.println(bKazan);
+            closePrintWriter(pw);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+	/**
+	*	The base load game method used for loading a the GUI components according to
+	*	the content in saveFile1.csv and saveFile2.csv
+	*/
+    public void loadGame(String file1, String file2){
+        AnimationController.resetController(gameWindow);
+        AnimationController.instance().start();
+        try{
+            FileInputStream fileToOpen=new FileInputStream(new File(file1));
+    
+            Scanner sc=new Scanner(fileToOpen);
+    
+            String placeholder = "";
+            gameWindow.resetTuzes();
+            List<String> tuzes = new ArrayList<>();
+            while(sc.hasNextLine()){
+                placeholder=sc.nextLine();
+                StringTokenizer st = new StringTokenizer(placeholder,",",false);
+                String holeId = st.nextToken();
+                Hole button = gameWindow.getButtonMap().get(holeId);
+                gameWindow.populateWithKorgools(button.getName(), Integer.valueOf(st.nextToken()));
+				if(st.nextToken().equals("true")){
+					tuzes.add(holeId);
+				}
+            }
+            for (String id : tuzes) {
+                gameWindow.setTuz(id);
+            }
+            fileToOpen.close();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+		
+		try{
+            FileInputStream fileToOpen=new FileInputStream(new File(file2));
+    
+            Scanner sc=new Scanner(fileToOpen);
+    
+            String placeholder = "";
+            while(sc.hasNextLine()){
+                placeholder=sc.nextLine();
+                StringTokenizer st = new StringTokenizer(placeholder,",",false);
+                gameWindow.populateWithKorgools(st.nextToken(), Integer.valueOf(st.nextToken()));
+            }
+            fileToOpen.close();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+	/**
+	*	An overloaded load game method while makes use of the previous method and
+	*	also resets the backend according to the contents of saveFile3.csv and
+	*	saveFile4.csv
+	*/
+    public void loadGame(String file1, String file2, String file3, String file4){
+        int[] wHoles = new int[9];
+        int[] bHoles = new int[9];
+        int wKazan = 0;
+        int bKazan = 0;
+        int wTuz = -1;
+        int bTuz = -1;
+        loadGame(file1, file2);
+
+        try{
+            FileInputStream fileToOpen=new FileInputStream(new File(file3));
+    
+            Scanner sc=new Scanner(fileToOpen);
+    
+            for(int i=0;i<9;i++){
+                wHoles[i]=Integer.valueOf(sc.nextLine());
+            }
+
+            wTuz=Integer.valueOf(sc.nextLine());
+
+            wKazan=Integer.valueOf(sc.nextLine());
+
+            fileToOpen.close();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+        try{
+            FileInputStream fileToOpen=new FileInputStream(new File(file4));
+    
+            Scanner sc=new Scanner(fileToOpen);
+    
+            for(int i=0;i<9;i++){
+                bHoles[i]=Integer.valueOf(sc.nextLine());
+            }
+
+            bTuz=Integer.valueOf(sc.nextLine());
+
+            bKazan=Integer.valueOf(sc.nextLine());
+
+            fileToOpen.close();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+		populateInitialBoard(wHoles, bHoles, wTuz, bTuz, wKazan, bKazan);
+    }
 
 
     /**
@@ -163,11 +345,17 @@ public class GameManager {
      * @param isWhiteTurn boolean indicating whether it is the white player's turn
      */
     private void endImpossibleGame(boolean isWhiteTurn) {
+        String prefix = isWhiteTurn ? "B" : "W";
+        for (int i = 1; i < 10; i++) {
+            AnimationController.instance().addEvent(AnimationController.EMPTY_HOLE, prefix + i);
+        }
         if (isWhiteTurn) {
-            core.takeAllKorgools(core.getBlackPlayer());
+            core.getAllKorgools(core.getBlackPlayer());
+            AnimationController.instance().addEvent(AnimationController.MOVE_KORGOOLS, AnimationController.LEFT_KAZAN, AnimationController.MOVE_ALL);
         }
         else {
-            core.takeAllKorgools(core.getWhitePlayer());
+            core.getAllKorgools(core.getWhitePlayer());
+            AnimationController.instance().addEvent(AnimationController.MOVE_KORGOOLS, AnimationController.RIGHT_KAZAN, AnimationController.MOVE_ALL);
         }
         BoardStatus endStatus = core.checkResultOnImpossible();
         checkEndStatus(endStatus);
