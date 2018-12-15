@@ -76,7 +76,7 @@ public class GameWindow extends JFrame {
         setVisible(true);
     }
 
-	public GameWindow() {
+    public GameWindow() {
         this(null);
     }
 
@@ -98,7 +98,7 @@ public class GameWindow extends JFrame {
         int newW = getContentPane().getSize().width < minW ? minW : getContentPane().getSize().width;
         int newH = getContentPane().getSize().height < minH ? minH : getContentPane().getSize().height;
         root.setSize(newW, newH);
-        slider.setPreferredSize(new Dimension(root.getSize().width/2, 40));
+        slider.setPreferredSize(new Dimension(root.getSize().width / 2, 40));
     }
 
     /**
@@ -126,12 +126,12 @@ public class GameWindow extends JFrame {
 
     /**
      * Helper function to set up the menu bar.
-     * 
+     * <p>
      * Sets up the menu from a an array of strings and adds an
      * ActionListener to each item in the menu.
      */
     private void setUpMenu() {
-        String[] FileMenuItems = {"New Game", "Save Game", "Load Game", "Custom Input", "Quit Game"};
+        String[] FileMenuItems = {"New Game", "Save Game", "Load Game", "Custom Input", "Help", "Quit Game"};
         JMenu FileMenu = new JMenu("File");
         FileMenu.setName("fileMenu");
         FileMenu.setFont(FileMenu.getFont().deriveFont(16F));
@@ -219,8 +219,7 @@ public class GameWindow extends JFrame {
         if (color.equals("W")) {
             img = lightHole;
             col = Color.BLACK;
-        }
-        else {
+        } else {
             img = darkHole;
             col = Color.WHITE;
         }
@@ -253,8 +252,7 @@ public class GameWindow extends JFrame {
         if (side.equals("left")) {
             leftTuz = new Hole(OvalButton.SHAPE_OVAL, OvalButton.VERTICAL, true, darkHole);
             tuz = leftTuz;
-        }
-        else {
+        } else {
             rightTuz = new Hole(OvalButton.SHAPE_OVAL, OvalButton.VERTICAL, true, lightHole);
             tuz = rightTuz;
         }
@@ -267,8 +265,7 @@ public class GameWindow extends JFrame {
         JPanel panel;
         if (side.equals("left")) {
             panel = new TiledPanel(TiledPanel.BLACK);
-        }
-        else {
+        } else {
             panel = new TiledPanel(TiledPanel.WHITE);
         }
         panel.setLayout(new GridLayout(3, 1));
@@ -282,7 +279,6 @@ public class GameWindow extends JFrame {
 
     /**
      * Helper function to create a JPanel containing both Kazans
-     *
      */
     private void setUpKazans() {
         JPanel kazanPanel = new JPanel(new BorderLayout());
@@ -307,7 +303,7 @@ public class GameWindow extends JFrame {
         kazanRightPanel.setLayout(new BorderLayout());
         kazanRightPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
         kazanRightPanel.setPreferredSize(new Dimension((int) (screenSize.getWidth() * 0.2), 300));
-        kazanRight = new Hole(OvalButton.SHAPE_CAPSULE, OvalButton.HORIZONTAL,true, lightHole);
+        kazanRight = new Hole(OvalButton.SHAPE_CAPSULE, OvalButton.HORIZONTAL, true, lightHole);
         kazanRight.setTextColor(Color.BLACK);
         kazanRight.setColorBorderNormal(Color.BLACK);
         kazanRight.setName("rightKazan");
@@ -345,9 +341,10 @@ public class GameWindow extends JFrame {
      */
     private void holeOnClickAction(String buttonId) {
         if (buttonId.startsWith("W")) {
-			if(manager!=null){
-				manager.makeMove(buttonId.substring(1), true);
-			}
+            if (manager != null) {
+                manager.makeMove(buttonId.substring(1), true);
+                displayMessage("");
+            }
         }
     }
 
@@ -360,23 +357,35 @@ public class GameWindow extends JFrame {
     private void menuOnClickAction(String menuItemId) {
         switch (menuItemId) {
             case "New Game":
-				JOptionPane.showConfirmDialog(null, "Are you sure you want to start a new game?");
-				manager.loadGame("src\\main\\resources\\newGameFile1.csv","src\\main\\resources\\newGameFile2.csv");
+                int newGameDialogResult = JOptionPane.showConfirmDialog(this, "Are you sure you want to start a new game?");
+                if (newGameDialogResult == JOptionPane.YES_OPTION) {
+                    manager.loadGame("src\\main\\resources\\newGameFile1.csv", "src\\main\\resources\\newGameFile2.csv");
+                    displayMessage("Started a new game");
+                }
                 break;
             case "Custom Input":
                 if (manager != null) new CustomInputWindow(manager);
                 break;
             case "Save Game":
-                JOptionPane.showConfirmDialog(null, "Are you sure you want to save the game?");
-                manager.saveGame();
+                int saveGameDialogResult = JOptionPane.showConfirmDialog(this, "Are you sure you want to save the game?");
+                if (saveGameDialogResult == JOptionPane.YES_OPTION) {
+                    manager.saveGame();
+                    displayMessage("Saved the current configuration");
+                }
                 break;
             case "Load Game":
-                JOptionPane.showConfirmDialog(null, "Are you sure you want to load the latest save state?");
-                manager.loadGame("src\\main\\resources\\saveFile.csv","src\\main\\resources\\saveFile2.csv","src\\main\\resources\\saveFile3.csv","src\\main\\resources\\saveFile4.csv");
+                int loadGameDialogResult = JOptionPane.showConfirmDialog(this, "Are you sure you want to load the latest save state?");
+                if (loadGameDialogResult == JOptionPane.YES_OPTION) {
+                    manager.loadGame("src\\main\\resources\\saveFile.csv", "src\\main\\resources\\saveFile2.csv", "src\\main\\resources\\saveFile3.csv", "src\\main\\resources\\saveFile4.csv");
+                    displayMessage("Loaded the last saved configuration");
+                }
+                break;
+            case "Help":
+                JOptionPane.showMessageDialog(this, getGameRules(), "How To Play", JOptionPane.INFORMATION_MESSAGE);
                 break;
             case "Quit Game":
-                JOptionPane.showConfirmDialog(null, "Are you sure you want to quit?");
-                dispose();
+                int quitGameResult = JOptionPane.showConfirmDialog(this, "Are you sure you want to quit?");
+                if (quitGameResult == JOptionPane.YES_OPTION) dispose();
         }
     }
 
@@ -384,18 +393,16 @@ public class GameWindow extends JFrame {
      * Set the number of korgools in this hole. The method will remove all korgools currently in this hole
      * and create new ones.
      *
-     * @param holeId Id of the hole.
+     * @param holeId        Id of the hole.
      * @param numOfKorgools Number of korgools that we want to have in this hole.
      */
     public void populateWithKorgools(String holeId, int numOfKorgools) {
         Hole hole;
         if (holeId.equals("left") || holeId.equals("leftKazan")) {
             hole = kazanLeft;
-        }
-        else if (holeId.equals("right") || holeId.equals("rightKazan")) {
+        } else if (holeId.equals("right") || holeId.equals("rightKazan")) {
             hole = kazanRight;
-        }
-        else {
+        } else {
             hole = buttonMap.get(holeId);
         }
 
@@ -430,8 +437,7 @@ public class GameWindow extends JFrame {
         if (holeId.startsWith("B")) { //white player claimed tuz
             name = "right";
             rightTuz.emptyHole();
-        }
-        else {
+        } else {
             name = "left";
             leftTuz.emptyHole();
         }
@@ -446,27 +452,24 @@ public class GameWindow extends JFrame {
      * @param message Message to display.
      */
     public void displayMessage(String message) {
-        infoLabel.setText(message);
+        infoLabel.setText("<html><div style='text-align: center; color: white; -webkit-text-stroke-width: 1px;'>" + message + "</div></html>");
     }
 
     /**
-     *
      * @return Kazan of the black player.
      */
-	public Hole getKazanLeft() {
+    public Hole getKazanLeft() {
         return kazanLeft;
     }
 
     /**
-     *
      * @return Kazan of the left player.
      */
-	public Hole getKazanRight() {
+    public Hole getKazanRight() {
         return kazanRight;
     }
 
     /**
-     *
      * @return Tuz marker hole for the black player.
      */
     public Hole getLeftTuz() {
@@ -474,11 +477,30 @@ public class GameWindow extends JFrame {
     }
 
     /**
-     *
      * @return Tuz marker hole for the white player.
      */
     public Hole getRightTuz() {
         return rightTuz;
+    }
+
+    /**
+     * @return Game Rules in html format.
+     * Source: https://en.wikipedia.org/wiki/Toguz_korgol
+     */
+    private String getGameRules() {
+        return "" +
+                "<html><div style='width: " + 400 + "px;'>" +
+                "<p>Players move alternately. A move consists of taking stones from a hole and distributing them to other holes. On his/her turn, a player takes all the stones of one of his holes, which is not a tuz (see below), and distributes them anticlockwise, one by one, into the following holes. The first stone must be dropped into the hole which was just emptied. However, if the move began from a hole which contained only one stone, this stone is put into the next hole.</p>"
+                + "<p><br>If the last stone falls into a hole on the opponent's side, and this hole then contains an even number of stones, these stones are captured and stored in the player's kazna. If the last stone falls into a hole of the opponent, which then has three stones, the hole is marked as a \"tuz\" (\"salt\" in Kyrgyz). There are a few restrictions on creating a tuz:</p>" +
+                "<ol>" +
+                "<li>A player may create only one tuz in each game.</li>" +
+                "<li>The last hole of the opponent (his ninth or rightmost hole) cannot be turned into a tuz.</li>" +
+                "<li>A tuz cannot be made if it is symmetrical to the opponent's one (for instance, if the opponent's third hole is a tuz, you cannot turn your third hole into one). It is permitted to make such a move, but it wouldn't create a tuz.</li>" +
+                "</ol>" +
+                "<p>The stones that fall into a tuz are captured by its owner. He may transfer its contents at any time to his kazna. The game ends when a player can't move at his turn because all the holes on his side, which are not tuz, are empty.</p>" +
+                "<p><br>When the game is over, the remaining stones which are not yet in a kazna or in a tuz are won by the player on whose side they are. The winner is the player who, at the end of the game, has captured more stones in their tuz and their kazna. When each player has 81 stones, the game is a draw.</p>" +
+                ""
+                + "</div></html>";
     }
 
 

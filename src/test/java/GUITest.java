@@ -93,6 +93,16 @@ public class GUITest {
 	}
 
 	/**
+	 * Test that the help menu can be correctly opened.
+	 */
+	@Test
+	public void testHelpOption() {
+		swinger.pause(250).clickOn("name:fileMenu");
+		swinger.pause(250).clickOn("name:Help");
+		swinger.pause(250).clickOn("text:OK");
+	}
+
+	/**
 	 * Test setting the Tuz on either side, and resetting the Tuzes.
 	 */
 	@Test
@@ -108,7 +118,7 @@ public class GUITest {
 	@Test
 	public void testDisplay() {
 		testWindow.displayMessage("test");
-		assertThat(swinger.getAt("name:infoLabel"), hasText("test"));
+		assertThat(swinger.getAt("name:infoLabel"), hasText("<html><div style='text-align: center; color: white; -webkit-text-stroke-width: 1px;'>test</div></html>"));
 	}
 
 	/**
@@ -127,5 +137,7 @@ public class GUITest {
 		Assert.assertEquals(testWindow.getKazanRight().getNumberOfKorgools(), 1);
 		testWindow.populateWithKorgools("right", 1);
 	}
+
+
 
 }
