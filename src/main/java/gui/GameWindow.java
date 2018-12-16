@@ -80,7 +80,7 @@ public class GameWindow extends JFrame {
         this(null);
     }
 
-    public static void loadImages() {
+    private static void loadImages() {
         try {
             darkHole = ImageIO.read(new File("src/main/resources/dark_hole.jpg"));
             lightHole = ImageIO.read(new File("src/main/resources/light_hole.jpg"));
@@ -102,9 +102,8 @@ public class GameWindow extends JFrame {
     }
 
     /**
-     * Get layered pane which is needed for animations.
      *
-     * @return
+     * @return Layered pane which is needed for animations.
      */
     public JLayeredPane getLayeredPane() {
         return layeredPane;
@@ -255,7 +254,7 @@ public class GameWindow extends JFrame {
      * Creates one hole for a red tuz-marking korgool.
      *
      * @param side Should be "left" or "right".
-     * @return
+     * @return A panel with the marker.
      */
     private JPanel createSingleMarker(String side) {
         Hole tuz;
@@ -369,6 +368,10 @@ public class GameWindow extends JFrame {
     private void menuOnClickAction(String menuItemId) {
         switch (menuItemId) {
             case "New Game":
+                if (AnimationController.instance().isRunning()) {
+                    JOptionPane.showMessageDialog(this, "Animations are currently running. Please wait for them to finish.", "", JOptionPane.PLAIN_MESSAGE);
+                    return;
+                }
                 int newGameDialogResult = JOptionPane.showConfirmDialog(this, "Are you sure you want to start a new game?");
                 if (newGameDialogResult == JOptionPane.YES_OPTION) {
                     manager.loadGame("src\\main\\resources\\newGameFile1.csv", "src\\main\\resources\\newGameFile2.csv");
@@ -379,6 +382,10 @@ public class GameWindow extends JFrame {
                 if (manager != null) new CustomInputWindow(manager);
                 break;
             case "Save Game":
+                if (AnimationController.instance().isRunning()) {
+                    JOptionPane.showMessageDialog(this, "Animations are currently running. Please wait for them to finish.", "", JOptionPane.PLAIN_MESSAGE);
+                    return;
+                }
                 int saveGameDialogResult = JOptionPane.showConfirmDialog(this, "Are you sure you want to save the game?");
                 if (saveGameDialogResult == JOptionPane.YES_OPTION) {
                     manager.saveGame();
@@ -386,6 +393,10 @@ public class GameWindow extends JFrame {
                 }
                 break;
             case "Load Game":
+                if (AnimationController.instance().isRunning()) {
+                    JOptionPane.showMessageDialog(this, "Animations are currently running. Please wait for them to finish.", "", JOptionPane.PLAIN_MESSAGE);
+                    return;
+                }
                 int loadGameDialogResult = JOptionPane.showConfirmDialog(this, "Are you sure you want to load the latest save state?");
                 if (loadGameDialogResult == JOptionPane.YES_OPTION) {
                     manager.loadGame("src\\main\\resources\\saveFile.csv", "src\\main\\resources\\saveFile2.csv", "src\\main\\resources\\saveFile3.csv", "src\\main\\resources\\saveFile4.csv");
@@ -515,7 +526,10 @@ public class GameWindow extends JFrame {
                 + "</div></html>";
     }
 
-
+    /**
+     *
+     * @return Currently displayed message.
+     */
     public String getMessage() {
         return infoLabel.getText();
     }

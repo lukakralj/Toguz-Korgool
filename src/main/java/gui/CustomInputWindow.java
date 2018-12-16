@@ -8,6 +8,7 @@ import javax.swing.text.StyledDocument;
 import java.awt.*;
 import java.util.HashMap;
 
+import logic.AnimationController;
 import logic.GameManager;
 
 /*
@@ -152,6 +153,10 @@ public class CustomInputWindow extends JDialog {
         else if (numberOfKorgools != 162)
             outputLog.setText("Please ensure the total number of Korgools is 162");
         else {
+            if (AnimationController.instance().isRunning()) {
+                JOptionPane.showMessageDialog(this, "Animations are currently running. Please wait for them to finish.", "", JOptionPane.PLAIN_MESSAGE);
+                return;
+            }
             if (manager != null) {
                 manager.populateInitialBoard(whiteHoleContents, blackHoleContents, selectedTuzWhite, selectedTuzBlack, whiteKazanCount, blackKazanCount);
             }
