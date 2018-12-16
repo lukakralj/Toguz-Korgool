@@ -49,6 +49,7 @@ public class AnimationController extends Thread {
     private List<Korgool> toDistribute;
     private boolean stop;
     private int currentEvent; // index of the event that is currently being executed
+    private boolean running;
 
     /**
      *
@@ -89,6 +90,7 @@ public class AnimationController extends Thread {
         toDistribute = new ArrayList<>();
         this.animateFor = animateFor;
         stop = false;
+        running = false;
         glassPane = new JPanel();
         glassPane.setLayout(null);
         glassPane.setOpaque(false);
@@ -130,13 +132,14 @@ public class AnimationController extends Thread {
         while (!stop || currentEvent != events.size()) {
             try {
                 synchronized (this) {
-                    wait(5);
+                    wait(2);
                 }
             }
             catch (InterruptedException e) {
                 e.printStackTrace();
             }
             if (currentEvent != events.size() - 1) {
+                running = true;
                 glassPane.setSize(animateFor.getContentPane().getSize());
                 currentEvent++;
                 AnimEvent e = events.get(currentEvent);
@@ -149,8 +152,17 @@ public class AnimationController extends Thread {
                 else {
                     throw new RuntimeException("Invalid AnimEvent type: " + e.type);
                 }
+                running = false;
             }
         }
+    }
+
+    /**
+     *
+     * @return True if animations are currently running, false otherwise.
+     */
+    public boolean isRunning() {
+        return running;
     }
 
     /**
@@ -356,6 +368,9 @@ public class AnimationController extends Thread {
         }
     }
 
+    /**
+     * Used internally to store a more precise location - a pair of doubles.
+     */
     private class Location {
         double x;
         double y;

@@ -59,7 +59,9 @@ public class GameManagerTest {
     public void openWindow() {
         gameManager = new GameManager();
         gameWindow = gameManager.getWindow();
+        AnimationController.setRunTime(1);
         swinger = Swinger.getUserWith(gameWindow);
+        Swinger.setDEFAULT(Speed.VERY_FAST);
         swinger.pause(200);
     }
 
@@ -73,7 +75,7 @@ public class GameManagerTest {
 
 
         // test holes setup
-        int[] expected = {0,0,0,0,0,0,0,0,0};
+        int[] expected = {9,9,9,9,9,9,9,9,9};
         compareHoles(expected, getWhiteArray(), white.getHoles());
         compareHoles(expected, getBlackArray(), black.getHoles());
 
@@ -104,12 +106,10 @@ public class GameManagerTest {
     @Test
     public void testSingleGame() {
         gameManager.setRandomSeed();
-        Swinger.setDEFAULT(Speed.FAST);
-        AnimationController.setRunTime(2);
-        swinger.pause(500);
+        swinger.pause(1000);
 
         for (int i = 0; i < movesW.length; i++) {
-            swinger.clickOn("name:W" + movesW[i]).pause(3000);
+            swinger.clickOn("name:W" + movesW[i]).pause(2000);
             compareAll(i, expectedKazans[i][0], expectedKazans[i][1]);
             if (i > 1) {
                 compareTuzes();
@@ -161,12 +161,11 @@ public class GameManagerTest {
      * @param kazanB black player's kazan value just before the move
      */
     private void testEndGame(int moveW, String message, BoardStatus endStatus, int[] holesW, int[] holesB, int kazanW, int kazanB) {
-        Swinger.setDEFAULT(Speed.FAST);
         gameManager.populateInitialBoard(holesW, holesB, 3, 2, kazanW, kazanB);
         swinger.pause(500);
-        swinger.clickOn("name:W" + moveW).pause(3000);
+        swinger.clickOn("name:W" + moveW).pause(1000);
         assertEquals(endStatus, gameManager.getCore().testCheckResult());
-        assertEquals(message, gameWindow.getMessage());
+        assertEquals("<html><div style='text-align: center; color: white; -webkit-text-stroke-width: 1px;'>" + message + "</div></html>", gameWindow.getMessage());
     }
 
     /**
