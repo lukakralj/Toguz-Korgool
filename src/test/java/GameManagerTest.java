@@ -12,7 +12,6 @@ import org.junit.Before;
 import org.junit.Test;
 import com.athaydes.automaton.Swinger;
 import com.athaydes.automaton.Speed;
-
 import java.util.HashMap;
 
 
