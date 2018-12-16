@@ -35,6 +35,7 @@ public class GameWindow extends JFrame {
     private GameManager manager;
     private JLabel infoLabel;
     private JSlider slider;
+    private boolean midGameMessageDisplayed;
 
 
     /**
@@ -46,6 +47,7 @@ public class GameWindow extends JFrame {
         }
         root = new JPanel();
         manager = managerIn;
+        midGameMessageDisplayed = false;
         setFrameProperties();
         buttonMap = new HashMap<>();
         kazans = new HashMap<>();
@@ -74,6 +76,10 @@ public class GameWindow extends JFrame {
         });
         pack();
         setVisible(true);
+
+        setState(JFrame.ICONIFIED);
+        setState(JFrame.NORMAL);
+
     }
 
     public GameWindow() {
@@ -353,8 +359,11 @@ public class GameWindow extends JFrame {
     private void holeOnClickAction(String buttonId) {
         if (buttonId.startsWith("W")) {
             if (manager != null) {
+                if (midGameMessageDisplayed) {
+                    displayMessage("");
+                    midGameMessageDisplayed = false;
+                }
                 manager.makeMove(buttonId.substring(1), true);
-                displayMessage("");
             }
         }
     }
@@ -376,6 +385,7 @@ public class GameWindow extends JFrame {
                 if (newGameDialogResult == JOptionPane.YES_OPTION) {
                     manager.loadGame("src\\main\\resources\\newGameFile1.csv", "src\\main\\resources\\newGameFile2.csv");
                     displayMessage("Started a new game");
+                    midGameMessageDisplayed = true;
                 }
                 break;
             case "Custom Input":
@@ -390,6 +400,7 @@ public class GameWindow extends JFrame {
                 if (saveGameDialogResult == JOptionPane.YES_OPTION) {
                     manager.saveGame();
                     displayMessage("Saved the current configuration");
+                    midGameMessageDisplayed = true;
                 }
                 break;
             case "Load Game":
@@ -401,6 +412,7 @@ public class GameWindow extends JFrame {
                 if (loadGameDialogResult == JOptionPane.YES_OPTION) {
                     manager.loadGame("src\\main\\resources\\saveFile.csv", "src\\main\\resources\\saveFile2.csv", "src\\main\\resources\\saveFile3.csv", "src\\main\\resources\\saveFile4.csv");
                     displayMessage("Loaded the last saved configuration");
+                    midGameMessageDisplayed = true;
                 }
                 break;
             case "Help":
