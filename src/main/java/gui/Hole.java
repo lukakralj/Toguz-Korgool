@@ -1,8 +1,10 @@
 package gui;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -12,9 +14,11 @@ import java.util.Random;
  * or for their kazans.
  *
  * @author Luka Kralj
- * @version 11 December 2018
+ * @version 15 December 2018
  */
 public class Hole extends OvalButton {
+
+    private static Dimension korgoolSize;
 
     private List<Korgool> korgools;
     private boolean isKazan;
@@ -22,19 +26,26 @@ public class Hole extends OvalButton {
     private Korgool tuzKorgool;
     private Random rand;
     private Rectangle korgoolArea;
-    private static Dimension korgoolSize;
+    private BufferedImage holeImage;
+    private Color textColor;
+    private Font font;
+    private Point textLoc;
 
     /**
      * Construct an empty hole. To add korgools to it, use one of the functions.
      */
-    public Hole(int shape, int capsule, boolean isKazan) {
+    public Hole(int shape, int capsule, boolean isKazan, BufferedImage holeImage) {
         super(shape, capsule);
         korgools = new ArrayList<>(32);
         rand = new Random();
         korgoolLocations = generateLocations();
         korgoolArea = new Rectangle(0,0,10,10);
+        this.holeImage = holeImage;
         korgoolSize = new Dimension(10, 10);
         setLayout(null);
+        textColor = null;
+        font = new Font("Monaco", Font.BOLD, 10);
+        textLoc = new Point();
         this.isKazan = isKazan;
         // Update korgools size and location only when the hole is moved/resized.
         addComponentListener(new ComponentAdapter() {
@@ -84,6 +95,21 @@ public class Hole extends OvalButton {
                 tuzKorgool.setLocation(newLoc);
             }
         }
+        font = new Font("Monaco", Font.BOLD, (int)(getHeight() * 0.08));
+        repaint();
+    }
+
+    /**
+     * Set color of the text (showing numbers).
+     * @param color Text color.
+     */
+    public void setTextColor(Color color) {
+        textColor = color;
+    }
+
+    @Override
+    public BufferedImage getBackgroundImage() {
+        return holeImage;
     }
 
     /**
@@ -124,9 +150,9 @@ public class Hole extends OvalButton {
      *
      * @param numOfKorgools Number of new korgools that we want to add to this hole.
      */
-    public void createAndAdd(int numOfKorgools) {
+    public void createAndAdd(int numOfKorgools, BufferedImage img) {
         for (int i = 0; i < numOfKorgools; i++) {
-            addKorgool(new Korgool(this));
+            addKorgool(new Korgool(this, img));
         }
     }
 
@@ -254,8 +280,8 @@ public class Hole extends OvalButton {
      * @return List of locations, where coordinates are [0,1).
      */
     private List<Location> generateLocations() {
-        List<Location> locations = new ArrayList<>(200);
-        for (int i = 0; i < 200; i++) {
+        List<Location> locations = new ArrayList<>(1024);
+        for (int i = 0; i < 1024; i++) {
             double x = rand.nextDouble();
             double y = rand.nextDouble();
             locations.add(new Location(x, y));
@@ -278,6 +304,15 @@ public class Hole extends OvalButton {
     }
 
     /**
+     * Decoupling method. Korgools are calling this method to redispatch click events
+     */
+    protected void holeClicked(ActionEvent e) {
+        if (isValidClickPosition(MouseInfo.getPointerInfo().getLocation())) {
+            super.actionListener.actionPerformed(e);
+        }
+    }
+
+    /**
      * Takes care of rendering the oval button correctly.
      *
      * @param g
@@ -286,8 +321,26 @@ public class Hole extends OvalButton {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        g.setColor(Color.BLACK);
-        g.drawString("" + korgools.size(), (int)(getSize().width * 0.08), (int)(getSize().height * 0.95));
+        if (textColor == null) {
+            return;
+        }
+        g.setFont(font);
+        g.setColor(textColor);
+        String toDraw = "" + korgools.size();
+        if (textColor.equals(Color.BLACK)) {
+            // white holes
+            if (isKazan) {
+                textLoc = new Point(0, getHeight());
+            }
+            else {
+                textLoc = new Point((getWidth() - g.getFontMetrics().stringWidth(toDraw)),font.getSize());
+            }
+        }
+        else {
+            // black holes
+            textLoc = new Point((getWidth() - g.getFontMetrics().stringWidth(toDraw)), getHeight());
+        }
+        g.drawString(toDraw, textLoc.x, textLoc.y);
     }
 
     /**

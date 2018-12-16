@@ -3,26 +3,28 @@ package gui;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 
 /**
  * This class represents korgools in the game.
  *
  * @author Luka Kralj
- * @version 11 December 2018
+ * @version 14 December 2018
  */
 public class Korgool extends OvalButton {
 
     private Hole parentHole;
     private boolean isInDrag;
     private Point startDrag;
+    private BufferedImage korgoolImage;
 
     /**
      * Construct a korgool.
      *
      * @param parentHole The hole this korgool belongs too.
      */
-    public Korgool(Hole parentHole) {
-        this(parentHole, Color.BLUE);
+    public Korgool(Hole parentHole, BufferedImage img) {
+        this(parentHole, Color.BLUE, 2, img);
     }
 
     /**
@@ -32,18 +34,9 @@ public class Korgool extends OvalButton {
      * @param color Color of the korgool.
      */
     public Korgool(Hole parentHole, Color color) {
-        this(parentHole, color, 2);
+        this(parentHole, color, 2, null);
     }
 
-    /**
-     * Construct a korgool.
-     *
-     * @param parentHole The hole this korgool belongs too.
-     * @param borderThickness How thick do we want the korgool border to be.
-     */
-    public Korgool(Hole parentHole, int borderThickness) {
-        this(parentHole, Color.BLUE, borderThickness);
-    }
 
     /**
      * Construct a korgool.
@@ -52,10 +45,16 @@ public class Korgool extends OvalButton {
      * @param color Color of the korgool.
      * @param borderThickness How thick do we want the korgool border to be.
      */
-    public Korgool(Hole parentHole, Color color, int borderThickness) {
+    public Korgool(Hole parentHole, Color color, int borderThickness, BufferedImage img) {
         super(SHAPE_OVAL, VERTICAL, color, Color.yellow, Color.BLACK, Color.yellow); // if we see yellow color something went wrong
         this.parentHole = parentHole;
+        korgoolImage = img;
         setBorderThickness(borderThickness);
+    }
+
+    @Override
+    public BufferedImage getBackgroundImage() {
+        return korgoolImage;
     }
 
     /**
@@ -111,9 +110,7 @@ public class Korgool extends OvalButton {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        if (!isInDrag) {
-            parentHole.holeClicked(new ActionEvent(e.getSource(), e.getID(), e.paramString()));
-        }
+
     }
 
     @Override
