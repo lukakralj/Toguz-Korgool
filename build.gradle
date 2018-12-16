@@ -41,11 +41,3 @@ task fatJar(type: Jar) {
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
     with jar
 }
-
-test() {
-    exclude '**/CustomInputTest.class'
-    exclude '**/GUITest.class'
-    exclude '**/BoardTest.class'
-    exclude '**/PlayerTest.class'
-    dependsOn 'cleanTest'
-}

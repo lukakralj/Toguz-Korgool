@@ -6,7 +6,6 @@ import java.util.Random;
 import java.util.Set;
 import java.util.*;
 import java.io.*;
-import java.util.List;
 
 /**
  * Main class for the Team Platypus Agile Project
@@ -92,7 +91,6 @@ public class GameManager {
         if (bTuz != -1) {
             gameWindow.setTuz("W" + bTuz); // set black tuz
         }
-        core.printBoard();
     }
 
 
@@ -152,10 +150,9 @@ public class GameManager {
             if (hole >= core.getWhitePlayer().getTuz()) {         // if random number >= white Tuz
                 hole += 1;                        // we increase by 1 to cover the full range 0-8 (except the tuz)
             }
-            System.out.println("Bot chose hole of index " + hole);
+
             if (core.getBlackPlayer().getHoleAt(hole) != 0) {
                 foundNumber = true;
-                System.out.println("Bot CHOSE FINAL hole of index " + hole);
             }
         }
         return hole;

@@ -503,11 +503,11 @@ public class OvalButton extends JButton implements MouseListener, MouseMotionLis
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        System.out.println("===== NO ACTION: ovalButton mouse clicked.");
+
     }
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        System.out.println("===== NO ACTION: ovalButton dragged.");
+
     }
 }

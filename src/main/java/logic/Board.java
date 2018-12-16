@@ -27,21 +27,6 @@ public class Board {
     }
 
     /**
-     * Helper function, prints state of the board
-     */
-    public void printBoard() {
-        System.out.print("\nBlack: ");
-        blackPlayer.printHolesReversed();
-        System.out.print("\nWhite: ");
-        whitePlayer.printHoles();
-        System.out.println("\nkazanB: " + blackPlayer.getKazan());
-        System.out.println("kazanW: " + whitePlayer.getKazan());
-        System.out.println("tuzB: " + blackPlayer.getTuz());
-        System.out.println("tuzW: " + whitePlayer.getTuz());
-    }
-
-
-    /**
      * Represents making a move on the board.
      *
      * @param hole the hole the move starts with

@@ -3,7 +3,6 @@ package logic;
 import gui.GameWindow;
 import gui.Hole;
 import gui.Korgool;
-
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
@@ -135,7 +134,7 @@ public class AnimationController extends Thread {
                 }
             }
             catch (InterruptedException e) {
-                System.out.println("Interrupted wait.");
+                e.printStackTrace();
             }
             if (currentEvent != events.size() - 1) {
                 glassPane.setSize(animateFor.getContentPane().getSize());
@@ -168,8 +167,7 @@ public class AnimationController extends Thread {
      */
     private void emptyEvent(String id) {
         if (id == LEFT_KAZAN || id == RIGHT_KAZAN) {
-            System.out.println("Tried to animate emptying of the kazans - not defined.");
-            return;
+            throw new RuntimeException("Tried to animate emptying of the kazans - not defined.");
         }
         Hole hole;
         List<Korgool> toMove;

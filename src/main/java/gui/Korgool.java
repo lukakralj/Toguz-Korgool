@@ -87,9 +87,7 @@ public class Korgool extends OvalButton {
             if (Math.abs(endPoint.x - startDrag.x) < 10 && Math.abs(endPoint.y - startDrag.y) < 10) {
                 parentHole.holeClicked(new ActionEvent(e.getSource(), e.getID(), e.paramString()));
             }
-            else {
-                System.out.println("===== NO ACTION: korgool dragged too far (in release).");;
-            }
+            //NO ACTION: korgool dragged too far (in release)
         }
     }
 
@@ -121,7 +119,7 @@ public class Korgool extends OvalButton {
         if (!isValidClickPosition(e.getLocationOnScreen())) {
             // mouse exited
             isInDrag = false;
-            System.out.println("===== NO ACTION: korgool dragged too far.");
+            //NO ACTION: korgool dragged too far.
         }
     }
 }

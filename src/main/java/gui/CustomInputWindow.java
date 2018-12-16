@@ -7,11 +7,11 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 import java.awt.*;
 import java.util.HashMap;
-
 import logic.GameManager;
 
 /*
  * A Modal JDialog for the custom input window.
+ *
  * @author Yasir Soleja
  * @version 01/12/2018
  */
