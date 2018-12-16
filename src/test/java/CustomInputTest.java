@@ -5,7 +5,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import static com.athaydes.automaton.assertion.AutomatonMatcher.showing;
 import com.athaydes.automaton.Swinger;
-import static com.athaydes.automaton.selector.StringSelectors.matchingAny
+import static com.athaydes.automaton.selector.StringSelectors.matchingAny;
 import javax.swing.*;
 import java.awt.*;
 import gui.*;
