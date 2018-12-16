@@ -1,3 +1,5 @@
+package logic;
+
 import java.util.Arrays;
 
 /**
@@ -69,17 +71,5 @@ public class Player {
     public void reset() {
         Arrays.fill(holes, 0);
 
-    }
-
-    public void printHoles() {
-        for (int i : holes) {
-            System.out.print(" " + i);
-        }
-    }
-
-    public void printHolesReversed() {
-        for (int i = 8; i >= 0; i--) {
-            System.out.print(" " + holes[i]);
-        }
     }
 }

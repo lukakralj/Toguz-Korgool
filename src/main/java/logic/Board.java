@@ -1,8 +1,10 @@
+package logic;
+
 /**
  * Class representing a board of the game.
  *
  * @author Luka Kralj, Karolina Szafranek
- * @version 13 November 2018
+ * @version 26 November 2018
  */
 public class Board {
     private Player whitePlayer;
@@ -25,21 +27,6 @@ public class Board {
     }
 
     /**
-     * Helper function, prints state of the board
-     */
-    public void printBoard() {
-        System.out.print("\nBlack: ");
-        blackPlayer.printHolesReversed();
-        System.out.print("\nWhite: ");
-        whitePlayer.printHoles();
-        System.out.println("\nkazanB: " + blackPlayer.getKazan());
-        System.out.println("kazanW: " + whitePlayer.getKazan());
-        System.out.println("tuzB: " + blackPlayer.getTuz());
-        System.out.println("tuzW: " + whitePlayer.getTuz());
-    }
-
-
-    /**
      * Represents making a move on the board.
      *
      * @param hole the hole the move starts with
@@ -56,6 +43,9 @@ public class Board {
         otherBoard = opponent;
 
         int korgools = player.getHoleAt(hole);
+
+        animateEmptyFor(currentBoard, hole);
+
         player.setHole(hole, 0);
 
         if (korgools == 0) {
@@ -70,9 +60,15 @@ public class Board {
                 hole++;
             }
             currentBoard.incrementHole(hole);
+
+            animateMoveFor(currentBoard, hole);
+
         } else {
             for (int i = korgools; i > 0; --i) {
                 currentBoard.incrementHole(hole);
+
+                animateMoveFor(currentBoard, hole);
+
                 if (i == 1) {
                     break;
                 }
@@ -102,24 +98,94 @@ public class Board {
         if(currentBoard == opponent && lastHoleFilled != player.getTuz()) {
             if (opponent.getHoleAt(lastHoleFilled) == 3 && player.getTuz() == -1 && opponent.getTuz() != lastHoleFilled && lastHoleFilled != 8) {
                 player.setTuz(lastHoleFilled);
+                animateTuzFor(player);
             } else if (opponent.getHoleAt(lastHoleFilled) % 2 == 0){
-                player.setKazan(player.getKazan() + opponent.getHoleAt(lastHoleFilled));
+                int diff = opponent.getHoleAt(lastHoleFilled);
+
                 opponent.setHole(lastHoleFilled, 0);
+
+                animateEmptyFor(opponent, lastHoleFilled);
+
+                player.setKazan(player.getKazan() + diff);
+
+                animateKazanFor(player);
+
             }
 
         }
 
-        if (player.getTuz() > -1) {
-            player.setKazan(player.getKazan() + opponent.getHoleAt(player.getTuz()));
-            opponent.setHole(player.getTuz(), 0);
-        }
-
-        if (opponent.getTuz() > -1) {
-            opponent.setKazan(opponent.getKazan() + player.getHoleAt(opponent.getTuz()));
-            player.setHole(opponent.getTuz(), 0);
-        }
+        emptyTuz(player, opponent);
+        emptyTuz(opponent, player);
 
         return checkResult();
+    }
+
+    /**
+     * Helper method to avoid code duplication.
+     *
+     * @param player Player for which we want to empty the tuz for, if the tuz is set.
+     */
+    private void emptyTuz(Player player, Player opponent) {
+        if (player.getTuz() > -1) {
+            int diff = opponent.getHoleAt(player.getTuz());
+            opponent.setHole(player.getTuz(), 0);
+
+            animateEmptyFor(opponent, player.getTuz());
+
+            player.setKazan(player.getKazan() + diff);
+            animateKazanFor(player);
+        }
+    }
+
+
+    private void animateEmptyFor(Player player, int hole) {
+        if (AnimationController.instance() == null) {
+            return;
+        }
+        if (player == whitePlayer) {
+            AnimationController.instance().addEvent(AnimationController.EMPTY_HOLE, "W" + (hole + 1));
+        }
+        else {
+            AnimationController.instance().addEvent(AnimationController.EMPTY_HOLE, "B" + (9 - hole));
+        }
+    }
+
+    private void animateMoveFor(Player player, int hole) {
+        if (AnimationController.instance() == null) {
+            return;
+        }
+        if (player == whitePlayer) {
+            AnimationController.instance().addEvent(AnimationController.MOVE_KORGOOLS, "W" + (hole + 1), 1);
+        }
+        else {
+            AnimationController.instance().addEvent(AnimationController.MOVE_KORGOOLS, "B" + (9 - hole), 1);
+        }
+    }
+
+    private void animateKazanFor(Player player) {
+        if (AnimationController.instance() == null) {
+            return;
+        }
+        if (player == whitePlayer) {
+            AnimationController.instance().addEvent(AnimationController.MOVE_KORGOOLS, AnimationController.RIGHT_KAZAN);
+        }
+        else {
+            AnimationController.instance().addEvent(AnimationController.MOVE_KORGOOLS, AnimationController.LEFT_KAZAN);
+        }
+    }
+
+    private void animateTuzFor(Player player) {
+        if (AnimationController.instance() == null) {
+            return;
+        }
+        if (player == whitePlayer) {
+            AnimationController.instance().addEvent(AnimationController.EMPTY_HOLE, AnimationController.RIGHT_TUZ);
+            AnimationController.instance().addEvent(AnimationController.MOVE_KORGOOLS, "B" + (9 - player.getTuz()), 1);
+        }
+        else {
+            AnimationController.instance().addEvent(AnimationController.EMPTY_HOLE, AnimationController.LEFT_TUZ);
+            AnimationController.instance().addEvent(AnimationController.MOVE_KORGOOLS, "W" + (player.getTuz() + 1), 1);
+        }
     }
 
     /**
@@ -185,7 +251,7 @@ public class Board {
      * Add all the korgools in the player's holes into the player's kazaan.
      * Sets player's holes to 0.
      */
-     public void getAllKorgools(Player player) {
+     public void takeAllKorgools(Player player) {
         for (int valueInHole : player.getHoles()) {
             player.setKazan(player.getKazan() + valueInHole);
         }
@@ -197,7 +263,7 @@ public class Board {
     //   Used for testing private method
     // ===================================
 
-    BoardStatus testCheckResult() {
+    public BoardStatus testCheckResult() {
         return checkResult();
     }
     
@@ -205,25 +271,12 @@ public class Board {
         return checkResultOnImpossible();
     }
 
-    BoardStatus testEndMove(int lastHoleFilled, Player player, Player opponent, Player currentBoard) {
+    public BoardStatus testEndMove(int lastHoleFilled, Player player, Player opponent, Player currentBoard) {
         return endMove(lastHoleFilled, player, opponent, currentBoard);
     }
 
-    boolean testCheckIfMovePossible(Player currentPlayer) {
+    public boolean testCheckIfMovePossible(Player currentPlayer) {
         return checkIfMovePossible(currentPlayer);
     }
 
 }
-
-/**
- * Enum class representing statuses a board can have.
- */
-enum BoardStatus {
-    SUCCESSFUL, // Move went well but the game is not finished, next player should make a move.
-    MOVE_UNSUCCESSFUL, // The selected hole is empty.
-    MOVE_IMPOSSIBLE, // All holes on the player's side are empty.
-    B_WON,
-    W_WON,
-    DRAW
-}
-
