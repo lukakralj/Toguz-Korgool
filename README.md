@@ -5,7 +5,7 @@
 - Noyan Raquib
 - Mohammed Yasir Soleja
 - Karolina Szafranek
-- Luka Kralj (k1764125)
+- [Luka Kralj](https://lukakralj.com/toguz-korgool/)
 
 ## Credits:
 
